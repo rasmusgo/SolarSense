@@ -14,7 +14,8 @@ void Camera::draw() {
 
 void Camera::update(float deltaTime) {
     //temporal mouseTest (arround a planet)
-    vec2f newRot = vec2f(InputManager::mouseDisplacement.y, InputManager::mouseDisplacement.x)*0.2f;
+    vec2i mouseDis = InputManager::getMouseDisplacement();
+    vec2f newRot = vec2f(mouseDis.y, mouseDis.x)*0.2f;
 
     mat4f m(1.0);
     m = glm::rotate(m,newRot.y,vec3f(0,1,0));
