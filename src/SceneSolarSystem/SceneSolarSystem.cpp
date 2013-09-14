@@ -41,9 +41,9 @@ bool SceneSolarSystem::loadResources() {
 		return false;
 
 	//textures
-	if(!TextureManager::load("cubetex","data/10x10tex.png"))
+    if(!TextureManager::load("cubetex","data/10x10tex.png",2))
 		return false;
-    if(!TextureManager::load("sun","data/SunTexture_2048.png"))
+    if(!TextureManager::load("sun","data/SunTexture_2048.png",2))
         return false;
 
 	//Create meshes

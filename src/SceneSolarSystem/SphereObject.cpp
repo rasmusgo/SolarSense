@@ -25,7 +25,7 @@ void SphereObject::updateMatrix() {
 
 void SphereObject::draw() const {
     mat4f transform = parentScene->getState().projection*parentScene->getState().view*sph.modelMatrix;
-    TextureManager::use("sun",  GL_TEXTURE2);
+    TextureManager::get("sun")->bind();
     sph.program->uniform("sampler")->set(2);
     sph.program->uniform("modelViewProjectionMatrix")->set(transform);
     sph.draw();

@@ -15,6 +15,8 @@
 #include "graphics/Mesh.hpp"
 #include "graphics/Model.hpp"
 #include "graphics/ShaderProgram.hpp"
+#include "graphics/Texture.hpp"
+#include "graphics/Uniform.hpp"
 
 class SolarSenseApp {
 	public:
