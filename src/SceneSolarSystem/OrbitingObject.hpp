@@ -12,6 +12,7 @@ class OrbitingObject : public GameObject {
         void update(float deltaTime);
         void updateMatrix();
         void draw();
+        void draw(mat4f from);
 
         void addOrbitingObject(OrbitingObject *object);
     private:

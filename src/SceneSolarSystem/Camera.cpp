@@ -14,13 +14,15 @@ void Camera::draw() {
 
 void Camera::update(float deltaTime) {
     //temporal mouseTest (arround a planet)
-    vec2i mouseDis = InputManager::getMouseDisplacement();
-    vec2f newRot = vec2f(mouseDis.y, mouseDis.x)*0.2f;
+    if (InputManager::isMouseDown(sf::Mouse::Left)) {
+        vec2i mouseDis = InputManager::getMouseDisplacement();
+        vec2f newRot = vec2f(mouseDis.y, mouseDis.x)*0.2f;
 
-    mat4f m(1.0);
-    m = glm::rotate(m,newRot.y,vec3f(0,1,0));
-    m = glm::rotate(m,newRot.x,vec3f(1,0,0));
-    rotM = m*rotM;
+        mat4f m(1.0);
+        m = glm::rotate(m,newRot.y,vec3f(0,1,0));
+        m = glm::rotate(m,newRot.x,vec3f(1,0,0));
+        rotM = m*rotM;
+    }
 }
 
 void Camera::drawHUD() {

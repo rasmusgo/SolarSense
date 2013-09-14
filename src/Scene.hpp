@@ -18,7 +18,7 @@ class Scene : public GameObject{ //abstract
 		virtual void update(float deltaTime) = 0;
 		virtual void draw() const = 0;
 
-		RenderState &getState() const;
+        RenderState &getState() const;
 	protected:
 		virtual bool loadResources() = 0;
 
