@@ -2,7 +2,8 @@
 
 OrbitingObject::OrbitingObject(Scene* parentScene, GameObject* parentObject,
                                vec3f scale, float orbRadius, float orbSpeed)
-                                : GameObject(parentScene, parentObject->pos, scale) {
+                                : GameObject(parentScene, parentObject->pos, scale),
+                                  orbitCenterObject(parentObject) {
 
 }
 

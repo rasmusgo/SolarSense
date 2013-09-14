@@ -15,6 +15,7 @@ class OrbitingObject : public GameObject {
 
         void addOrbitingObject(OrbitingObject *object);
     private:
+        GameObject* orbitCenterObject;
         Model sph;//should be probably an abstract class so this would go out
 };
 
