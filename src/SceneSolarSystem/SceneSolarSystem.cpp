@@ -56,6 +56,8 @@ bool SceneSolarSystem::loadResources() {
 	//shaders
     if(!ShaderManager::load("sample","data/shaders/sample.vert","data/shaders/sample.frag"))
 		return false;
+    if(!ShaderManager::load("orbit","data/shaders/orbit.vert","data/shaders/orbit.frag"))
+        return false;
 	if(!ShaderManager::load("sample2","data/shaders/sample2.vert","data/shaders/sample2.frag"))
 		return false;
 
@@ -68,6 +70,7 @@ bool SceneSolarSystem::loadResources() {
 	//Create meshes
 	MeshManager::add("cube",new Mesh("data/10x10.obj"));
     MeshManager::add("sphere",new Mesh("data/sphere.obj"));
+    MeshManager::add("square",new Mesh("data/square.obj"));
 
 	return true;
 }

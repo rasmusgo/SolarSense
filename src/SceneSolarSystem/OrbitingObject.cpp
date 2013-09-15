@@ -8,6 +8,9 @@ OrbitingObject::OrbitingObject(Scene* parentScene, GameObject* parentObject,
                                 , orbRadius(orbRadius), orbSpeed(orbSpeed) {
     sph.mesh = MeshManager::get("sphere");
     sph.program = ShaderManager::get("sample");
+
+    orbit.mesh = MeshManager::get("square");
+    orbit.program = ShaderManager::get("orbit");
 }
 
 OrbitingObject::~OrbitingObject() {
@@ -36,13 +39,28 @@ void OrbitingObject::addOrbitingObject(OrbitingObject* orb) {
 }
 
 void OrbitingObject::drawFrom(mat4f from) const {
-    mat4f transform = parentScene->getState().projection*parentScene->getState().view*from*sph.modelMatrix;
+    mat4f viewProjection = parentScene->getState().projection*parentScene->getState().view;
+    mat4f transform = viewProjection*from*sph.modelMatrix;
     TextureManager::get("sun")->bind();
     sph.program->uniform("sampler")->set(2);
     sph.program->uniform("modelViewProjectionMatrix")->set(transform);
     sph.draw();
 
     //Draw sons
-    for(std::list<OrbitingObject*>::const_iterator it = orbObjects.begin(); it != orbObjects.end(); ++it)
+    for(std::list<OrbitingObject*>::const_iterator it = orbObjects.begin(); it != orbObjects.end(); ++it) {
+        //Draw orbit of son
+        float rad = (*it)->orbRadius + (*it)->scale.x;
+        float orb = (*it)->orbRadius/rad;
+        mat4f orbTransform = glm::scale(baseMatrix, vec3f(rad, rad, rad));
+
+        orbit.program->uniform("width")->set(0.005f);
+        orbit.program->uniform("orbit")->set(orb);
+        orbit.program->uniform("color")->set(vec3f(1.0, 1.0, 1.0));
+        orbit.program->uniform("modelViewProjectionMatrix")->set(viewProjection*orbTransform);
+        glDisable(GL_CULL_FACE);
+        orbit.draw();
+        glEnable(GL_CULL_FACE);
+
         (*it)->drawFrom(baseMatrix);
+    }
 }
