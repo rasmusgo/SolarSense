@@ -30,19 +30,7 @@ bool SolarSenseApp::init() {
 		return false;
 	isRunning = true;
 
-	//Testing stuff
- 	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-   	GLfloat mat_shininess[] = { 50.0 };
-  	GLfloat light_position[] = { 0.0, 0.0, 0.0, 0.0 };
-
-  	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-   	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-   	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_DEPTH_TEST);
-
+	
 	//GL stuff..
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_ALPHA_TEST);
