@@ -24,7 +24,6 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     //addObject(new       TriangleObject(this, vec3f( 10.0f, 0.0f,10.0f),   vec3f(0.1f)));
     //addObject(new RegularPolygonObject(this, vec3f(-10.0f, 0.0f,10.0f),   vec3f(1.0f), 6));
     addObject(new SphereObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(10.0f)));
-    addObject(new SphereObject(this, vec3f(20.0f, 0.0f, 0.0f), vec3f(10.0f)));
 
 	std::cout << "* Init done" << std::endl;
 }

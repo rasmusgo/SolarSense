@@ -2,7 +2,8 @@
 #include "../input/InputManager.hpp"
 
 Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.0,1.0)),
-    rot(0.0f,0.0f), rotM(1.0f) {
+    rot(0.0f,0.0f), rotM(1.0f), vel(1,1,1.5) {
+
 }
 
 Camera::~Camera() {
@@ -25,16 +26,16 @@ void Camera::update(float deltaTime) {
     }
 
     if(InputManager::isKeyDown(sf::Keyboard::W)){
-        pos += vec3f(0.0,0.0,-1.0);
+        pos += vec3f(0.0,0.0,-1.0)*vel*deltaTime;
     }
     if(InputManager::isKeyDown(sf::Keyboard::S)){
-        pos += vec3f(0.0,0.0,1.0);
+        pos += vec3f(0.0,0.0,1.0)*vel*deltaTime;
     }
     if(InputManager::isKeyDown(sf::Keyboard::D)){
-        pos += vec3f(1.0,0.0,0.0);
+        pos += vec3f(1.0,0.0,0.0)*vel*deltaTime;
     }
     if(InputManager::isKeyDown(sf::Keyboard::A)){
-        pos += vec3f(-1.0,0.0,0.0);
+        pos += vec3f(-1.0,0.0,0.0)*vel*deltaTime;
     }
 }
 
