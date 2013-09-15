@@ -1,4 +1,5 @@
 #include "OrbitingObject.hpp"
+#include "Planet.hpp"
 #include "SceneSolarSystem.hpp"
 #include "../SolarSenseApp.hpp"
 

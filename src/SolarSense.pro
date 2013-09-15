@@ -28,7 +28,9 @@ SOURCES += \
     SceneSolarSystem/SphereObject.cpp \
     Entity.cpp \
     SceneSolarSystem/Camera.cpp \
-    SceneSolarSystem/OrbitingObject.cpp
+    SceneSolarSystem/OrbitingObject.cpp \
+    SceneSolarSystem/Earth.cpp \
+
 
 HEADERS += \
     $$PWD/Scene.hpp \
@@ -55,7 +57,9 @@ HEADERS += \
     $$PWD/SceneSolarSystem/SphereObject.hpp \
     $$PWD/Entity.hpp \
     $$PWD/SceneSolarSystem/Camera.hpp \
-    SceneSolarSystem/OrbitingObject.hpp
+    SceneSolarSystem/OrbitingObject.hpp \
+    SceneSolarSystem/Planet.hpp \
+    SceneSolarSystem/Earth.hpp \
 
 OTHER_FILES += \
 	$$PWD/data/shaders/sample.vert \
