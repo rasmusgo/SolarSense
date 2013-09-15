@@ -19,6 +19,7 @@ class OrbitingObject : public GameObject {
         float orbSpeed;
         float orbRadius;
         Model sph;//should be probably an abstract class so this would go out
+        Model orbit;
         std::list<OrbitingObject*> orbObjects;
         mat4f baseMatrix;
 };

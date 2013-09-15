@@ -60,5 +60,7 @@ HEADERS += \
 OTHER_FILES += \
 	$$PWD/data/shaders/sample.vert \
 	$$PWD/data/shaders/sample.frag \
+        $$PWD/data/shaders/orbit.vert \
+        $$PWD/data/shaders/orbit.frag \
 	$$PWD/data/shaders/sample2.vert \
 	$$PWD/data/shaders/sample2.frag
