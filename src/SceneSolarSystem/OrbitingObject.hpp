@@ -13,14 +13,12 @@ class OrbitingObject : public GameObject {
         void updateMatrix();
         void draw() const;
         void drawFrom(mat4f from) const;
-        void addOrbitingObject(OrbitingObject* orb);
 
     private:
         float orbSpeed;
         float orbRadius;
         Model sph;//should be probably an abstract class so this would go out
         Model orbit;
-        std::list<OrbitingObject*> orbObjects;
         mat4f baseMatrix;
 };
 

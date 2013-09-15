@@ -13,10 +13,6 @@ class Earth : public Planet {
         void update(float deltaTime);
         void draw() const;
         void drawFrom(mat4f from) const;
-
-        float orbSpeed;
-        float orbRadius;
-        Model sphere;//should be probably an abstract class so this would go out
 };
 
 #endif // EARTH_HPP

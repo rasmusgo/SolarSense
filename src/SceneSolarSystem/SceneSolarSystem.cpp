@@ -21,7 +21,7 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 	InputManager::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
     //Init Camera
 
-    cam = new Camera(this, vec3f(0.0f,3.0f,50.0f));
+    cam = new Camera(this, vec3f(0.0f,0.0f,30.0f));
     //add gameObjects
 
     //addObject(new       TriangleObject(this, vec3f( 10.0f, 0.0f,10.0f),   vec3f(0.1f)));
@@ -30,11 +30,12 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 
     GameObject* center = new GameObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(1.0f, 1.0f, 1.0f));
     addObject(center);
-    // OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
-    // addDrawableObject(sun);
+    OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
+    addDrawableObject(sun);
 
-    Earth* earth = new Earth(this, center, vec3f(15.0f, 15.0f, 15.0f), 0, 0);
-    addDrawableObject(earth);
+    Earth* earth = new Earth(this, sun, vec3f(1.0f, 1.0f, 1.0f), 20, 2);
+    addObject(earth);
+    sun->addObject(earth);
 
 	std::cout << "* Init done" << std::endl;
 }
