@@ -23,6 +23,19 @@ void Camera::update(float deltaTime) {
         m = glm::rotate(m,newRot.x,vec3f(1,0,0));
         rotM = m*rotM;
     }
+
+    if(InputManager::isKeyDown(sf::Keyboard::W)){
+        pos += vec3f(0.0,0.0,-1.0);
+    }
+    if(InputManager::isKeyDown(sf::Keyboard::S)){
+        pos += vec3f(0.0,0.0,1.0);
+    }
+    if(InputManager::isKeyDown(sf::Keyboard::D)){
+        pos += vec3f(1.0,0.0,0.0);
+    }
+    if(InputManager::isKeyDown(sf::Keyboard::A)){
+        pos += vec3f(-1.0,0.0,0.0);
+    }
 }
 
 void Camera::drawHUD() {
