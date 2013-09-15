@@ -6,13 +6,17 @@
 
 class Planet : public GameObject {
     public:
-        Planet(Scene* parentScene, GameObject* parentObject);
-        ~Planet();
+        Planet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed) 
+            : GameObject(parentScene, parentObject->pos, scale)
+            , orbRadius(orbRadius), orbSpeed(orbSpeed) { }
+        ~Planet(){
 
-        virtual void update(float deltaTime);
-        virtual void draw() const;
-        virtual void drawFrom(mat4f from) const;
-        virtual void addObject(GameObject* object);
+        }
+
+        virtual void update(float deltaTime) = 0;
+        virtual void draw() const = 0;
+        //virtual void drawFrom(mat4f from) const = 0;
+
 
     private:
         float orbSpeed;

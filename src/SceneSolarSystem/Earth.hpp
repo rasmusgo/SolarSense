@@ -1,21 +1,22 @@
-#ifndef PLANET_HPP
-#define PLANET_HPP
+#ifndef EARTH_HPP
+#define EARTH_HPP
 
 #include "../GameObject.hpp"
 #include "../graphics/Model.hpp"
+#include "Planet.hpp"
 
 class Earth : public Planet {
     public:
-        Earth(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed) 
-        : Planet(Scene* parentScene, GameObject* parentObject), scale(scale), orbRadius(orbRadius), orbSpeed(orbSpeed);
+        Earth(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed);
         ~Earth();
 
-        virtual void update(float deltaTime);
-        virtual void draw() const;
-        virtual void drawFrom(mat4f from) const;
-        virtual void addObject(GameObject* object);
+        void update(float deltaTime);
+        void draw() const;
+        void drawFrom(mat4f from) const;
 
-
+        float orbSpeed;
+        float orbRadius;
+        Model sphere;//should be probably an abstract class so this would go out
 };
 
-#endif // PLANET_HPP
+#endif // EARTH_HPP

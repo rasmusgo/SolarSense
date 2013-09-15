@@ -1,15 +1,12 @@
-varying vec3 normal;
-varying vec3 position;
+uniform mat4 modelViewProjectionMatrix;
 
-// @author Michael de Hoog
+attribute vec3 a_position;
+attribute vec3 a_normal;
+attribute vec2 a_texCoord;
 
-void main(void)
-{
-	gl_Position = ftransform();
-	gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
-	gl_TexCoord[1] = gl_TextureMatrix[0] * gl_MultiTexCoord1;
-	
-	//normal = normalize(gl_NormalMatrix * gl_Normal);
-	normal = gl_Normal;
-	position = gl_Vertex.xyz;
+varying vec2 vTexCoord;
+
+void main () {
+		gl_Position = modelViewProjectionMatrix * vec4(a_position,1.0);
+		vTexCoord = a_texCoord;
 }
