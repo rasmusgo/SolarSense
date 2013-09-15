@@ -2,7 +2,7 @@
 #include "../SolarSenseApp.hpp"
 #include "TriangleObject.hpp"
 #include "RegularPolygonObject.hpp"
-#include "SphereObject.hpp"
+#include "OrbitingObject.hpp"
 
 SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 	Scene(parent),
@@ -18,12 +18,24 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 	//Center mouse
 	InputManager::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
     //Init Camera
+
     cam = new Camera(this, vec3f(0.0f,3.0f,50.0f));
     //add gameObjects
 
     //addObject(new       TriangleObject(this, vec3f( 10.0f, 0.0f,10.0f),   vec3f(0.1f)));
     //addObject(new RegularPolygonObject(this, vec3f(-10.0f, 0.0f,10.0f),   vec3f(1.0f), 6));
-    addObject(new SphereObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(10.0f)));
+
+
+    GameObject* center = new GameObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(1.0f, 1.0f, 1.0f));
+    addObject(center);
+    OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
+    addDrawableObject(sun);
+    OrbitingObject* planet1 = new OrbitingObject(this, sun, vec3f(2.0f, 2.0f, 2.0f), 15, 2);
+    addObject(planet1);
+    sun->addOrbitingObject(planet1);
+    OrbitingObject* planet2 = new OrbitingObject(this, planet1, vec3f(1.0f, 1.0f, 1.0f), 5, 2);
+    addObject(planet2);
+    planet1->addOrbitingObject(planet2);
 
 	std::cout << "* Init done" << std::endl;
 }
@@ -33,6 +45,11 @@ SceneSolarSystem::~SceneSolarSystem() {
     std::cout << "* Deleting GameObjects on SceneSolarSystem" << std::endl;
 	for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
 		delete *it;
+}
+
+void SceneSolarSystem::addDrawableObject(GameObject* dObj) {
+    addObject(dObj);
+    drawList.push_back(dObj);
 }
 
 bool SceneSolarSystem::loadResources() {
@@ -60,7 +77,7 @@ void SceneSolarSystem::update(float deltaTime) {
 	++fpsCount;
 	debugCounter += deltaTime;
 	if (debugCounter > 1) {
-		std::cout << "FPS: " << fpsCount << ". Amount of GameObjects: " << objects.size() << std::endl;
+        std::cout << "FPS: " << fpsCount << ". Amount of GameObjects: " << objects.size() << ". Amount of Drawables: " << drawList.size() << std::endl;
 		debugCounter -= 1;
 		fpsCount = 0;
 	}
@@ -89,8 +106,8 @@ void SceneSolarSystem::draw() const {
     //getState().view = mat4f(1.0);
     getState().view = cam->getViewMatrix();
 
-	//models
-	for(std::list<GameObject*>::const_iterator it = objects.begin();it != objects.end(); ++it)
-		(*it)->draw();
+    //Drawable objects
+    for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+        (*it)->draw();
 }
 

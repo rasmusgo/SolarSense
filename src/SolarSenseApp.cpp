@@ -1,4 +1,7 @@
 #include "SolarSenseApp.hpp"
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 
 SolarSenseApp::SolarSenseApp() : currentScene(NULL), nextScene(NULL) {
 	window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Default,CONTEXT_SETTINGS_OPENGL);
@@ -27,6 +30,19 @@ bool SolarSenseApp::init() {
 		return false;
 	isRunning = true;
 
+	//Testing stuff
+ 	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+   	GLfloat mat_shininess[] = { 50.0 };
+  	GLfloat light_position[] = { 0.0, 0.0, 0.0, 0.0 };
+
+  	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+   	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+   	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_DEPTH_TEST);
+
 	//GL stuff..
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_ALPHA_TEST);
@@ -37,6 +53,7 @@ bool SolarSenseApp::init() {
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_CULL_FACE); //enable backface culling
 	glCullFace(GL_BACK);
+	glShadeModel(GL_SMOOTH);
 
 	//initialise game-wide logic and objects
 	std::cout << "* INIT GAME SUCCESFUL" << std::endl;

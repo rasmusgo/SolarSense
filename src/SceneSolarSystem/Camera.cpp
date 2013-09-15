@@ -2,7 +2,9 @@
 #include "../input/InputManager.hpp"
 
 Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.0,1.0)),
-    rot(0.0f,0.0f), rotM(1.0f), vel(1,1,1.5) {
+    rot(0.0f,0.0f), rotM(1.0f) {
+    vel = vec3f(5.f);
+    vel = vec3f(10.f);
 
 }
 

@@ -14,12 +14,15 @@ class SceneSolarSystem : public Scene {
 		void update(float deltaTime);
 		void draw() const;
 
+        void addDrawableObject(GameObject* dObj);
+
         Camera* cam;
 
 	private:
 		bool loadResources();
 		float debugCounter;
 		int fpsCount;
+        std::list<GameObject*> drawList;
 };
 
 #endif // SCENESOLARSYSTEM_HPP
