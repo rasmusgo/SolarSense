@@ -33,7 +33,7 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     // OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
     // addDrawableObject(sun);
 
-    Earth* earth = new Earth(this, center, vec3f(15.0f, 15.0f, 15.0f), 0, 0);
+    Earth* earth = new Earth(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
     addDrawableObject(earth);
 
 	std::cout << "* Init done" << std::endl;
