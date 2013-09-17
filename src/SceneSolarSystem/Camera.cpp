@@ -31,6 +31,12 @@ void Camera::update(float deltaTime) {
     else if(InputManager::isKeyDown(sf::Keyboard::A)){
         acc.x = -maxAcc;
     }
+    if(InputManager::isKeyDown(sf::Keyboard::Q)){
+        acc.y = maxAcc;
+    }
+    else if(InputManager::isKeyDown(sf::Keyboard::E)){
+        acc.y = -maxAcc;
+    }
 
     if (glm::length(acc) > 0.1f) {
         vel += acc*deltaTime;
@@ -83,7 +89,7 @@ void Camera::update(float deltaTime) {
             }
 
             pos += vel*deltaTime + 0.5f*acc*deltaTime*deltaTime;
-            pos.x = 0; //Temporal
+            //pos.x = 0; //Temporal
     }
 }
 

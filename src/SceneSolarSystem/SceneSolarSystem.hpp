@@ -19,6 +19,8 @@ class SceneSolarSystem : public Scene {
         Camera* cam;
 
 	private:
+        GameObject* stars;
+
 		bool loadResources();
 		float debugCounter;
 		int fpsCount;

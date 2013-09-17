@@ -3,6 +3,7 @@
 #include "TriangleObject.hpp"
 #include "RegularPolygonObject.hpp"
 #include "OrbitingObject.hpp"
+#include "SphereObject.hpp"
 #include "Planet.hpp"
 #include "Earth.hpp"
 
@@ -27,7 +28,8 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     //addObject(new       TriangleObject(this, vec3f( 10.0f, 0.0f,10.0f),   vec3f(0.1f)));
     //addObject(new RegularPolygonObject(this, vec3f(-10.0f, 0.0f,10.0f),   vec3f(1.0f), 6));
 
-
+    stars = new SphereObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(500.0f, 500.0f, 500.0f));
+    addObject(stars);
     GameObject* center = new GameObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(1.0f, 1.0f, 1.0f));
     addObject(center);
     OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
@@ -60,15 +62,19 @@ bool SceneSolarSystem::loadResources() {
         return false;
 	if(!ShaderManager::load("sample2","data/shaders/sample2.vert","data/shaders/sample2.frag"))
 		return false;
-	if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
-		return false;
+    if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
+        return false;
+    if(!ShaderManager::load("earthShader","data/shaders/earthShader.vert","data/shaders/earthShader.frag"))
+        return false;
 
 	//textures
     if(!TextureManager::load("cubetex","data/10x10tex.png",2))
 		return false;
     if(!TextureManager::load("sun","data/SunTexture_2048.png",2))
         return false;
-    if(!TextureManager::load("earth","data/earth.png",2))
+    if(!TextureManager::load("earth","data/earthmap.jpg",2))
+        return false;
+    if(!TextureManager::load("stars4K","data/stars4K.png",2))
         return false;
 
 	//Create meshes
@@ -114,6 +120,10 @@ void SceneSolarSystem::draw() const {
     getState().view = cam->getViewMatrix();
 
     //Drawable objects
+    glDisable(GL_CULL_FACE);
+    stars->draw();
+    glEnable(GL_CULL_FACE);
+
     for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
         (*it)->draw();
 }
