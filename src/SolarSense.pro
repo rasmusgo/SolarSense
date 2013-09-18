@@ -68,4 +68,6 @@ OTHER_FILES += \
         $$PWD/data/shaders/orbit.vert \
         $$PWD/data/shaders/orbit.frag \
 	$$PWD/data/shaders/sample2.vert \
-	$$PWD/data/shaders/sample2.frag
+	$$PWD/data/shaders/sample2.frag \
+    data/shaders/earthShader.vert \
+    data/shaders/earthShader.frag
