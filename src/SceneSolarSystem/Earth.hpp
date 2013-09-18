@@ -14,9 +14,7 @@ class Earth : public Planet {
         void draw() const;
         void drawFrom(mat4f from) const;
 
-        float orbSpeed;
-        float orbRadius;
-        Model sphere;//should be probably an abstract class so this would go out
+   	GameObject* parentObject;
 };
 
 #endif // EARTH_HPP

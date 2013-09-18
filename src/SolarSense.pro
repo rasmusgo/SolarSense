@@ -30,6 +30,7 @@ SOURCES += \
     SceneSolarSystem/Camera.cpp \
     SceneSolarSystem/OrbitingObject.cpp \
     SceneSolarSystem/Earth.cpp \
+    SceneSolarSystem/Planet.cpp
 
 
 HEADERS += \

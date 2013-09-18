@@ -6,25 +6,21 @@
 
 class Planet : public GameObject {
     public:
-        Planet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed) 
-            : GameObject(parentScene, parentObject->pos, scale)
-            , orbRadius(orbRadius), orbSpeed(orbSpeed) { }
-        ~Planet(){
-
-        }
+        Planet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed);
+        ~Planet();
 
         virtual void update(float deltaTime) = 0;
         virtual void draw() const = 0;
-        //virtual void drawFrom(mat4f from) const = 0;
+        virtual void drawFrom(mat4f from) const = 0;
 
 
-    private:
+    protected:
         float orbSpeed;
         float orbRadius;
         Model sphere;//should be probably an abstract class so this would go out
         mat4f baseMatrix;
-        std::list<GameObject*> orbObjects;
 
+    friend class OrbitingObject;
 };
 
 #endif // PLANET_HPP
