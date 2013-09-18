@@ -74,6 +74,10 @@ bool SceneSolarSystem::loadResources() {
         return false;
     if(!TextureManager::load("earth","data/earthmap.jpg",2))
         return false;
+    if(!TextureManager::load("earthNight","data/lightsmap.jpg",3))
+        return false;
+    if(!TextureManager::load("earthWater","data/earthwatermap.png",4))
+        return false;
     if(!TextureManager::load("stars4K","data/stars4K.png",2))
         return false;
 

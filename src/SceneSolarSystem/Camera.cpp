@@ -61,8 +61,6 @@ void Camera::update(float deltaTime) {
         if (glm::length(vel) > maxVel) vel = glm::normalize(vel)*maxVel;
     }
 
-
-
     switch (mode) {
         case Arround:
             if (InputManager::isMouseDown(sf::Mouse::Left)) {
@@ -75,6 +73,7 @@ void Camera::update(float deltaTime) {
                 rotM = m*rotM;
             }
 
+            //pos += vel*deltaTime + 0.5f*acc*deltaTime*deltaTime;
             break;
 
         case Free:

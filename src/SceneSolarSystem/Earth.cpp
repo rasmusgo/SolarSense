@@ -17,7 +17,7 @@ Earth::~Earth(){
 void Earth::update(float deltaTime) {
     (void) deltaTime;
     mat4f m(1.0);
-    m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed,vec3f(0,1,0));
+    m = glm::rotate(m,0.0f/*GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed*/,vec3f(0,1,0));
     m = glm::translate(m,vec3f(orbRadius, 0.0f, 0.0f));
     m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed*2,vec3f(0,1,0));
     m = glm::scale(m,scale);
@@ -52,6 +52,10 @@ void Earth::drawFrom(mat4f from) const {
 
     TextureManager::get("earth")->bind();
     sphere.program->uniform("sampler")->set(2);
+    TextureManager::get("earthNight")->bind();
+    sphere.program->uniform("samplerNight")->set(3);
+    TextureManager::get("earthWater")->bind();
+    sphere.program->uniform("samplerWater")->set(4);
     sphere.program->uniform("modelViewProjectionMatrix")->set(transform);
     sphere.program->uniform("modelMatrix")->set(model);
     sphere.program->uniform("viewMatrix")->set(view);

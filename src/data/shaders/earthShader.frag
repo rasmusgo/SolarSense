@@ -1,4 +1,6 @@
 uniform sampler2D sampler;
+uniform sampler2D samplerNight;
+uniform sampler2D samplerWater;
 
 uniform float shininess;
 uniform vec3 emission;
@@ -13,7 +15,7 @@ varying vec3 vNormal;
 varying vec3 vCam;
 varying vec3 vLight;
 
-vec4 light(vec3 N, vec3 V, vec3 L)
+vec4 light(vec4 texColor, vec3 N, vec3 V, vec3 L)
 {
         N=normalize(N); V=normalize(V); L=normalize(L);
         vec3 R = normalize( 2.0*dot(N,L)*N-L );
@@ -21,8 +23,6 @@ vec4 light(vec3 N, vec3 V, vec3 L)
         float RdotV = max( 0.0, dot( R,V ) );
         float Idiff = NdotL;
         float Ispec = pow( RdotV, shininess );
-
-        vec4 texColor = texture2D(sampler,vTexCoord);
 
         return
                 vec4(emission,1.0) +
@@ -32,7 +32,19 @@ vec4 light(vec3 N, vec3 V, vec3 L)
 }
 
 void main() {
-    vec4 color = light(vNormal, vCam, vLight)*max(0.05, min(dot(vLight, -vNormal) + 0.1, 1.0));
-    //vec4 color = texture2D(sampler,vTexCoord)*max(0.05, min(dot(vLight, -vNormal) + 0.1, 1.0));
+    float lightIntensity = max(0.05, min(dot(vLight, -vNormal) + 0.1, 1.0));
+
+    vec4 lightColor = texture2D(samplerNight,vTexCoord);
+    if (lightIntensity > 0.4) lightColor = vec4(0.0);
+    else if (lightIntensity > 0.05) lightColor *= 1.0 - (lightIntensity-0.05)/(0.4-0.05);
+
+    vec4 texColor = texture2D(sampler,vTexCoord);
+    vec4 waterColor = texture2D(samplerWater,vTexCoord);
+
+    vec4 color;
+    if (waterColor.r < 0.5)
+        color = light(texColor, vNormal, vCam, vLight)*lightIntensity+lightColor;
+    else color = texColor*lightIntensity+lightColor;
+
     gl_FragColor = vec4(color.xyz, 1.0);
 }
