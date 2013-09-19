@@ -24,6 +24,7 @@ class Camera : public Entity {
         mat4f getViewMatrix();
 
         CameraMode mode;
+
     private:
         mat4f rotM;
         GameObject* arrObject;

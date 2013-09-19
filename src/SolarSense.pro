@@ -30,7 +30,9 @@ SOURCES += \
     SceneSolarSystem/Camera.cpp \
     SceneSolarSystem/OrbitingObject.cpp \
     SceneSolarSystem/Earth.cpp \
-    SceneSolarSystem/Planet.cpp
+    SceneSolarSystem/Planet.cpp \
+    input/InteractionListener.cpp \
+    input/InteractionManager.cpp
 
 
 HEADERS += \
@@ -61,6 +63,8 @@ HEADERS += \
     SceneSolarSystem/OrbitingObject.hpp \
     SceneSolarSystem/Planet.hpp \
     SceneSolarSystem/Earth.hpp \
+    input/InteractionListener.hpp \
+    input/InteractionManager.hpp
 
 OTHER_FILES += \
 	$$PWD/data/shaders/sample.vert \

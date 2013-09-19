@@ -30,6 +30,7 @@ class InputManager {
         static bool focus;
         static vec2i lastMousePos;
         static vec2i mouseDisplacement;
+
         InputManager();
         ~InputManager();
 };
