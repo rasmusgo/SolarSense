@@ -13,6 +13,8 @@ class Earth : public Planet {
         void update(float deltaTime);
         void draw() const;
         void drawFrom(mat4f from) const;
+
+   	GameObject* parentObject;
 };
 
 #endif // EARTH_HPP

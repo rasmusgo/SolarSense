@@ -35,7 +35,7 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
     addDrawableObject(sun);
 
-    Earth* earth = new Earth(this, sun, vec3f(1.0f, 1.0f, 1.0f), 20, 2);
+    Earth* earth = new Earth(this, center, vec3f(1.0f, 1.0f, 1.0f), 20, 2);
     addObject(earth);
     sun->addObject(earth);
 
@@ -62,24 +62,44 @@ bool SceneSolarSystem::loadResources() {
         return false;
 	if(!ShaderManager::load("sample2","data/shaders/sample2.vert","data/shaders/sample2.frag"))
 		return false;
-    if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
-        return false;
-    if(!ShaderManager::load("earthShader","data/shaders/earthShader.vert","data/shaders/earthShader.frag"))
-        return false;
 
 	//textures
     if(!TextureManager::load("cubetex","data/10x10tex.png",2))
 		return false;
     if(!TextureManager::load("sun","data/SunTexture_2048.png",2))
         return false;
-    if(!TextureManager::load("earth","data/earthmap.jpg",2))
+
+    /*
+    * Earth ferran style
+    */
+    // if(!ShaderManager::load("earthShader","data/shaders/earthShader.vert","data/shaders/earthShader.frag"))
+    //     return false;
+
+    // if(!TextureManager::load("earth","data/earthmap.jpg",2))
+    //     return false;
+    // if(!TextureManager::load("earthNight","data/lightsmap.jpg",3))
+    //     return false;
+    // if(!TextureManager::load("earthWater","data/earthwatermap.png",4))
+    //     return false;
+
+    /*
+    * Earth chris style
+    */
+    if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
         return false;
-    if(!TextureManager::load("earthNight","data/lightsmap.jpg",3))
+
+    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
         return false;
-    if(!TextureManager::load("earthWater","data/earthwatermap.png",4))
+    if(!TextureManager::load("earth_nighttime","data/earth_nighttime.png",3))
         return false;
+    if(!TextureManager::load("earth_cloud","data/earth_cloud.png",4))
+        return false;
+    if(!TextureManager::load("earth_specular","data/earth_specular.png",5))
+       return false;
     if(!TextureManager::load("stars4K","data/stars4K.png",2))
         return false;
+
+
 
 	//Create meshes
 	MeshManager::add("cube",new Mesh("data/10x10.obj"));
