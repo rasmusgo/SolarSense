@@ -19,7 +19,7 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 		return;
 	}
 	//Center mouse
-	InputManager::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
+    KeyAndMouseManager::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
     //Init Camera
 
     cam = new Camera(this, vec3f(0.0f,0.0f,30.0f));

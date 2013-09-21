@@ -1,7 +1,11 @@
 TEMPLATE = app
 CONFIG -= qt
-LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL
-INCLUDEPATH += $$PWD/
+LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL -lOpenNI2 -lNiTE2 \
+        -L$$PWD/OpenNI/ \
+        -L$$PWD/NiTE/
+INCLUDEPATH += $$PWD/ \
+               $$PWD/OpenNI/Include \
+               $$PWD/NiTE/Include
 QMAKE_CXXFLAGS += -std=c++11
 SOURCES += \
     $$PWD/main.cpp \
@@ -13,7 +17,7 @@ SOURCES += \
     $$PWD/graphics/Shader.cpp \
 	$$PWD/graphics/ShaderProgram.cpp \
 	$$PWD/audio/AudioManager.cpp \
-    $$PWD/input/InputManager.cpp \
+    $$PWD/input/KeyAndMouseManager.cpp \
     $$PWD/SceneSolarSystem/SceneSolarSystem.cpp \
 	$$PWD/GameObject.cpp \
         $$PWD/SceneSolarSystem/TriangleObject.cpp \
@@ -32,7 +36,8 @@ SOURCES += \
     SceneSolarSystem/Earth.cpp \
     SceneSolarSystem/Planet.cpp \
     input/InteractionListener.cpp \
-    input/InteractionManager.cpp
+    input/InteractionManager.cpp \
+    input/SensorManager.cpp
 
 
 HEADERS += \
@@ -44,7 +49,7 @@ HEADERS += \
     $$PWD/graphics/Shader.hpp \
     $$PWD/graphics/ShaderProgram.hpp \
     $$PWD/audio/AudioManager.hpp \
-    $$PWD/input/InputManager.hpp \
+    $$PWD/input/KeyAndMouseManager.hpp \
     $$PWD/SceneSolarSystem/SceneSolarSystem.hpp \
     $$PWD/GameObject.hpp \
     $$PWD/glm/*.hpp \
@@ -64,7 +69,8 @@ HEADERS += \
     SceneSolarSystem/Planet.hpp \
     SceneSolarSystem/Earth.hpp \
     input/InteractionListener.hpp \
-    input/InteractionManager.hpp
+    input/InteractionManager.hpp \
+    input/SensorManager.hpp
 
 OTHER_FILES += \
 	$$PWD/data/shaders/sample.vert \

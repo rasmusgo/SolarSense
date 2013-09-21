@@ -3,7 +3,12 @@
 
 #include "tools.hpp"
 #include "InteractionListener.hpp"
+#include "KeyAndMouseManager.hpp"
+#include "SensorManager.hpp"
 
+/*
+ * Singleton class.
+ */
 class InteractionManager {
     public:
         static InteractionManager& getInstance() {
@@ -12,6 +17,7 @@ class InteractionManager {
         }
 
         void registerListener(InteractionListener* il);
+        void update(float deltaTime);
 
     private:
         InteractionManager() {}

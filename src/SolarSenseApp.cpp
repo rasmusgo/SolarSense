@@ -30,6 +30,9 @@ bool SolarSenseApp::init() {
 		return false;
 	isRunning = true;
 
+    // Initialize sensor
+    SensorManager::startSensor();
+
 	
 	//GL stuff..
 	glEnable(GL_DEPTH_TEST);
@@ -55,11 +58,12 @@ bool SolarSenseApp::loadResources () {
 
 // Main game loop
 void SolarSenseApp::run() {
-	sf::Clock clock;
+    sf::Clock clock;
+
 	while (isRunning) {
 		float deltaTime = clock.restart().asSeconds();
 		update(deltaTime);
-		draw();
+        draw();
 	}
 }
 
@@ -81,7 +85,9 @@ void SolarSenseApp::update(float deltaTime) {
 	// - Closing window
 	// - Resizing window & viewport
 	// - Updating window focus
-	InputManager::update(isRunning,window);
+    KeyAndMouseManager::update(isRunning,window);
+    SensorManager::update();
+
 	//Scene logic updating
 	if (currentScene != NULL)
 		currentScene->update(deltaTime);
@@ -89,10 +95,22 @@ void SolarSenseApp::update(float deltaTime) {
 
 // Draw scene
 void SolarSenseApp::draw() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (currentScene != NULL)
-		currentScene->draw();
-	window.display();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (currentScene != NULL)
+        currentScene->draw();
+
+    // ISSUE: Doesn't show the text
+    if (SensorManager::isTracking()) {
+        sf::Font font;
+        font.loadFromFile("data/arial.ttf");
+        sf::Text text("Tracking hand", font);
+        text.setPosition(50, 50);
+
+        window.draw(text);
+    }
+
+    window.display();
 }
 
 // Change scene so that on next this->update(), this->currentScene will be replaced

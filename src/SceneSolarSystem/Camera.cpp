@@ -1,5 +1,6 @@
 #include "Camera.hpp"
-#include "../input/InputManager.hpp"
+#include "../input/KeyAndMouseManager.hpp"
+#include "../input/SensorManager.hpp"
 
 Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.0,1.0)),
     rot(0.0f,0.0f), rotM(1.0f) {
@@ -14,28 +15,33 @@ Camera::~Camera() {
 }
 
 void Camera::draw() {
-
 }
 
 void Camera::update(float deltaTime) {
     acc = vec3f(0.0f);
-    if(InputManager::isKeyDown(sf::Keyboard::W)){
+    if(KeyAndMouseManager::isKeyDown(sf::Keyboard::W)){
         acc.z = -maxAcc;
     }
-    else if(InputManager::isKeyDown(sf::Keyboard::S)){
+    else if(KeyAndMouseManager::isKeyDown(sf::Keyboard::S)){
         acc.z = maxAcc;
     }
-    if(InputManager::isKeyDown(sf::Keyboard::D)){
+    if(KeyAndMouseManager::isKeyDown(sf::Keyboard::D)){
         acc.x = maxAcc;
     }
-    else if(InputManager::isKeyDown(sf::Keyboard::A)){
+    else if(KeyAndMouseManager::isKeyDown(sf::Keyboard::A)){
         acc.x = -maxAcc;
     }
-    if(InputManager::isKeyDown(sf::Keyboard::Q)){
+    if(KeyAndMouseManager::isKeyDown(sf::Keyboard::Q)){
         acc.y = maxAcc;
     }
-    else if(InputManager::isKeyDown(sf::Keyboard::E)){
+    else if(KeyAndMouseManager::isKeyDown(sf::Keyboard::E)){
         acc.y = -maxAcc;
+    }
+
+    // Check SensorManager
+    if (SensorManager::isTracking() && SensorManager::significantMovement()) {
+        vec3f handMovement = SensorManager::getHandMovement();
+        acc = vec3f(handMovement.y / 50, handMovement.x / 50, handMovement.z / 25);
     }
 
     if (glm::length(acc) > 0.1f) {
@@ -63,8 +69,8 @@ void Camera::update(float deltaTime) {
 
     switch (mode) {
         case Arround:
-            if (InputManager::isMouseDown(sf::Mouse::Left)) {
-                vec2i mouseDis = InputManager::getMouseDisplacement();
+            if (KeyAndMouseManager::isMouseDown(sf::Mouse::Left)) {
+                vec2i mouseDis = KeyAndMouseManager::getMouseDisplacement();
                 vec2f newRot = vec2f(mouseDis.y, mouseDis.x)*0.2f;
 
                 mat4f m(1.0);
@@ -77,8 +83,8 @@ void Camera::update(float deltaTime) {
             break;
 
         case Free:
-            if (InputManager::isMouseDown(sf::Mouse::Left)) {
-                vec2i mouseDis = InputManager::getMouseDisplacement();
+            if (KeyAndMouseManager::isMouseDown(sf::Mouse::Left)) {
+                vec2i mouseDis = KeyAndMouseManager::getMouseDisplacement();
                 vec2f newRot = vec2f(mouseDis.y, mouseDis.x)*0.2f;
 
                 mat4f m(1.0);
