@@ -106,11 +106,10 @@ void SolarSenseApp::draw() {
     sf::Text text("No hand detected", font);
     if (SensorManager::isTracking()) {
         text.setString("Tracking hand");
-    } else {
-        text.setString("No hand detected");
     }
-    text.setPosition(50, 50);
-    window.draw(text);
+    text.setPosition(10, 10);
+    text.setColor(sf::Color::White);
+    drawText(text);
 
     window.display();
 }
@@ -120,4 +119,24 @@ void SolarSenseApp::setScene (Scene * scene) {
 	if(nextScene != NULL)
 		delete nextScene;
 	nextScene = scene;
+}
+
+void SolarSenseApp::drawText(sf::Text &t) {
+    // Before drawing text
+    glMatrixMode(GL_MODELVIEW); glPushMatrix();
+    glMatrixMode(GL_PROJECTION); glPushMatrix();
+    glPushAttrib(GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT   | GL_ENABLE_BIT  |
+                GL_TEXTURE_BIT      | GL_TRANSFORM_BIT | GL_VIEWPORT_BIT);
+
+    glDisable(GL_ALPHA_TEST);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+
+        // Draw the text
+        window.draw(t);
+
+    // After drawing the text
+    glMatrixMode(GL_PROJECTION); glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);  glPopMatrix();
+    glPopAttrib();
 }

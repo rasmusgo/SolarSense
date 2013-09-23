@@ -35,6 +35,8 @@ class SolarSenseApp {
 		// first, saves game-wide stuff first.
 
 		sf::RenderWindow &getWindow() { return window; }
+
+        void drawText(sf::Text& t);
 		
 		bool isRunning;
 	private:
