@@ -40,8 +40,18 @@ void Camera::update(float deltaTime) {
 
     // Check SensorManager
     if (SensorManager::isTracking() && SensorManager::significantMovement()) {
+        float speedFactor = 0.02f;
+
         vec3f handMovement = SensorManager::getHandMovement();
-        acc = vec3f(handMovement.y / 50, handMovement.x / 50, handMovement.z / 25);
+        //acc = vec3f(handMovement.y*speedFactor, handMovement.x*speedFactor, handMovement.z*speedFactor*2);
+
+        handMovement *= speedFactor;
+
+        mat4f m(1.0);
+        m = glm::rotate(m,handMovement.x,vec3f(1,0,0));
+        m = glm::rotate(m,handMovement.y,vec3f(0,1,0));
+        acc.z = handMovement.z * 4;
+        rotM = m*rotM;
     }
 
     if (glm::length(acc) > 0.1f) {
