@@ -101,14 +101,16 @@ void SolarSenseApp::draw() {
         currentScene->draw();
 
     // ISSUE: Doesn't show the text
+    sf::Font font;
+    font.loadFromFile("data/arial.ttf");
+    sf::Text text("No hand detected", font);
     if (SensorManager::isTracking()) {
-        sf::Font font;
-        font.loadFromFile("data/arial.ttf");
-        sf::Text text("Tracking hand", font);
-        text.setPosition(50, 50);
-
-        window.draw(text);
+        text.setString("Tracking hand");
+    } else {
+        text.setString("No hand detected");
     }
+    text.setPosition(50, 50);
+    window.draw(text);
 
     window.display();
 }
