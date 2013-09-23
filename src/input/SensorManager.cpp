@@ -18,16 +18,16 @@ void SensorManager::startSensor() {
     // Initialize NiTE
     Status rc = NiTE::initialize();
     if (rc != STATUS_OK) {
-        printf("Initialization of NiTE in the SensorManager failed.\n");
-        //return rc;
+        printf("SensorManager | Initialization of NiTE in the SensorManager failed.\n");
+        return;
     }
 
     // Create the hand tracker
     //HandTracker handTracker;
     rc = handTracker.create();
     if (rc != STATUS_OK) {
-        printf("Couldn't create the hand tracker in the SensorManager.\n");
-        //return rc;
+        printf("SensorManager | Couldn't create the hand tracker in the SensorManager.\n");
+        return;
     }
 
     // Start gesture recognition for the click and wave gesture.
@@ -46,8 +46,8 @@ void SensorManager::update() {
     HandTrackerFrameRef frame;
     Status rc = handTracker.readFrame(&frame);
     if (rc != nite::STATUS_OK)  {
-        printf("Couldn't read frame #%d.\n", frame.getFrameIndex());
-        //return rc;
+        printf("SensorManager | Couldn't read frame #%d from the sensor.\n", frame.getFrameIndex());
+        return;
     }
 
     // Get recognized gestures and the data from all tracked hands.
