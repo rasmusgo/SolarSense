@@ -108,7 +108,6 @@ void Camera::update(float deltaTime) {
             if (KeyAndMouseManager::isMouseDown(sf::Mouse::Left)) {
                 vec2i mouseDis = KeyAndMouseManager::getMouseDisplacement();
                 vec2f mouseDisRel = vec2f(((float)mouseDis.y)/SCRHEIGHT, ((float)mouseDis.x)/SCRWIDTH);
-                std::cout << mouseDisRel.x << ", " << mouseDisRel.y << std::endl;
                 vec2f newRot = mouseDisRel*100.0f;
 
                 mat4f m(1.0);

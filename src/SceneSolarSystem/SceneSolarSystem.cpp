@@ -181,7 +181,7 @@ void SceneSolarSystem::update(float deltaTime) {
 		else
 			++it;
 
-    KeyAndMouseManager::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
+    //KeyAndMouseManager::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
 }
 
 void SceneSolarSystem::draw() const {

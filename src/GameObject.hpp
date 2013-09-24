@@ -12,6 +12,8 @@ class GameObject {
 		virtual void draw() const;
 		virtual void addObject(GameObject* object);
 
+        virtual mat4f getModelMatrix();
+
 		bool isAlive;
 		vec3f pos;
 		vec3f scale;

@@ -19,3 +19,7 @@ void GameObject::draw() const {
 void GameObject::addObject(GameObject *object) {
 	objects.push_back(object);
 }
+
+mat4f GameObject::getModelMatrix() {
+    return glm::translate(mat4f(1.0f), pos);
+}
