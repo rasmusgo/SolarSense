@@ -18,6 +18,7 @@ class Camera : public Entity {
         void drawHUD();
 
         void setArround(GameObject* object);
+        void setMode(CameraMode m);
 
         vec2f rot;
 
@@ -32,6 +33,7 @@ class Camera : public Entity {
         float friction;
         float maxVel;
         sf::Clock cameraClock;
+        vec3f originalPos;
 };
 
 #endif // CAMERA_HPP

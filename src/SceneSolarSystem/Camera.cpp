@@ -12,6 +12,8 @@ Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.
 
     rotM = glm::translate(mat4f(1.0), -pos);
     cameraClock.restart();
+
+    originalPos = pos;
 }
 
 Camera::~Camera() {
@@ -86,7 +88,8 @@ void Camera::update(float deltaTime) {
         case Arround:
             if (KeyAndMouseManager::isMouseDown(sf::Mouse::Left)) {
                 vec2i mouseDis = KeyAndMouseManager::getMouseDisplacement();
-                vec2f newRot = vec2f(mouseDis.y, mouseDis.x)*0.2f;
+                vec2f mouseDisRel = vec2f(((float)mouseDis.y)/SCRHEIGHT, ((float)mouseDis.x)/SCRWIDTH);
+                vec2f newRot = mouseDisRel*100.0f;
 
                 mat4f m(1.0);
                 m = glm::rotate(m,newRot.y,vec3f(0,1,0));
@@ -94,7 +97,6 @@ void Camera::update(float deltaTime) {
                 rotM = m*rotM;
             }
 
-            //pos += vel*deltaTime + 0.5f*acc*deltaTime*deltaTime;
             break;
 
         case Free:
@@ -120,6 +122,22 @@ void Camera::update(float deltaTime) {
 
 void Camera::setArround(GameObject *object) {
     arrObject = object;
+    rotM = mat4f(1.0f);
+    pos = originalPos;
+    mode = Arround;
+}
+
+void Camera::setMode(CameraMode m) {
+    mode = m;
+    mat4f m2 (1.0f);
+    switch (mode) {
+        case Free:
+            m2 = glm::translate(m2, -pos);
+            rotM = m2*rotM;
+            break;
+        default:
+            break;
+    }
 }
 
 void Camera::drawHUD() {
@@ -127,5 +145,14 @@ void Camera::drawHUD() {
 }
 
 mat4f Camera::getViewMatrix() {
-    return rotM;
+    switch (mode) {
+    case Free:
+        return rotM;
+    case Arround:
+        if (arrObject)
+            return glm::translate(mat4f(1.0f), -pos)*rotM*arrObject->getModelMatrix();
+        else return glm::translate(mat4f(1.0f), -pos)*rotM;
+    default:
+        return rotM;
+    }
 }

@@ -10,7 +10,7 @@
 
 SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 	Scene(parent),
-	debugCounter(0.0), fpsCount(0) {
+    debugCounter(0.0), fpsCount(0), paused(false) {
 
 	//SCENE INIT
     std::cout << "* Loading new scene: SolarSystem" << std::endl;
@@ -35,6 +35,7 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     addObject(center);
     OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
     addDrawableObject(sun);
+    objectsMap.insert(std::pair<std::string, GameObject*>("sun", sun));
 
     StandardPlanet* mercury = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 1.5, "planetShader", "mercury");
     addObject(mercury);
@@ -161,6 +162,12 @@ void SceneSolarSystem::update(float deltaTime) {
 		debugCounter -= 1;
 		fpsCount = 0;
 	}
+
+    //Update logic
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+    if (paused) deltaTime = 0.0f;
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Num1)) cam->setArround(objectsMap.at("sun"));
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
 
     //Update Camera
     cam->update(deltaTime);

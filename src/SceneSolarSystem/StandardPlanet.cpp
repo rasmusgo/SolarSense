@@ -48,7 +48,7 @@ void StandardPlanet::drawFrom(mat4f from) const {
 
     Texture* sdp_tex = TextureManager::get(texturemapname);
     sdp_tex->bind();
-    sphere.program->uniform("sampler")->set(2);   
+    sphere.program->uniform("sampler")->set((int)sdp_tex->getSlot());
 
 
     sphere.program->uniform("LightPosition")->set(lightPos);

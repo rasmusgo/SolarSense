@@ -25,6 +25,8 @@ class SceneSolarSystem : public Scene {
 		float debugCounter;
 		int fpsCount;
         std::list<GameObject*> drawList;
+        bool paused;
+        std::map<std::string, GameObject*> objectsMap;
 };
 
 #endif // SCENESOLARSYSTEM_HPP
