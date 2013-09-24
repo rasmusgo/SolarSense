@@ -36,7 +36,18 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
     addDrawableObject(sun);
 
-    Earth* earth = new Earth(this, center, vec3f(1.0f, 1.0f, 1.0f), 20, 2);
+    StandardPlanet* mercury = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 1.5, "planetShader", "mercury");
+    addObject(mercury);
+    sun->addObject(mercury);
+
+
+    StandardPlanet* venus = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.4f, 20, 2, "planetShader", "venus");
+    addObject(venus);
+    sun->addObject(venus);
+
+
+
+    Earth* earth = new Earth(this, center, vec3f(1.0f, 1.0f, 1.0f), 30, 3);
     addObject(earth);
     sun->addObject(earth);
 
@@ -44,9 +55,13 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     addObject(moon);
     earth->addObject(moon);
 
-    StandardPlanet* mars = new StandardPlanet(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.8f, 40, 4, "planetShader", "mars");
+    StandardPlanet* mars = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.8f, 50, 6, "planetShader", "mars");
     addObject(mars);
     sun->addObject(mars);
+
+    StandardPlanet* jupiter = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*4.f, 80, 5, "planetShader", "jupiter");
+    addObject(jupiter);
+    sun->addObject(jupiter);
 
     //Earth* earth3 = new Earth(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.3f, 2, 50);
     //addObject(earth3);
@@ -118,6 +133,13 @@ bool SceneSolarSystem::loadResources() {
     if(!TextureManager::load("moon","data/moonmap4k.jpg",2))
         return false;
     if(!TextureManager::load("mars","data/marsmap1k.jpg",2))
+        return false;
+    if(!TextureManager::load("venus","data/venusmap.jpg",2))
+        return false;
+
+    if(!TextureManager::load("mercury","data/mercurymap.jpg",2))
+        return false;
+    if(!TextureManager::load("jupiter","data/jupitermap.jpg",2))
         return false;
 
 
