@@ -1,19 +1,27 @@
 #ifndef SENSORMANAGER_HPP
 #define SENSORMANAGER_HPP
 
+#define DATA_PATH "GrabDetector/Data"
 #define MOVEMENT_THRESHOLD 100
 
 #include "tools.hpp"
+#include "OpenNI.h"
 #include "NiTE.h"
-
-using namespace nite;
+//#include "GrabDetector.h"
 
 class SensorManager {
     public:
+        // Singleton method
+        static SensorManager& getInstance() {
+            static SensorManager instance;
+            return instance;
+        }
+
         /**
           * Intializes the connected Sensor (PrimeSense, Kinect) and starts the gesture recognition.
           */
        static void startSensor();
+
        /**
          * Retrieves sensor data and processes it.
          * Should be called as often as possible.
@@ -26,14 +34,18 @@ class SensorManager {
          * @return True if a hand is tracked, false if not.
          */
        static bool isTracking() {return tracking;}
+
        /**
          * Call this method to check if there is significant movement.
          *
          * @return True if there is significant movement, false if not.
          */
-       static bool significantMovement() {return abs(displacement.x) >= MOVEMENT_THRESHOLD ||
-                                                 abs(displacement.y) >= MOVEMENT_THRESHOLD ||
-                                                 abs(displacement.z) >= MOVEMENT_THRESHOLD;}
+       static bool significantMovement() {
+           return abs(displacement.x) >= MOVEMENT_THRESHOLD ||
+                  abs(displacement.y) >= MOVEMENT_THRESHOLD ||
+                  abs(displacement.z) >= MOVEMENT_THRESHOLD;
+       }
+
        /**
          * Returns a vector indicating the movement of the tracked hand.
          * The first component indicates the movement in the x (left, right) direction.
@@ -44,18 +56,33 @@ class SensorManager {
          */
        static vec3f getHandMovement() {return displacement;}
 
+//       static void processGrabEvent(const PSLabs::IGrabEventListener::EventParams& params);
+
+//       // Inner class for the GrabListener
+//       class GrabEventListener : public PSLabs::IGrabEventListener {
+//           public:
+//               virtual void DLL_CALL ProcessGrabEvent(const EventParams& params) {
+//                   SensorManager::processGrabEvent(params);
+//               }
+//       };
+
     private:
         SensorManager();
+        SensorManager(SensorManager const&);
+        void operator=(SensorManager const&);
         ~SensorManager();
 
-        static void startTracking(Point3f gesturePos);
-        static void stopTracking(Point3f gesturePos);
-        static void updatePosition(Point3f handPos);
+        static void startTracking(nite::Point3f gesturePos);
+        static void stopTracking(nite::Point3f gesturePos);
+        static void updatePosition(nite::Point3f handPos);
 
         static bool running;
         static bool tracking;
-        static HandTracker handTracker;
-        static HandId handId;
+
+        static nite::HandTracker handTracker;
+        static nite::HandId handId;
+        //static PSLabs::IGrabDetector* grabDetector;
+
         static vec3f initialHandPos, lastHandPos, displacement;
         static int framesSinceLastMovement;
 };

@@ -2,10 +2,14 @@ TEMPLATE = app
 CONFIG -= qt
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL -lOpenNI2 -lNiTE2 \
         -L$$PWD/OpenNI/ \
-        -L$$PWD/NiTE/
+        -L$$PWD/NiTE/ \
+        -L$$PWD/GrabDetector/
+        #GrabDetector/GrabDetector.lib\
+        #GrabDetector/GrabDetector.dll
 INCLUDEPATH += $$PWD/ \
                $$PWD/OpenNI/Include \
-               $$PWD/NiTE/Include
+               $$PWD/NiTE/Include \
+               $$PWD/GrabDetector/Include
 QMAKE_CXXFLAGS += -std=c++11
 SOURCES += \
     $$PWD/main.cpp \

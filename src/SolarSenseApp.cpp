@@ -4,12 +4,12 @@
 #include <GL/glut.h>
 
 SolarSenseApp::SolarSenseApp() : currentScene(NULL), nextScene(NULL) {
-	window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Default,CONTEXT_SETTINGS_OPENGL);
+    window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Default,CONTEXT_SETTINGS_OPENGL);
 	window.setMouseCursorVisible(false);
 	window.setKeyRepeatEnabled(false);
 	window.setVerticalSyncEnabled(true);
 	WINDOWFOCUS = true;
-	glClearColor(0.0/255.0,0.0/255.0,0.0/255.0,1);
+    glClearColor(0.0/255.0,0.0/255.0,0.0/255.0,1);
 }
 
 SolarSenseApp::~SolarSenseApp() {
@@ -35,16 +35,16 @@ bool SolarSenseApp::init() {
 
 	
 	//GL stuff..
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_ALPHA_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_CULL_FACE); //enable backface culling
-	glCullFace(GL_BACK);
-	glShadeModel(GL_SMOOTH);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_ALPHA_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glDepthFunc(GL_LEQUAL);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_CULL_FACE); //enable backface culling
+    glCullFace(GL_BACK);
+    glShadeModel(GL_SMOOTH);
 
 	//initialise game-wide logic and objects
 	std::cout << "* INIT GAME SUCCESFUL" << std::endl;
@@ -100,16 +100,27 @@ void SolarSenseApp::draw() {
     if (currentScene != NULL)
         currentScene->draw();
 
-    // ISSUE: Doesn't show the text
-    sf::Font font;
-    font.loadFromFile("data/arial.ttf");
-    sf::Text text("No hand detected", font);
-    if (SensorManager::isTracking()) {
-        text.setString("Tracking hand");
-    }
-    text.setPosition(10, 10);
-    text.setColor(sf::Color::White);
-    drawText(text);
+//    // ISSUE: Doesn't show the text
+//    sf::Font font;
+//    font.loadFromFile("data/arial.ttf");
+//    sf::Text text("No hand detected", font);
+//    if (SensorManager::isTracking()) {
+//        text.setString("Tracking hand");
+//    }
+//    text.setPosition(10, 10);
+//    text.setColor(sf::Color::White);
+
+//    sf::Texture texture;
+//    texture.loadFromFile("data/cubetex.png");
+//    printf("Texture size: %d x %d\n", texture.getSize().x, texture.getSize().y);
+//    sf::Sprite sprite;
+//    sprite.setTexture(texture);
+
+//    window.pushGLStates();
+//    window.draw(sprite);
+//    window.popGLStates();
+
+    //drawText(text);
 
     window.display();
 }
