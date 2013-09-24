@@ -130,7 +130,11 @@ bool SceneSolarSystem::loadResources() {
         return false;
 
 
-    if(!TextureManager::load("moon","data/moonmap4k.jpg",2))
+    if(!TextureManager::load("moon","data/moonmap1k.jpg",2))
+        return false;
+    //if(!TextureManager::load("earth8k","data/earth8k.jpg",2))
+    //    return false;
+    if(!TextureManager::load("earthmap","data/earthmap.jpg",2))
         return false;
     if(!TextureManager::load("mars","data/marsmap1k.jpg",2))
         return false;
