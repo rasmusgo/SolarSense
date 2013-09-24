@@ -9,6 +9,9 @@ Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.
     maxAcc = 5.0f;
     friction = 5.0f;
     maxVel = 10.0f;
+
+    rotM = glm::translate(mat4f(1.0), -pos);
+    cameraClock.restart();
 }
 
 Camera::~Camera() {
@@ -18,6 +21,8 @@ void Camera::draw() {
 }
 
 void Camera::update(float deltaTime) {
+    deltaTime = cameraClock.restart().asSeconds();
+
     acc = vec3f(0.0f);
     if(KeyAndMouseManager::isKeyDown(sf::Keyboard::W)){
         acc.z = -maxAcc;
@@ -38,7 +43,7 @@ void Camera::update(float deltaTime) {
         acc.y = -maxAcc;
     }
 
-    // Check SensorManager
+    /*// Check SensorManager
     if (SensorManager::isTracking() && SensorManager::significantMovement()) {
         float speedFactor = 0.02f;
 
@@ -52,7 +57,7 @@ void Camera::update(float deltaTime) {
         m = glm::rotate(m,handMovement.y,vec3f(0,1,0));
         acc.z = handMovement.z * 4;
         rotM = m*rotM;
-    }
+    }*/
 
     if (glm::length(acc) > 0.1f) {
         vel += acc*deltaTime;
@@ -93,18 +98,24 @@ void Camera::update(float deltaTime) {
             break;
 
         case Free:
+
+            vec3f displ = vel*deltaTime + 0.5f*acc*deltaTime*deltaTime;
+            pos += displ;
+            mat4f t(1.0);
+            t = glm::translate(t, -displ);
+            rotM = t*rotM;
+
             if (KeyAndMouseManager::isMouseDown(sf::Mouse::Left)) {
                 vec2i mouseDis = KeyAndMouseManager::getMouseDisplacement();
-                vec2f newRot = vec2f(mouseDis.y, mouseDis.x)*0.2f;
+                vec2f mouseDisRel = vec2f(((float)mouseDis.y)/SCRHEIGHT, ((float)mouseDis.x)/SCRWIDTH);
+                std::cout << mouseDisRel.x << ", " << mouseDisRel.y << std::endl;
+                vec2f newRot = mouseDisRel*100.0f;
 
                 mat4f m(1.0);
                 m = glm::rotate(m,newRot.y,vec3f(0,1,0));
                 m = glm::rotate(m,newRot.x,vec3f(1,0,0));
                 rotM = m*rotM;
             }
-
-            pos += vel*deltaTime + 0.5f*acc*deltaTime*deltaTime;
-            //pos.x = 0; //Temporal
     }
 }
 
@@ -117,5 +128,5 @@ void Camera::drawHUD() {
 }
 
 mat4f Camera::getViewMatrix() {
-    return (glm::translate(mat4f(1.0), -pos))*rotM;
+    return rotM;
 }

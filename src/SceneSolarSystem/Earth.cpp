@@ -16,12 +16,11 @@ Earth::~Earth(){
 
 
 void Earth::update(float deltaTime) {
-    (void) deltaTime;
     mat4f m(1.0), temp;
-
+    timeAcc += deltaTime;
 
     //m = glm::translate(m, parentObject->pos); 
-    m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed,vec3f(0,1,0));
+    m = glm::rotate(m,timeAcc*orbSpeed,vec3f(0,1,0));
     
     m = glm::translate(m,vec3f(orbRadius, 0.0f, 0.0f));
 
@@ -39,7 +38,7 @@ void Earth::update(float deltaTime) {
 
     //pos = vec3f(m*vec4f(orbRadius, 0.f, 0.f, 0.f));
 
-    m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed*2,vec3f(0,1,0));
+    m = glm::rotate(m,timeAcc*orbSpeed*2,vec3f(0,1,0));
     
 
    

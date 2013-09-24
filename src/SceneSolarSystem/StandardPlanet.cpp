@@ -16,11 +16,10 @@ StandardPlanet::~StandardPlanet(){
 
 
 void StandardPlanet::update(float deltaTime) {
-    (void) deltaTime;
     mat4f m(1.0), temp;
+    timeAcc += deltaTime;
 
-
-    m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed,vec3f(0,1,0));
+    m = glm::rotate(m,timeAcc*orbSpeed,vec3f(0,1,0));
     
     m = glm::translate(m,vec3f(orbRadius, 0.0f, 0.0f));
 
@@ -29,7 +28,7 @@ void StandardPlanet::update(float deltaTime) {
 
      m = glm::scale(m,scale);
 
-    m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed*2,vec3f(0,1,0));
+    m = glm::rotate(m,timeAcc*orbSpeed*2,vec3f(0,1,0));
     
 
    

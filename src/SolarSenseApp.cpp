@@ -59,9 +59,14 @@ bool SolarSenseApp::loadResources () {
 // Main game loop
 void SolarSenseApp::run() {
     sf::Clock clock;
+    bool paused = false;
 
 	while (isRunning) {
+        if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+
 		float deltaTime = clock.restart().asSeconds();
+        if (paused) deltaTime = 0.0f;
+
 		update(deltaTime);
         draw();
 	}
