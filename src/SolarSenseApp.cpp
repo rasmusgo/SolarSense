@@ -105,27 +105,27 @@ void SolarSenseApp::draw() {
     if (currentScene != NULL)
         currentScene->draw();
 
-//    // ISSUE: Doesn't show the text
-//    sf::Font font;
-//    font.loadFromFile("data/arial.ttf");
-//    sf::Text text("No hand detected", font);
-//    if (SensorManager::isTracking()) {
-//        text.setString("Tracking hand");
-//    }
-//    text.setPosition(10, 10);
-//    text.setColor(sf::Color::White);
 
-//    sf::Texture texture;
-//    texture.loadFromFile("data/cubetex.png");
-//    printf("Texture size: %d x %d\n", texture.getSize().x, texture.getSize().y);
-//    sf::Sprite sprite;
-//    sprite.setTexture(texture);
+    sf::Font font; font.loadFromFile("data/arial.ttf");
+    sf::Text text("No hand detected", font);
+    if (SensorManager::isTracking()) {
+        text.setString("Tracking hand");
+    } else {
+        text.setString("No hand detected");
+    }
+    text.setPosition(50, 50);
 
-//    window.pushGLStates();
-//    window.draw(sprite);
-//    window.popGLStates();
+    // sf::Texture texture;
+    // texture.loadFromFile("data/cubetex.png");
+    // sf::Sprite sprite; // sprite.setTexture(texture);
 
-    //drawText(text);
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glDisable(GL_CULL_FACE);
+    window.pushGLStates();
+    window.draw(text);
+    window.popGLStates();
+    glEnable(GL_CULL_FACE);
 
     window.display();
 }
