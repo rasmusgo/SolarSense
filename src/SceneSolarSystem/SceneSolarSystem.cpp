@@ -6,6 +6,7 @@
 #include "SphereObject.hpp"
 #include "Planet.hpp"
 #include "Earth.hpp"
+#include "StandardPlanet.hpp"
 
 SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 	Scene(parent),
@@ -38,6 +39,18 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     Earth* earth = new Earth(this, center, vec3f(1.0f, 1.0f, 1.0f), 20, 2);
     addObject(earth);
     sun->addObject(earth);
+
+    StandardPlanet* moon = new StandardPlanet(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.2f, 3, 5, "planetShader", "moon");
+    addObject(moon);
+    earth->addObject(moon);
+
+    StandardPlanet* mars = new StandardPlanet(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.8f, 40, 4, "planetShader", "mars");
+    addObject(mars);
+    sun->addObject(mars);
+
+    //Earth* earth3 = new Earth(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.3f, 2, 50);
+    //addObject(earth3);
+    //earth->addObject(earth3);
 
 	std::cout << "* Init done" << std::endl;
 }
@@ -85,6 +98,8 @@ bool SceneSolarSystem::loadResources() {
     /*
     * Earth chris style
     */
+    if(!ShaderManager::load("planetShader","data/shaders/planetShader.vert","data/shaders/planetShader.frag"))
+        return false;
     if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
         return false;
 
@@ -97,6 +112,12 @@ bool SceneSolarSystem::loadResources() {
     if(!TextureManager::load("earth_specular","data/earth_specular.png",5))
        return false;
     if(!TextureManager::load("stars4K","data/stars4K.png",2))
+        return false;
+
+
+    if(!TextureManager::load("moon","data/moonmap4k.jpg",2))
+        return false;
+    if(!TextureManager::load("mars","data/marsmap1k.jpg",2))
         return false;
 
 

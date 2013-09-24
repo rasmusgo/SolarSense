@@ -17,11 +17,32 @@ Earth::~Earth(){
 
 void Earth::update(float deltaTime) {
     (void) deltaTime;
-    mat4f m(1.0);
-    m = glm::rotate(m,0.0f/*GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed*/,vec3f(0,1,0));
+    mat4f m(1.0), temp;
+
+
+    //m = glm::translate(m, parentObject->pos); 
+    m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed,vec3f(0,1,0));
+    
     m = glm::translate(m,vec3f(orbRadius, 0.0f, 0.0f));
+
+   
+    baseMatrix = m;
+
+     m = glm::scale(m,scale);
+
+     
+    //m = temp*m;
+
+
+    
+
+
+    //pos = vec3f(m*vec4f(orbRadius, 0.f, 0.f, 0.f));
+
     m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed*2,vec3f(0,1,0));
-    m = glm::scale(m,scale);
+    
+
+   
     sphere.modelMatrix = m;
 }
 
@@ -30,11 +51,11 @@ void Earth::draw() const {
 }
 
 void Earth::drawFrom(mat4f from) const {
-    mat4f modelViewProjectionMatrix = parentScene->getState().projection * parentScene->getState().view * sphere.modelMatrix;
-    mat4f modelViewMatrix =  sphere.modelMatrix;
+    mat4f modelViewProjectionMatrix = parentScene->getState().projection * parentScene->getState().view * from*sphere.modelMatrix;
+    mat4f modelViewMatrix =  from*sphere.modelMatrix;
     mat4f normalMatrix( glm::transpose(glm::inverse(modelViewMatrix)));
 
-    vec3f lightPos = parentObject->pos;
+    vec3f lightPos = vec3f(0,0,0); // parentObject->pos;
 
     Texture* earth_day = TextureManager::get("earth_daytime");
     earth_day->bind();
@@ -56,6 +77,7 @@ void Earth::drawFrom(mat4f from) const {
     sphere.program->uniform("MVPMatrix")->set(modelViewProjectionMatrix);
     sphere.program->uniform("MVMatrix")->set(modelViewMatrix);
     sphere.program->uniform("NormalMatrix")->set(normalMatrix);
+
 
     // mat4f projection = parentScene->getState().projection;
     // mat4f view = parentScene->getState().view;
@@ -90,4 +112,26 @@ void Earth::drawFrom(mat4f from) const {
 
 
     sphere.draw();
+
+
+    for(std::list<GameObject*>::const_iterator it = objects.begin(); it != objects.end(); ++it) {
+        Planet* p = dynamic_cast<Planet*>((*it));
+
+        if (p != 0) {
+            //Draw orbit of son
+            float rad = p->orbRadius + p->scale.x;
+            float orb = p->orbRadius/rad;
+            mat4f orbTransform = glm::scale(baseMatrix, vec3f(rad, rad, rad));
+
+            //orbit.program->uniform("width")->set(p->scale.x/5.0f/rad);
+            //orbit.program->uniform("orbit")->set(orb);
+            //orbit.program->uniform("color")->set(vec3f(1.0, 1.0, 1.0));
+            //orbit.program->uniform("modelViewProjectionMatrix")->set(from*baseMatrix*orbTransform);
+            //glDisable(GL_CULL_FACE);
+            //orbit.draw();
+            //alEnable(GL_CULL_FACE);
+
+            p->drawFrom(from*baseMatrix);
+        }
+    }
 }

@@ -6,7 +6,7 @@
 OrbitingObject::OrbitingObject(Scene* parentScene, GameObject* parentObject,
                                vec3f scale, float orbRadius, float orbSpeed)
                                 : GameObject(parentScene, parentObject->pos, scale)
-                                , orbRadius(orbRadius), orbSpeed(orbSpeed) {
+                                , orbRadius(orbRadius), orbSpeed(orbSpeed), parentObject(parentObject) {
     sph.mesh = MeshManager::get("sphere");
     sph.program = ShaderManager::get("sample");
 
@@ -24,6 +24,7 @@ void OrbitingObject::update(float deltaTime) {
 
 void OrbitingObject::updateMatrix() {
     mat4f m(1.0);
+    m = glm::translate(m, parentObject->pos); 
     m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed,vec3f(0,1,0));
     m = glm::translate(m,vec3f(orbRadius, 0.0f, 0.0f));
     baseMatrix = m;
