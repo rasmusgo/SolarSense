@@ -134,3 +134,7 @@ void Earth::drawFrom(mat4f from) const {
         }
     }
 }
+
+mat4f Earth::getModelMatrix() {
+    return baseMatrix;
+}

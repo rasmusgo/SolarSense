@@ -14,7 +14,10 @@ class SceneSolarSystem : public Scene {
 		void update(float deltaTime);
 		void draw() const;
 
+        void addObject(GameObject* obj);
+        void addObject(const std::string& name, GameObject* obj);
         void addDrawableObject(GameObject* dObj);
+        void addDrawableObject(const std::string& name, GameObject* dObj);
 
         Camera* cam;
 

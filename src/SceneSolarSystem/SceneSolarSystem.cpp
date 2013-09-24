@@ -34,39 +34,31 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     GameObject* center = new GameObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(1.0f, 1.0f, 1.0f));
     addObject(center);
     OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
-    addDrawableObject(sun);
-    objectsMap.insert(std::pair<std::string, GameObject*>("sun", sun));
+    addDrawableObject("sun",sun);
 
-    StandardPlanet* mercury = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 1.5, "planetShader", "mercury");
-    addObject(mercury);
+    StandardPlanet* mercury = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 5, "planetShader", "mercury");
+    addObject("mercury",mercury);
     sun->addObject(mercury);
 
-
-    StandardPlanet* venus = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.4f, 20, 2, "planetShader", "venus");
-    addObject(venus);
+    StandardPlanet* venus = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.4f, 20, 4, "planetShader", "venus");
+    addObject("venus",venus);
     sun->addObject(venus);
 
-
-
-    Earth* earth = new Earth(this, center, vec3f(1.0f, 1.0f, 1.0f), 30, 3);
-    addObject(earth);
+    Earth* earth = new Earth(this, sun, vec3f(1.0f, 1.0f, 1.0f), 30, 3);
+    addObject("earth",earth);
     sun->addObject(earth);
 
-    StandardPlanet* moon = new StandardPlanet(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.2f, 3, 5, "planetShader", "moon");
-    addObject(moon);
+    StandardPlanet* moon = new StandardPlanet(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.2f, 3, 7, "planetShader", "moon");
+    addObject("moon",moon);
     earth->addObject(moon);
 
-    StandardPlanet* mars = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.8f, 50, 6, "planetShader", "mars");
-    addObject(mars);
+    StandardPlanet* mars = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.8f, 50, 2, "planetShader", "mars");
+    addObject("mars",mars);
     sun->addObject(mars);
 
-    StandardPlanet* jupiter = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*4.f, 80, 5, "planetShader", "jupiter");
-    addObject(jupiter);
+    StandardPlanet* jupiter = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*4.f, 80, 1.5, "planetShader", "jupiter");
+    addObject("jupiter",jupiter);
     sun->addObject(jupiter);
-
-    //Earth* earth3 = new Earth(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.3f, 2, 50);
-    //addObject(earth3);
-    //earth->addObject(earth3);
 
 	std::cout << "* Init done" << std::endl;
 }
@@ -76,6 +68,21 @@ SceneSolarSystem::~SceneSolarSystem() {
     std::cout << "* Deleting GameObjects on SceneSolarSystem" << std::endl;
 	for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
 		delete *it;
+}
+
+void SceneSolarSystem::addObject(GameObject *obj) {
+    GameObject::addObject(obj);
+}
+
+void SceneSolarSystem::addObject(const std::string &name, GameObject *obj) {
+    addObject(obj);
+    objectsMap.insert(std::pair<std::string, GameObject*>(name, obj));
+}
+
+void SceneSolarSystem::addDrawableObject(const std::string &name, GameObject* dObj) {
+    addObject(dObj);
+    drawList.push_back(dObj);
+    objectsMap.insert(std::pair<std::string, GameObject*>(name, dObj));
 }
 
 void SceneSolarSystem::addDrawableObject(GameObject* dObj) {
@@ -167,6 +174,7 @@ void SceneSolarSystem::update(float deltaTime) {
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
     if (paused) deltaTime = 0.0f;
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Num1)) cam->setArround(objectsMap.at("sun"));
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Num2)) cam->setArround(objectsMap.at("earth"));
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
 
     //Update Camera

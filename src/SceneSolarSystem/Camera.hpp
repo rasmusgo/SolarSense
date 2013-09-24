@@ -27,6 +27,8 @@ class Camera : public Entity {
         CameraMode mode;
 
     private:
+        void updateAcceleration(float deltaTime);
+
         mat4f rotM;
         GameObject* arrObject;
         float maxAcc;
