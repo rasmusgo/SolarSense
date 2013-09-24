@@ -1,4 +1,5 @@
 TEMPLATE = app
+LD_LIBRARY_PATH += libs:
 CONFIG -= qt
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL -lOpenNI2 -lNiTE2 \
         -L$$PWD/OpenNI/ \
@@ -19,6 +20,7 @@ SOURCES += \
 	$$PWD/audio/AudioManager.cpp \
     $$PWD/input/KeyAndMouseManager.cpp \
     $$PWD/SceneSolarSystem/SceneSolarSystem.cpp \
+    $$PWD/SceneSolarSystem/StandardPlanet.cpp \
 	$$PWD/GameObject.cpp \
         $$PWD/SceneSolarSystem/TriangleObject.cpp \
 	$$PWD/graphics/Mesh.cpp \
@@ -65,6 +67,7 @@ HEADERS += \
     $$PWD/SceneSolarSystem/SphereObject.hpp \
     $$PWD/Entity.hpp \
     $$PWD/SceneSolarSystem/Camera.hpp \
+    $$PWD/SceneSolarSystem/StandardPlanet.hpp \
     SceneSolarSystem/OrbitingObject.hpp \
     SceneSolarSystem/Planet.hpp \
     SceneSolarSystem/Earth.hpp \
@@ -80,4 +83,6 @@ OTHER_FILES += \
 	$$PWD/data/shaders/sample2.vert \
 	$$PWD/data/shaders/sample2.frag \
     data/shaders/earthShader.vert \
-    data/shaders/earthShader.frag
+    data/shaders/earthShader.frag \
+    data/shaders/planetShader.vert \
+    data/shaders/planetShader.frag

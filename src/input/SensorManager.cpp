@@ -26,7 +26,7 @@ void SensorManager::startSensor() {
     //HandTracker handTracker;
     rc = handTracker.create();
     if (rc != STATUS_OK) {
-        printf("SensorManager | Couldn't create the hand tracker in the SensorManager.\n");
+        printf("SensorManager | Couldn't create the hand tracker in the SensorManager: %d\n", rc);
         return;
     }
 

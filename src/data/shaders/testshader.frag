@@ -1,7 +1,7 @@
 uniform sampler2D sampler;
 uniform sampler2D EarthCloudGloss;
 uniform sampler2D EarthNight;
-//uniform sampler2D EarthSpecularMap;
+uniform sampler2D EarthSpecularMap;
 
 varying vec2 vTexCoord;
 varying float LightIntensity; 
@@ -39,9 +39,9 @@ void main() {
 	//vec3 specular_map = texture2D(EarthSpecularMap, vTexCoord).rgb;
 	vec3 color = daytime;
 
-	if (Diffuse < 0.1)
+	if (Diffuse < 0.05)
  		color = mix(nighttime, daytime, (Diffuse + 0.15) * 5.0);
 
-	gl_FragColor =  vec4(color, 1.0);
+	gl_FragColor =  vec4(color, 1.0); //vec4(clamp(daytime, 0, 255), 1.0);
 }
 

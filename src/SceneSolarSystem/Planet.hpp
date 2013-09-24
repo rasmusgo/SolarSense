@@ -18,9 +18,12 @@ class Planet : public GameObject {
         float orbSpeed;
         float orbRadius;
         Model sphere;//should be probably an abstract class so this would go out
+        Model orbit;
         mat4f baseMatrix;
 
+
     friend class OrbitingObject;
+    friend class Earth;
 };
 
 #endif // PLANET_HPP
