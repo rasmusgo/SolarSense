@@ -179,17 +179,17 @@ void SceneSolarSystem::update(float deltaTime) {
     //Update logic
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
     if (paused) deltaTime = 0.0f;
-    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right)) {
+    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right)) {
         if (++currentObject != objectsOrder.end())
             cam->setArround(objectsMap.at((*currentObject)));
         else --currentObject;
     }
-    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left)) {
+    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left)) {
         if (currentObject != objectsOrder.begin())
             cam->setArround(objectsMap.at((*--currentObject)));
     }
-    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
-    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
+    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
+    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
 
     //Update Camera
     cam->update(deltaTime);
