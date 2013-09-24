@@ -20,7 +20,7 @@ class Planet : public GameObject {
         Model sphere;//should be probably an abstract class so this would go out
         Model orbit;
         mat4f baseMatrix;
-
+        float timeAcc;
 
     friend class OrbitingObject;
     friend class Earth;

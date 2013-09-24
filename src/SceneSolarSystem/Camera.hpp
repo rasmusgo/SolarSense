@@ -31,6 +31,7 @@ class Camera : public Entity {
         float maxAcc;
         float friction;
         float maxVel;
+        sf::Clock cameraClock;
 };
 
 #endif // CAMERA_HPP

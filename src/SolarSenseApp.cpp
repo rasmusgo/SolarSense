@@ -4,7 +4,7 @@
 #include <GL/glut.h>
 
 SolarSenseApp::SolarSenseApp() : currentScene(NULL), nextScene(NULL) {
-    window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Fullscreen,CONTEXT_SETTINGS_OPENGL);
+    window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Default,CONTEXT_SETTINGS_OPENGL);
 	window.setMouseCursorVisible(false);
 	window.setKeyRepeatEnabled(false);
 	window.setVerticalSyncEnabled(true);
@@ -59,9 +59,14 @@ bool SolarSenseApp::loadResources () {
 // Main game loop
 void SolarSenseApp::run() {
     sf::Clock clock;
+    bool paused = false;
 
 	while (isRunning) {
+        if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+
 		float deltaTime = clock.restart().asSeconds();
+        if (paused) deltaTime = 0.0f;
+
 		update(deltaTime);
         draw();
 	}
