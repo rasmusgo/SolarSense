@@ -24,7 +24,7 @@ void StandardPlanet::update(float deltaTime) {
     m = glm::translate(m,vec3f(orbRadius, 0.0f, 0.0f));
 
    
-    baseMatrix = m;
+    baseMatrix = parentObject->getModelMatrix()*m;
 
      m = glm::scale(m,scale);
 
@@ -79,4 +79,8 @@ void StandardPlanet::drawFrom(mat4f from) const {
             p->drawFrom(from*baseMatrix);
         }
     }
+}
+
+mat4f StandardPlanet::getModelMatrix() {
+    return baseMatrix;
 }

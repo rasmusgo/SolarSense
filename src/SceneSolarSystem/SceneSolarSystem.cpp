@@ -60,6 +60,10 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     addObject("jupiter",jupiter);
     sun->addObject(jupiter);
 
+
+    currentObject = objectsOrder.begin();
+    cam->setArround(objectsMap.at((*currentObject)));
+
 	std::cout << "* Init done" << std::endl;
 }
 
@@ -77,12 +81,14 @@ void SceneSolarSystem::addObject(GameObject *obj) {
 void SceneSolarSystem::addObject(const std::string &name, GameObject *obj) {
     addObject(obj);
     objectsMap.insert(std::pair<std::string, GameObject*>(name, obj));
+    objectsOrder.push_back(name);
 }
 
 void SceneSolarSystem::addDrawableObject(const std::string &name, GameObject* dObj) {
     addObject(dObj);
     drawList.push_back(dObj);
     objectsMap.insert(std::pair<std::string, GameObject*>(name, dObj));
+    objectsOrder.push_back(name);
 }
 
 void SceneSolarSystem::addDrawableObject(GameObject* dObj) {
@@ -173,9 +179,17 @@ void SceneSolarSystem::update(float deltaTime) {
     //Update logic
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
     if (paused) deltaTime = 0.0f;
-    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Num1)) cam->setArround(objectsMap.at("sun"));
-    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Num2)) cam->setArround(objectsMap.at("earth"));
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right)) {
+        if (++currentObject != objectsOrder.end())
+            cam->setArround(objectsMap.at((*currentObject)));
+        else --currentObject;
+    }
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left)) {
+        if (currentObject != objectsOrder.begin())
+            cam->setArround(objectsMap.at((*--currentObject)));
+    }
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
 
     //Update Camera
     cam->update(deltaTime);
@@ -187,7 +201,7 @@ void SceneSolarSystem::update(float deltaTime) {
 	for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end();)
 		if (!(*it)->isAlive) {
 			delete *it;
-			it = objects.erase(it);;
+            it = objects.erase(it);
 		}
 		else
 			++it;

@@ -30,6 +30,8 @@ class SceneSolarSystem : public Scene {
         std::list<GameObject*> drawList;
         bool paused;
         std::map<std::string, GameObject*> objectsMap;
+        std::list<std::string> objectsOrder;
+        std::list<std::string>::iterator currentObject;
 };
 
 #endif // SCENESOLARSYSTEM_HPP
