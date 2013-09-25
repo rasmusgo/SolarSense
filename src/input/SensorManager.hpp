@@ -33,7 +33,7 @@ class SensorManager {
          *
          * @return True if a hand is tracked, false if not.
          */
-       static bool isTracking() {return tracking;}
+       static bool isTracking() {return trackingMovement;}
 
        /**
          * Call this method to check if there is significant movement.
@@ -56,6 +56,8 @@ class SensorManager {
          */
        static vec3f getHandMovement();
 
+       static int gestureDetected();
+
 //       static void processGrabEvent(const PSLabs::IGrabEventListener::EventParams& params);
 
 //       // Inner class for the GrabListener
@@ -75,15 +77,17 @@ class SensorManager {
         static void startTracking(nite::Point3f gesturePos);
         static void stopTracking(nite::Point3f gesturePos);
         static void updatePosition(nite::Point3f handPos);
+        static void checkGesture(nite::Point3f handPos);
 
-        static bool running;
-        static bool tracking;
+        static bool running, trackingMovement, trackingGesture;
+
+        static openni::Device sensor;
 
         static nite::HandTracker handTracker;
         static nite::HandId movementHandId, gestureHandId;
         //static PSLabs::IGrabDetector* grabDetector;
 
-        static vec3f initialHandPos, lastHandPos, displacement;
+        static vec3f initialMovementHandPos ,lastGestureHandPos, lastMovementHandPos, currentGestureHandPos, displacement, displacementGesture;
         static int framesSinceLastMovement;
 };
 
