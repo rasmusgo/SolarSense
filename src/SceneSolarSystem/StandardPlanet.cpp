@@ -29,7 +29,7 @@ void StandardPlanet::update(float deltaTime) {
     m = glm::translate(m,vec3f(orbRadius, 0.0f, 0.0f));
 
    
-    baseMatrix = m;
+    baseMatrix = parentObject->getModelMatrix()*m;
 
      m = glm::scale(m,scale);
 
@@ -53,14 +53,15 @@ void StandardPlanet::drawFrom(mat4f from) const {
 
     Texture* sdp_tex = TextureManager::get(texturemapname);
     sdp_tex->bind();
-    sphere.program->uniform("sampler")->set(2); 
+
 
     //if(*bumpmap != '\0')  {
     //    Texture* sdp_bump = TextureManager::get(bumpmap);
     //    sdp_bump->bind();
      //   sphere.program->uniform("bumpmap")->set(3); 
 
-//    }
+//    
+    sphere.program->uniform("sampler")->set((int)sdp_tex->getSlot());
 
 
     sphere.program->uniform("LightPosition")->set(lightPos);
@@ -91,4 +92,8 @@ void StandardPlanet::drawFrom(mat4f from) const {
             p->drawFrom(from*baseMatrix);
         }
     }
+}
+
+mat4f StandardPlanet::getModelMatrix() {
+    return baseMatrix;
 }

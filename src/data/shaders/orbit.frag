@@ -11,6 +11,6 @@ void main() {
     float d = length(dist);
     if (d > orbit+width || d < orbit-width) discard;
 
-    //float orbD = width - abs(d - orbit);
-    gl_FragColor = vec4(color, 1.0);//((orbD*orbD)/(width*width)));
+    float orbD = width - abs(d - orbit);
+    gl_FragColor = vec4(color, ((orbD*orbD)/(width*width)));
 }

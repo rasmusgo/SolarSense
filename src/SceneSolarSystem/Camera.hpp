@@ -18,6 +18,7 @@ class Camera : public Entity {
         void drawHUD();
 
         void setArround(GameObject* object);
+        void setMode(CameraMode m);
 
         vec2f rot;
 
@@ -25,13 +26,25 @@ class Camera : public Entity {
 
         CameraMode mode;
 
+        bool interpolating;
+
     private:
+        const float INTERPOLATION_TIME = 3.0f;
+
+        void updateAcceleration(float deltaTime);
+
+        inline vec3f posFromMatrix(mat4f& m);
+        inline vec3f lerp(vec3f& a, vec3f& b, float t);
+
         mat4f rotM;
+        vec3f fromPos;
+        float interpolatingTimer;
         GameObject* arrObject;
         float maxAcc;
         float friction;
         float maxVel;
         sf::Clock cameraClock;
+        vec3f originalPos;
 };
 
 #endif // CAMERA_HPP

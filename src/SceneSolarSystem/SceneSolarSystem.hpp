@@ -14,7 +14,10 @@ class SceneSolarSystem : public Scene {
 		void update(float deltaTime);
 		void draw() const;
 
+        void addObject(GameObject* obj);
+        void addObject(const std::string& name, GameObject* obj);
         void addDrawableObject(GameObject* dObj);
+        void addDrawableObject(const std::string& name, GameObject* dObj);
 
         Camera* cam;
 
@@ -25,6 +28,10 @@ class SceneSolarSystem : public Scene {
 		float debugCounter;
 		int fpsCount;
         std::list<GameObject*> drawList;
+        bool paused;
+        std::map<std::string, GameObject*> objectsMap;
+        std::list<std::string> objectsOrder;
+        std::list<std::string>::iterator currentObject;
 };
 
 #endif // SCENESOLARSYSTEM_HPP

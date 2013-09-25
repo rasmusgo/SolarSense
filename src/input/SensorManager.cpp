@@ -1,9 +1,12 @@
 #include "SensorManager.hpp"
 
+
+const float SensorManager::MOVEMENT_THRESHOLD = 100.f;
+
 bool SensorManager::running(false);
 bool SensorManager::tracking(false);
 nite::HandTracker SensorManager::handTracker;
-nite::HandId SensorManager::handId;
+nite::HandId SensorManager::movementHandId;
 vec3f SensorManager::initialHandPos(-1,-1,-1);
 vec3f SensorManager::lastHandPos(-1,-1,-1);
 vec3f SensorManager::displacement(0,0,0);
@@ -123,7 +126,7 @@ void SensorManager::update() {
         // Check if the hand was lost.
         if (hand.isLost()) {
             tracking = false;
-            printf("SensorManager | Hand was lost, stopped tracking. (HandId: %d)\n", handId);
+            printf("SensorManager | Hand was lost, stopped tracking. (HandId: %d)\n", movementHandId);
         }
     } else if (hands.getSize() > 1) {
         printf("SensorManager | Somethings went wrong: There is more than one hand being tracked.\n");
@@ -139,12 +142,12 @@ void SensorManager::startTracking(nite::Point3f gesturePos) {
     // Save the initial hand position to determine the movement of the hand.
     initialHandPos = vec3f(gesturePos.x, gesturePos.y, gesturePos.z);
 
-    handTracker.startHandTracking(gesturePos, &handId);
+    handTracker.startHandTracking(gesturePos, &movementHandId);
 
     // Tweaking the initial position.
     initialHandPos.z -100;
 
-    printf("SensorManager | Hand detected, start tracking. (HandId: %d)\n", handId);
+    printf("SensorManager | Hand detected, start tracking. (HandId: %d)\n", movementHandId);
     tracking = true;
 }
 
@@ -156,9 +159,9 @@ void SensorManager::stopTracking(nite::Point3f gesturePos) {
 
     // Check if distance is sufficiently small
     if (dist <= 100) {
-        handTracker.stopHandTracking(handId);
+        handTracker.stopHandTracking(movementHandId);
         tracking = false;
-        printf("SensorManager | Stopped tracking the hand. (HandId: %d)\n", handId);
+        printf("SensorManager | Stopped tracking the hand. (HandId: %d)\n", movementHandId);
 
         // ISSUE: HandData::isLost() is being called after calling stopHandTracking -> two outputs.
     } else {
@@ -174,29 +177,36 @@ void SensorManager::updatePosition(nite::Point3f handPos) {
     // Calculate displacement
     displacement = lastHandPos - initialHandPos;
     displacement = vec3f(displacement.y, displacement.x, displacement.z);
+}
 
+vec3f SensorManager::getHandMovement() {
+    vec3f d = displacement;
+    float max = MOVEMENT_THRESHOLD*2.5;
+    float min = MOVEMENT_THRESHOLD;
 
-//    if (abs(displacement.y) >= MOVEMENT_THRESHOLD) {
-//        if (displacement.y > 0 ) {
-//            printf("Moving to the right %.5f\n", displacement.y);
-//        } else if (displacement.y < 0 ) {
-//            printf("Moving to the left %.5f\n", displacement.y);
-//        }
-//    }
+    if (abs(displacement.x) >= min) {
+        if (displacement.x > 0 )
+            d.x = glm::min(d.x - min, max);
+        else if (displacement.x < 0 )
+            d.x = glm::max(d.x + min, -max);
+    }
+    else d.x = 0.0f;
 
-//    if (abs(displacement.x) >= MOVEMENT_THRESHOLD) {
-//        if (displacement.x > 0 ) {
-//            printf("Moving upwards: %.5f\n", displacement.x);
-//        } else if (displacement.x < 0 ) {
-//            printf("Moving downwards: %.5f\n", displacement.x);
-//        }
-//        }
+    if (abs(displacement.y) >= min) {
+        if (displacement.y > 0 )
+            d.y = glm::min(d.y - min, max);
+        else if (displacement.y < 0 )
+            d.y = glm::max(d.y + min, -max);
+    }
+    else d.y = 0.0f;
 
-//    if (abs(displacement.z) >= MOVEMENT_THRESHOLD) {
-//        if (displacement.z > 0 ) {
-//            printf("Moving backwards: %.5f\n", displacement.z);
-//        } else if (displacement.z < 0 ) {
-//            printf("Moving forwards: %.5f\n", displacement.z);
-//        }
-//    }
+    if (abs(displacement.z) >= min) {
+        if (displacement.z > 0 )
+            d.z = glm::min(d.z - min, max);
+        else if (displacement.y < 0 )
+            d.z = glm::max(d.z + min, -max);
+    }
+    else d.z = 0.0f;
+
+    return d / (max-min);
 }

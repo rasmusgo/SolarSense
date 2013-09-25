@@ -10,7 +10,7 @@
 
 SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 	Scene(parent),
-	debugCounter(0.0), fpsCount(0) {
+    debugCounter(0.0), fpsCount(0), paused(false) {
 
 	//SCENE INIT
     std::cout << "* Loading new scene: SolarSystem" << std::endl;
@@ -34,38 +34,35 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     GameObject* center = new GameObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(1.0f, 1.0f, 1.0f));
     addObject(center);
     OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
-    addDrawableObject(sun);
+    addDrawableObject("sun",sun);
 
-    StandardPlanet* mercury = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 1.5, "planetShader", "mercury");
-    addObject(mercury);
+    StandardPlanet* mercury = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 5, "planetShader", "mercury");
+    addObject("mercury",mercury);
     sun->addObject(mercury);
 
-
-    StandardPlanet* venus = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.4f, 20, 2, "planetShader", "venus");
-    addObject(venus);
+    StandardPlanet* venus = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.4f, 20, 4, "planetShader", "venus");
+    addObject("venus",venus);
     sun->addObject(venus);
 
-
-
-    Earth* earth = new Earth(this, center, vec3f(1.0f, 1.0f, 1.0f), 30, 3);
-    addObject(earth);
+    Earth* earth = new Earth(this, sun, vec3f(1.0f, 1.0f, 1.0f), 30, 3);
+    addObject("earth",earth);
     sun->addObject(earth);
 
-    StandardPlanet* moon = new StandardPlanet(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.2f, 3, 5, "planetShader", "moon");
-    addObject(moon);
+    StandardPlanet* moon = new StandardPlanet(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.2f, 3, 7, "planetShader", "moon");
+    addObject("moon",moon);
     earth->addObject(moon);
 
-    StandardPlanet* mars = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*0.8f, 50, 6, "planetShader", "mars");
-    addObject(mars);
+    StandardPlanet* mars = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.8f, 50, 2, "planetShader", "mars");
+    addObject("mars",mars);
     sun->addObject(mars);
 
-    StandardPlanet* jupiter = new StandardPlanet(this, center, vec3f(1.0f, 1.0f, 1.0f)*4.f, 80, 5, "planetShader", "jupiter");
-    addObject(jupiter);
+    StandardPlanet* jupiter = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*4.f, 80, 1.5, "planetShader", "jupiter");
+    addObject("jupiter",jupiter);
     sun->addObject(jupiter);
 
-    //Earth* earth3 = new Earth(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.3f, 2, 50);
-    //addObject(earth3);
-    //earth->addObject(earth3);
+
+    currentObject = objectsOrder.begin();
+    cam->setArround(objectsMap.at((*currentObject)));
 
 	std::cout << "* Init done" << std::endl;
 }
@@ -75,6 +72,23 @@ SceneSolarSystem::~SceneSolarSystem() {
     std::cout << "* Deleting GameObjects on SceneSolarSystem" << std::endl;
 	for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
 		delete *it;
+}
+
+void SceneSolarSystem::addObject(GameObject *obj) {
+    GameObject::addObject(obj);
+}
+
+void SceneSolarSystem::addObject(const std::string &name, GameObject *obj) {
+    addObject(obj);
+    objectsMap.insert(std::pair<std::string, GameObject*>(name, obj));
+    objectsOrder.push_back(name);
+}
+
+void SceneSolarSystem::addDrawableObject(const std::string &name, GameObject* dObj) {
+    addObject(dObj);
+    drawList.push_back(dObj);
+    objectsMap.insert(std::pair<std::string, GameObject*>(name, dObj));
+    objectsOrder.push_back(name);
 }
 
 void SceneSolarSystem::addDrawableObject(GameObject* dObj) {
@@ -90,6 +104,8 @@ bool SceneSolarSystem::loadResources() {
         return false;
 	if(!ShaderManager::load("sample2","data/shaders/sample2.vert","data/shaders/sample2.frag"))
 		return false;
+    if(!ShaderManager::load("sun","data/shaders/sun.vert","data/shaders/sun.frag"))
+        return false;
 
 	//textures
     if(!TextureManager::load("cubetex","data/10x10tex.png",2))
@@ -170,6 +186,21 @@ void SceneSolarSystem::update(float deltaTime) {
 		fpsCount = 0;
 	}
 
+    //Update logic
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+    if (paused) deltaTime = 0.0f;
+    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right)) {
+        if (++currentObject != objectsOrder.end())
+            cam->setArround(objectsMap.at((*currentObject)));
+        else --currentObject;
+    }
+    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left)) {
+        if (currentObject != objectsOrder.begin())
+            cam->setArround(objectsMap.at((*--currentObject)));
+    }
+    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
+    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
+
     //Update Camera
     cam->update(deltaTime);
 
@@ -180,7 +211,7 @@ void SceneSolarSystem::update(float deltaTime) {
 	for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end();)
 		if (!(*it)->isAlive) {
 			delete *it;
-			it = objects.erase(it);;
+            it = objects.erase(it);
 		}
 		else
 			++it;

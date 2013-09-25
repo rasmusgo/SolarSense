@@ -59,13 +59,9 @@ bool SolarSenseApp::loadResources () {
 // Main game loop
 void SolarSenseApp::run() {
     sf::Clock clock;
-    bool paused = false;
 
-	while (isRunning) {
-        if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
-
-		float deltaTime = clock.restart().asSeconds();
-        if (paused) deltaTime = 0.0f;
+    while (isRunning) {
+        float deltaTime = clock.restart().asSeconds();
 
 		update(deltaTime);
         draw();
@@ -106,7 +102,8 @@ void SolarSenseApp::draw() {
         currentScene->draw();
 
 
-    sf::Font font; font.loadFromFile("data/arial.ttf");
+    sf::Font font;
+    font.loadFromFile("data/arial.ttf");
     sf::Text text("No hand detected", font);
     if (SensorManager::isTracking()) {
         text.setString("Tracking hand");
@@ -119,13 +116,13 @@ void SolarSenseApp::draw() {
     // texture.loadFromFile("data/cubetex.png");
     // sf::Sprite sprite; // sprite.setTexture(texture);
 
-    glUseProgram(0);
-    glBindBuffer(GL_ARRAY_BUFFER,0);
-    glDisable(GL_CULL_FACE);
-    window.pushGLStates();
-    window.draw(text);
-    window.popGLStates();
-    glEnable(GL_CULL_FACE);
+//    glUseProgram(0);
+//    glBindBuffer(GL_ARRAY_BUFFER,0);
+//    glDisable(GL_CULL_FACE);
+//    window.pushGLStates();
+//    window.draw(text);
+//    window.popGLStates();
+//    glEnable(GL_CULL_FACE);
 
     window.display();
 }
