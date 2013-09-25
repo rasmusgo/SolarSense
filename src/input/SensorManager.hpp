@@ -81,7 +81,7 @@ class SensorManager {
         static bool tracking;
 
         static nite::HandTracker handTracker;
-        static nite::HandId handId;
+        static nite::HandId movementHandId, gestureHandId;
         //static PSLabs::IGrabDetector* grabDetector;
 
         static vec3f initialHandPos, lastHandPos, displacement;

@@ -6,7 +6,7 @@ const float SensorManager::MOVEMENT_THRESHOLD = 100.f;
 bool SensorManager::running(false);
 bool SensorManager::tracking(false);
 nite::HandTracker SensorManager::handTracker;
-nite::HandId SensorManager::handId;
+nite::HandId SensorManager::movementHandId;
 vec3f SensorManager::initialHandPos(-1,-1,-1);
 vec3f SensorManager::lastHandPos(-1,-1,-1);
 vec3f SensorManager::displacement(0,0,0);
@@ -126,7 +126,7 @@ void SensorManager::update() {
         // Check if the hand was lost.
         if (hand.isLost()) {
             tracking = false;
-            printf("SensorManager | Hand was lost, stopped tracking. (HandId: %d)\n", handId);
+            printf("SensorManager | Hand was lost, stopped tracking. (HandId: %d)\n", movementHandId);
         }
     } else if (hands.getSize() > 1) {
         printf("SensorManager | Somethings went wrong: There is more than one hand being tracked.\n");
@@ -142,12 +142,12 @@ void SensorManager::startTracking(nite::Point3f gesturePos) {
     // Save the initial hand position to determine the movement of the hand.
     initialHandPos = vec3f(gesturePos.x, gesturePos.y, gesturePos.z);
 
-    handTracker.startHandTracking(gesturePos, &handId);
+    handTracker.startHandTracking(gesturePos, &movementHandId);
 
     // Tweaking the initial position.
     initialHandPos.z -100;
 
-    printf("SensorManager | Hand detected, start tracking. (HandId: %d)\n", handId);
+    printf("SensorManager | Hand detected, start tracking. (HandId: %d)\n", movementHandId);
     tracking = true;
 }
 
@@ -159,9 +159,9 @@ void SensorManager::stopTracking(nite::Point3f gesturePos) {
 
     // Check if distance is sufficiently small
     if (dist <= 100) {
-        handTracker.stopHandTracking(handId);
+        handTracker.stopHandTracking(movementHandId);
         tracking = false;
-        printf("SensorManager | Stopped tracking the hand. (HandId: %d)\n", handId);
+        printf("SensorManager | Stopped tracking the hand. (HandId: %d)\n", movementHandId);
 
         // ISSUE: HandData::isLost() is being called after calling stopHandTracking -> two outputs.
     } else {

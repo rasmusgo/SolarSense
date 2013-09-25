@@ -110,9 +110,8 @@ void Camera::updateAcceleration(float deltaTime) {
         if (SensorManager::isTracking() && SensorManager::significantMovement()) {
 
             vec3f handMovement = SensorManager::getHandMovement();
-            if (mode == Free) {
+            if (mode == Free)
                 handMovement.x = -handMovement.x;
-            }
             handMovement *= maxVel;
 
             vel = handMovement;
