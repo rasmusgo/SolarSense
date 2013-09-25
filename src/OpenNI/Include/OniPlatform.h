@@ -46,7 +46,7 @@
 #elif (__APPLE__)
 #	include "MacOSX/OniPlatformMacOSX.h"
 #else
-#	error Xiron Platform Abstraction Layer - Unsupported Platform!
+#	error Unsupported platform!
 #endif
 
 #ifdef __cplusplus

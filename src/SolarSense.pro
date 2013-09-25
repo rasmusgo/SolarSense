@@ -1,16 +1,39 @@
 TEMPLATE = app
 LD_LIBRARY_PATH += libs:
 CONFIG -= qt
-LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL -lOpenNI2 -lNiTE2 \
+
+linux-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
+
+linux-g++:contains(QMAKE_TARGET.arch, i686):{
+    message( "Building for 32 bit")
+    LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL -lOpenNI2 -lNiTE2 \
+        -L$$PWD/OpenNIx86/ \
+        -L$$PWD/NiTEx86/ \
+        -L$$PWD/GrabDetector/
+        #GrabDetector/GrabDetector.lib\
+        #GrabDetector/GrabDetector.dll
+    INCLUDEPATH += $$PWD/ \
+               $$PWD/OpenNIx86/Include \
+               $$PWD/OpenNIx86/Include/Linux-x86 \
+               $$PWD/NiTEx86/Include
+               #$$PWD/GrabDetector/Include
+} else {
+    message( "Building for 64 bit")
+    LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL -lOpenNI2 -lNiTE2 \
         -L$$PWD/OpenNI/ \
         -L$$PWD/NiTE/ \
         -L$$PWD/GrabDetector/
         #GrabDetector/GrabDetector.lib\
         #GrabDetector/GrabDetector.dll
-INCLUDEPATH += $$PWD/ \
+    INCLUDEPATH += $$PWD/ \
                $$PWD/OpenNI/Include \
+               $$PWD/OpenNI/Include/Linux-x86 \
                $$PWD/NiTE/Include
                #$$PWD/GrabDetector/Include
+}
+
+
+
 QMAKE_CXXFLAGS += -std=c++11
 SOURCES += \
     $$PWD/main.cpp \

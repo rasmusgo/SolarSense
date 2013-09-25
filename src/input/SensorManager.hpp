@@ -1,11 +1,10 @@
 #ifndef SENSORMANAGER_HPP
 #define SENSORMANAGER_HPP
 
-#define DATA_PATH "GrabDetector/Data"
-
 #include "tools.hpp"
 #include "OpenNI.h"
 #include "NiTE.h"
+
 //#include "GrabDetector.h"
 
 class SensorManager {
@@ -20,7 +19,7 @@ class SensorManager {
 
         /**
           * Intializes the connected Sensor (PrimeSense, Kinect) and starts the gesture recognition.
-          */
+          */ 
        static void startSensor();
 
        /**
