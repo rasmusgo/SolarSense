@@ -9,6 +9,11 @@ StandardPlanet::StandardPlanet(Scene* parentScene, GameObject* parentObject, vec
     sphere.mesh = MeshManager::get("sphere");
     sphere.program = ShaderManager::get(shaderprogram);
 }
+StandardPlanet::StandardPlanet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed, const char* shaderprogram, const char* texture, const char* bumpmap)
+                                : Planet(parentScene, parentObject, scale, orbRadius, orbSpeed), bumpmap(bumpmap), parentObject(parentObject), shaderprogram(shaderprogram), texturemapname(texture) {
+    sphere.mesh = MeshManager::get("sphere");
+    sphere.program = ShaderManager::get(shaderprogram);
+}
 
 StandardPlanet::~StandardPlanet(){
 
@@ -48,7 +53,14 @@ void StandardPlanet::drawFrom(mat4f from) const {
 
     Texture* sdp_tex = TextureManager::get(texturemapname);
     sdp_tex->bind();
-    sphere.program->uniform("sampler")->set(2);   
+    sphere.program->uniform("sampler")->set(2); 
+
+    //if(*bumpmap != '\0')  {
+    //    Texture* sdp_bump = TextureManager::get(bumpmap);
+    //    sdp_bump->bind();
+     //   sphere.program->uniform("bumpmap")->set(3); 
+
+//    }
 
 
     sphere.program->uniform("LightPosition")->set(lightPos);

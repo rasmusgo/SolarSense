@@ -115,6 +115,8 @@ bool SceneSolarSystem::loadResources() {
     */
     if(!ShaderManager::load("planetShader","data/shaders/planetShader.vert","data/shaders/planetShader.frag"))
         return false;
+    if(!ShaderManager::load("planetShaderBump","data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag"))
+        return false;
     if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
         return false;
 
@@ -130,7 +132,9 @@ bool SceneSolarSystem::loadResources() {
         return false;
 
 
-    if(!TextureManager::load("moon","data/moonmap1k.jpg",2))
+    if(!TextureManager::load("moon","data/moonmap4k.jpg",2))
+        return false;
+    if(!TextureManager::load("moonbump","data/moonbump4k.jpg",3))
         return false;
     //if(!TextureManager::load("earth8k","data/earth8k.jpg",2))
     //    return false;
