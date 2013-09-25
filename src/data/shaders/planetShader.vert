@@ -22,7 +22,7 @@ void main()
  vec3 ecPosition = vec3(MVMatrix * vec4(a_position,1.0)); 
  vec3 tnorm = normalize(vec3(NormalMatrix * vec4(a_normal, 0.0))); 
  vec3 lightVec = normalize(LightPosition - ecPosition); 
- vec3 reflectVec = reflect(-lightVec, tnorm); 
+ vec3 reflectVec = reflect(lightVec, tnorm);
  vec3 viewVec = normalize(-ecPosition); 
 
  float spec = clamp(dot(reflectVec, viewVec), 0.0, 1.0); 

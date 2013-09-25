@@ -104,6 +104,8 @@ bool SceneSolarSystem::loadResources() {
         return false;
 	if(!ShaderManager::load("sample2","data/shaders/sample2.vert","data/shaders/sample2.frag"))
 		return false;
+    if(!ShaderManager::load("sun","data/shaders/sun.vert","data/shaders/sun.frag"))
+        return false;
 
 	//textures
     if(!TextureManager::load("cubetex","data/10x10tex.png",2))
