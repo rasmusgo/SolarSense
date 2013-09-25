@@ -23,18 +23,21 @@ class Camera : public Entity {
         vec2f rot;
 
         mat4f getViewMatrix();
+        std::pair<mat4f,mat4f> getViewMatrix3D();
 
         CameraMode mode;
 
         bool interpolating;
 
-    private:
+    private:        
         const float INTERPOLATION_TIME = 3.0f;
 
         void updateAcceleration(float deltaTime);
 
         inline vec3f posFromMatrix(mat4f& m);
         inline vec3f lerp(vec3f& a, vec3f& b, float t);
+
+        float eyeDistance3D;
 
         mat4f rotM;
         vec3f fromPos;

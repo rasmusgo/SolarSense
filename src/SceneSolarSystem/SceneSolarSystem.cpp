@@ -10,7 +10,7 @@
 
 SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 	Scene(parent),
-    debugCounter(0.0), fpsCount(0), paused(false) {
+    debugCounter(0.0), fpsCount(0), paused(false), stereoscopic3D(false) {
 
 	//SCENE INIT
     std::cout << "* Loading new scene: SolarSystem" << std::endl;
@@ -200,6 +200,11 @@ void SceneSolarSystem::update(float deltaTime) {
     }
     if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
     if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Num3)) {
+        if (stereoscopic3D)
+            glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
+        stereoscopic3D = !stereoscopic3D;
+    }
 
     //Update Camera
     cam->update(deltaTime);
@@ -220,19 +225,54 @@ void SceneSolarSystem::update(float deltaTime) {
 }
 
 void SceneSolarSystem::draw() const {
-	//calculate perspective matrix
-	getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+    if (not stereoscopic3D) {
+        //calculate perspective matrix
+        getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
 
-    //Move matrix to position (according to player/camera)
-    //getState().view = mat4f(1.0);
-    getState().view = cam->getViewMatrix();
+        //Move matrix to position (according to player/camera)
+        //getState().view = mat4f(1.0);
+        getState().view = cam->getViewMatrix();
 
-    //Drawable objects
-    glDisable(GL_CULL_FACE);
-    stars->draw();
-    glEnable(GL_CULL_FACE);
+        //Drawable objects
+        glDisable(GL_CULL_FACE);
+        stars->draw();
+        glEnable(GL_CULL_FACE);
 
-    for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
-        (*it)->draw();
+        for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+            (*it)->draw();
+    }
+    else {
+        //calculate perspective matrix
+        getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+
+        //Move matrix to position (according to player/camera)
+        //getState().view = mat4f(1.0);
+        std::pair<mat4f,mat4f> eyes = cam->getViewMatrix3D();
+
+        glViewport(0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT));
+        {
+            getState().view = eyes.second;
+
+            //Drawable objects
+            glDisable(GL_CULL_FACE);
+            stars->draw();
+            glEnable(GL_CULL_FACE);
+
+            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+                (*it)->draw();
+        }
+        glViewport(float(SCRWIDTH)/2.0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT));
+        {
+            getState().view = eyes.first;
+
+            //Drawable objects
+            glDisable(GL_CULL_FACE);
+            stars->draw();
+            glEnable(GL_CULL_FACE);
+
+            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+                (*it)->draw();
+        }
+    }
 }
 

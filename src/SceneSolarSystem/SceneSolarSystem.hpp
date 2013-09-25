@@ -29,6 +29,7 @@ class SceneSolarSystem : public Scene {
 		int fpsCount;
         std::list<GameObject*> drawList;
         bool paused;
+        bool stereoscopic3D;
         std::map<std::string, GameObject*> objectsMap;
         std::list<std::string> objectsOrder;
         std::list<std::string>::iterator currentObject;

@@ -15,6 +15,8 @@ Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.
 
     originalPos = pos;
     interpolating = false;
+
+    eyeDistance3D = 0.3f;
 }
 
 Camera::~Camera() {
@@ -218,6 +220,19 @@ mat4f Camera::getViewMatrix() {
         return rotM;
     }
 }
+
+std::pair<mat4f,mat4f> Camera::getViewMatrix3D() {
+    mat4f c = getViewMatrix();
+
+    vec3f right = vec3f(c[0][0], c[1][0], c[2][0]);
+
+    mat4f r(1.0f), l(1.0f);
+    r = glm::translate(r, right*(eyeDistance3D/2.0f));
+    l = glm::translate(l, -right*(eyeDistance3D/2.0f));
+
+    return std::pair<mat4f,mat4f>(r*c,l*c);
+}
+
 
 inline vec3f Camera::posFromMatrix(mat4f &m) {
     return vec3f(m[3][0],m[3][1],m[3][2]);
