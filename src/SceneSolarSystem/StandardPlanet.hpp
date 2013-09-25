@@ -8,6 +8,8 @@
 class StandardPlanet : public Planet {
     public:
         StandardPlanet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed, const char* shaderprogram, const char* texture);
+       	StandardPlanet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed, const char* shaderprogram, const char* texture, const char* bumpmap);
+
         ~StandardPlanet();
 
         void update(float deltaTime);
@@ -19,6 +21,7 @@ class StandardPlanet : public Planet {
    private:
    	const char* shaderprogram;
    	const char* texturemapname;
+   	const char* bumpmap;
    	
 };
 

@@ -89,4 +89,6 @@ OTHER_FILES += \
     data/shaders/earthShader.vert \
     data/shaders/earthShader.frag \
     data/shaders/planetShader.vert \
-    data/shaders/planetShader.frag
+    data/shaders/planetShader.frag \
+    data/shaders/sun.vert \
+    data/shaders/sun.frag

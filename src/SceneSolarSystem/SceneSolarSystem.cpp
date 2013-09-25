@@ -104,6 +104,8 @@ bool SceneSolarSystem::loadResources() {
         return false;
 	if(!ShaderManager::load("sample2","data/shaders/sample2.vert","data/shaders/sample2.frag"))
 		return false;
+    if(!ShaderManager::load("sun","data/shaders/sun.vert","data/shaders/sun.frag"))
+        return false;
 
 	//textures
     if(!TextureManager::load("cubetex","data/10x10tex.png",2))
@@ -129,6 +131,8 @@ bool SceneSolarSystem::loadResources() {
     */
     if(!ShaderManager::load("planetShader","data/shaders/planetShader.vert","data/shaders/planetShader.frag"))
         return false;
+    if(!ShaderManager::load("planetShaderBump","data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag"))
+        return false;
     if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
         return false;
 
@@ -145,6 +149,12 @@ bool SceneSolarSystem::loadResources() {
 
 
     if(!TextureManager::load("moon","data/moonmap4k.jpg",2))
+        return false;
+    if(!TextureManager::load("moonbump","data/moonbump4k.jpg",3))
+        return false;
+    //if(!TextureManager::load("earth8k","data/earth8k.jpg",2))
+    //    return false;
+    if(!TextureManager::load("earthmap","data/earthmap.jpg",2))
         return false;
     if(!TextureManager::load("mars","data/marsmap1k.jpg",2))
         return false;

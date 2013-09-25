@@ -8,7 +8,7 @@ OrbitingObject::OrbitingObject(Scene* parentScene, GameObject* parentObject,
                                 : GameObject(parentScene, parentObject->pos, scale)
                                 , orbRadius(orbRadius), orbSpeed(orbSpeed), parentObject(parentObject) {
     sph.mesh = MeshManager::get("sphere");
-    sph.program = ShaderManager::get("sample");
+    sph.program = ShaderManager::get("sun");
 
     orbit.mesh = MeshManager::get("square");
     orbit.program = ShaderManager::get("orbit");
@@ -42,6 +42,7 @@ void OrbitingObject::drawFrom(mat4f from) const {
     TextureManager::get("sun")->bind();
     sph.program->uniform("sampler")->set(2);
     sph.program->uniform("modelViewProjectionMatrix")->set(transform);
+    sph.program->uniform("time")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
     sph.draw();
 
     //Draw sons
