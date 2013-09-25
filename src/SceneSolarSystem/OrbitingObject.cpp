@@ -57,12 +57,13 @@ void OrbitingObject::drawFrom(mat4f from) const {
             orbit.program->uniform("width")->set(p->scale.x/5.0f/rad);
             orbit.program->uniform("orbit")->set(orb);
             orbit.program->uniform("color")->set(vec3f(1.0, 1.0, 1.0));
-            orbit.program->uniform("modelViewProjectionMatrix")->set(viewProjection*orbTransform);
+            orbit.program->uniform("modelViewProjectionMatrix")->set(viewProjection*orbTransform);           
+
+            p->drawFrom(baseMatrix);
+
             glDisable(GL_CULL_FACE);
             orbit.draw();
             glEnable(GL_CULL_FACE);
-
-            p->drawFrom(baseMatrix);
         }
     }
 }

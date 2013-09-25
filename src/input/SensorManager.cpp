@@ -1,5 +1,8 @@
 #include "SensorManager.hpp"
 
+
+const float SensorManager::MOVEMENT_THRESHOLD = 100.f;
+
 bool SensorManager::running(false);
 bool SensorManager::tracking(false);
 nite::HandTracker SensorManager::handTracker;
@@ -174,29 +177,36 @@ void SensorManager::updatePosition(nite::Point3f handPos) {
     // Calculate displacement
     displacement = lastHandPos - initialHandPos;
     displacement = vec3f(displacement.y, displacement.x, displacement.z);
+}
 
+vec3f SensorManager::getHandMovement() {
+    vec3f d = displacement;
+    float max = MOVEMENT_THRESHOLD*2.5;
+    float min = MOVEMENT_THRESHOLD;
 
-//    if (abs(displacement.y) >= MOVEMENT_THRESHOLD) {
-//        if (displacement.y > 0 ) {
-//            printf("Moving to the right %.5f\n", displacement.y);
-//        } else if (displacement.y < 0 ) {
-//            printf("Moving to the left %.5f\n", displacement.y);
-//        }
-//    }
+    if (abs(displacement.x) >= min) {
+        if (displacement.x > 0 )
+            d.x = glm::min(d.x - min, max);
+        else if (displacement.x < 0 )
+            d.x = glm::max(d.x + min, -max);
+    }
+    else d.x = 0.0f;
 
-//    if (abs(displacement.x) >= MOVEMENT_THRESHOLD) {
-//        if (displacement.x > 0 ) {
-//            printf("Moving upwards: %.5f\n", displacement.x);
-//        } else if (displacement.x < 0 ) {
-//            printf("Moving downwards: %.5f\n", displacement.x);
-//        }
-//        }
+    if (abs(displacement.y) >= min) {
+        if (displacement.y > 0 )
+            d.y = glm::min(d.y - min, max);
+        else if (displacement.y < 0 )
+            d.y = glm::max(d.y + min, -max);
+    }
+    else d.y = 0.0f;
 
-//    if (abs(displacement.z) >= MOVEMENT_THRESHOLD) {
-//        if (displacement.z > 0 ) {
-//            printf("Moving backwards: %.5f\n", displacement.z);
-//        } else if (displacement.z < 0 ) {
-//            printf("Moving forwards: %.5f\n", displacement.z);
-//        }
-//    }
+    if (abs(displacement.z) >= min) {
+        if (displacement.z > 0 )
+            d.z = glm::min(d.z - min, max);
+        else if (displacement.y < 0 )
+            d.z = glm::max(d.z + min, -max);
+    }
+    else d.z = 0.0f;
+
+    return d / (max-min);
 }

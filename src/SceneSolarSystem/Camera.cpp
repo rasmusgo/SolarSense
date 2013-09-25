@@ -107,17 +107,15 @@ void Camera::updateAcceleration(float deltaTime) {
         }
 
         // Check SensorManager
-        if (SensorManager::isTracking()) {
+        if (SensorManager::isTracking() && SensorManager::significantMovement()) {
 
             vec3f handMovement = SensorManager::getHandMovement();
+            if (mode == Free) {
+                handMovement.x = -handMovement.x;
+            }
+            handMovement *= maxVel;
 
-            vec3f aux = vec3f(abs(handMovement.x), abs(handMovement.y), abs(handMovement.z));
-            float maxVal = (aux.x > aux.y)? ((aux.x > aux.z)? aux.x : aux.z) : ((aux.y > aux.z)? aux.y : aux.z);
-            maxVal = glm::max(maxVal, (float)MOVEMENT_THRESHOLD);
-            handMovement /= maxVal;
-            handMovement *= maxAcc;
-
-            acc = handMovement;
+            vel = handMovement;
         }
 
         if (KeyAndMouseManager::isMouseDown(sf::Mouse::Left)) {

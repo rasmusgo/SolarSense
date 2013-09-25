@@ -2,7 +2,6 @@
 #define SENSORMANAGER_HPP
 
 #define DATA_PATH "GrabDetector/Data"
-#define MOVEMENT_THRESHOLD 100
 
 #include "tools.hpp"
 #include "OpenNI.h"
@@ -16,6 +15,8 @@ class SensorManager {
             static SensorManager instance;
             return instance;
         }
+
+        static const float MOVEMENT_THRESHOLD;
 
         /**
           * Intializes the connected Sensor (PrimeSense, Kinect) and starts the gesture recognition.
@@ -54,7 +55,7 @@ class SensorManager {
          *
          * @return The displacement of the tracked hand to its initial position.
          */
-       static vec3f getHandMovement() {return displacement;}
+       static vec3f getHandMovement();
 
 //       static void processGrabEvent(const PSLabs::IGrabEventListener::EventParams& params);
 

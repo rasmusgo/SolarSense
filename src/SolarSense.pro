@@ -10,7 +10,7 @@ LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL -lOpenNI2 
 INCLUDEPATH += $$PWD/ \
                $$PWD/OpenNI/Include \
                $$PWD/NiTE/Include \
-               $$PWD/GrabDetector/Include
+               #$$PWD/GrabDetector/Include
 QMAKE_CXXFLAGS += -std=c++11
 SOURCES += \
     $$PWD/main.cpp \
