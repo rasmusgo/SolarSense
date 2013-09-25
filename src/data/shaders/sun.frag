@@ -19,7 +19,7 @@ float light() {
     float xPeriod = 5.0; //defines repetition of marble lines in x direction
     float yPeriod = 10.0; //defines repetition of marble lines in y direction
         //turbPower = 0 ==> it becomes a normal sine pattern
-    float turbPower = 5.0; //makes twists
+    float turbPower = 10.0; //makes twists
     int turbSize = 32;
     //return fract(sin(dot(vTexCoord.xy ,vec2(12.9898*sin(time),78.233*cos(time)))) * 43758.5453);
 
@@ -29,5 +29,5 @@ float light() {
 }
 
 void main() {
-    gl_FragColor = vec4(texture2D(sampler,vTexCoord).xyz*light(), 1.0f);
+            gl_FragColor = vec4(texture2D(sampler,vTexCoord).xyz*light(), 1.0f);
 }

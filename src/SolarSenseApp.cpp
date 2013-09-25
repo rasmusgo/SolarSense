@@ -116,13 +116,13 @@ void SolarSenseApp::draw() {
     // texture.loadFromFile("data/cubetex.png");
     // sf::Sprite sprite; // sprite.setTexture(texture);
 
-    glUseProgram(0);
-    glBindBuffer(GL_ARRAY_BUFFER,0);
-    glDisable(GL_CULL_FACE);
-    window.pushGLStates();
-    window.draw(text);
-    window.popGLStates();
-    glEnable(GL_CULL_FACE);
+//    glUseProgram(0);
+//    glBindBuffer(GL_ARRAY_BUFFER,0);
+//    glDisable(GL_CULL_FACE);
+//    window.pushGLStates();
+//    window.draw(text);
+//    window.popGLStates();
+//    glEnable(GL_CULL_FACE);
 
     window.display();
 }
