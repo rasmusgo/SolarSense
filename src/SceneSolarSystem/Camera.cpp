@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 #include "../input/KeyAndMouseManager.hpp"
 #include "../input/SensorManager.hpp"
+#include "../SolarSenseApp.hpp"
 
 Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.0,1.0)),
     rot(0.0f,0.0f), rotM(1.0f) {
@@ -15,12 +16,41 @@ Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.
 
     originalPos = pos;
     interpolating = false;
+
+    eyeDistance3D = 0.03f;
+
+    hudHand.mesh = MeshManager::get("square");
+    hudHand.program = ShaderManager::get("hand");
+
+    wasTracking = false;
 }
 
 Camera::~Camera() {
 }
 
 void Camera::draw() {
+}
+
+void Camera::drawHUD() {
+    if (SensorManager::isTracking()) {
+        if (not wasTracking)
+            handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
+
+        hudHand.program->uniform("time")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
+        hudHand.program->uniform("lastTime")->set(handTime);
+        hudHand.program->uniform("ratio")->set(((float)SCRWIDTH)/((float)SCRHEIGHT));
+
+        TextureManager::get("hand")->bind();
+        hudHand.program->uniform("sampler")->set(2);
+
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+        hudHand.draw();
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+    }
+
+    wasTracking = SensorManager::isTracking();
 }
 
 void Camera::update(float deltaTime) {
@@ -35,6 +65,12 @@ void Camera::update(float deltaTime) {
             case Arround:
                 displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
                 pos.z += displ;
+                if (pos.z < arrObject->scale.x*1.5f) { //Too close! to the object!
+                    pos.z = arrObject->scale.x*1.5f;
+                }
+                else if (pos.z > 250.0) { //Where the fuck are you going!?
+                    pos.z = 250.0;
+                }
 
                 m = glm::rotate(m,vel.y/2.0f,vec3f(0,1,0));
                 m = glm::rotate(m,vel.x/2.0f,vec3f(1,0,0));
@@ -77,6 +113,7 @@ void Camera::update(float deltaTime) {
         else {
             rotM = rot;
             interpolating = false;
+            SensorManager::resetInitialHandPos();
         }
 
 
@@ -194,10 +231,6 @@ void Camera::setMode(CameraMode m) {
     mode = m;
 }
 
-void Camera::drawHUD() {
-
-}
-
 mat4f Camera::getViewMatrix() {
     switch (mode) {
     case Free:
@@ -218,6 +251,16 @@ mat4f Camera::getViewMatrix() {
         return rotM;
     }
 }
+
+std::pair<mat4f,mat4f> Camera::getViewMatrix3D() {
+    mat4f c = getViewMatrix();
+    mat4f r(1.0f), l(1.0f);
+    r = glm::translate(r, vec3f(1,0,0)*(eyeDistance3D/2.0f));
+    l = glm::translate(l, -vec3f(1,0,0)*(eyeDistance3D/2.0f));
+
+    return std::pair<mat4f,mat4f>(r*c,l*c); //Right and Left
+}
+
 
 inline vec3f Camera::posFromMatrix(mat4f &m) {
     return vec3f(m[3][0],m[3][1],m[3][2]);

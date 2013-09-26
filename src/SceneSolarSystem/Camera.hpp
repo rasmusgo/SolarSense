@@ -2,6 +2,7 @@
 #define CAMERA_HPP
 
 #include "Entity.hpp"
+#include "../graphics/Model.hpp"
 
 class Camera : public Entity {
     public:
@@ -23,12 +24,15 @@ class Camera : public Entity {
         vec2f rot;
 
         mat4f getViewMatrix();
+        std::pair<mat4f,mat4f> getViewMatrix3D();
 
         CameraMode mode;
 
         bool interpolating;
 
-    private:
+        float eyeDistance3D; //Total distance between eyes
+
+    private:        
         const float INTERPOLATION_TIME = 3.0f;
 
         void updateAcceleration(float deltaTime);
@@ -45,6 +49,9 @@ class Camera : public Entity {
         float maxVel;
         sf::Clock cameraClock;
         vec3f originalPos;
+        bool wasTracking;
+        float handTime;
+        Model hudHand;
 };
 
 #endif // CAMERA_HPP

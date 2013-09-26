@@ -16,6 +16,7 @@ class SensorManager {
         }
 
         static const float MOVEMENT_THRESHOLD;
+        static const float TIME_THRESHOLD;
 
         /**
           * Intializes the connected Sensor (PrimeSense, Kinect) and starts the gesture recognition.
@@ -26,14 +27,18 @@ class SensorManager {
          * Retrieves sensor data and processes it.
          * Should be called as often as possible.
          */
-       static void update();
+       static void update(float deltaTime);
+
+       static void resetInitialHandPos() {initialHandPos = lastHandPos;}
+
+       static void resetTracking(bool stopTracking = false);
 
        /**
          * Checks if there is currently a hand being tracked.
          *
          * @return True if a hand is tracked, false if not.
          */
-       static bool isTracking() {return trackingMovement;}
+       static bool isTracking() {return tracking;}
 
        /**
          * Call this method to check if there is significant movement.
@@ -56,7 +61,13 @@ class SensorManager {
          */
        static vec3f getHandMovement();
 
-       static int gestureDetected();
+       static int checkGesture();
+
+       enum GestureType {
+           NO_GESTURE,
+           SWIPE_LEFT,
+           SWIPE_RIGHT
+       };
 
 //       static void processGrabEvent(const PSLabs::IGrabEventListener::EventParams& params);
 
@@ -74,21 +85,20 @@ class SensorManager {
         void operator=(SensorManager const&);
         ~SensorManager();
 
-        static void startTracking(nite::Point3f gesturePos);
+        static void startTracking(nite::Point3f gesturePos, float deltaTime);
         static void stopTracking(nite::Point3f gesturePos);
-        static void updatePosition(nite::Point3f handPos);
-        static void checkGesture(nite::Point3f handPos);
+        static void updateHandData(nite::Point3f handPos);
 
-        static bool running, trackingMovement, trackingGesture;
+        static bool running, tracking;
+        static float detectTime;
 
         static openni::Device sensor;
 
         static nite::HandTracker handTracker;
-        static nite::HandId movementHandId, gestureHandId;
+        static nite::HandId handId;
         //static PSLabs::IGrabDetector* grabDetector;
 
-        static vec3f initialMovementHandPos ,lastGestureHandPos, lastMovementHandPos, currentGestureHandPos, displacement, displacementGesture;
-        static int framesSinceLastMovement;
+        static vec3f initialHandPos, lastHandPos, displacement, velocity;
 };
 
 #endif // SENSORMANAGER_HPP

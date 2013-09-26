@@ -12,7 +12,7 @@
 
 SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 	Scene(parent),
-    debugCounter(0.0), fpsCount(0), paused(false) {
+    debugCounter(0.0), fpsCount(0), paused(false), stereoscopic3D(false) {
 
     readInput();
 
@@ -110,25 +110,29 @@ bool SceneSolarSystem::loadResources() {
 		return false;
     if(!ShaderManager::load("sun","data/shaders/sun.vert","data/shaders/sun.frag"))
         return false;
+    if(!ShaderManager::load("hand","data/shaders/hand.vert","data/shaders/hand.frag"))
+        return false;
 
 	//textures
     if(!TextureManager::load("cubetex","data/10x10tex.png",2))
 		return false;
     if(!TextureManager::load("sun","data/SunTexture_2048.png",2))
         return false;
+    if(!TextureManager::load("hand","data/hand_white.png",2))
+        return false;
 
     /*
     * Earth ferran style
     */
-    // if(!ShaderManager::load("earthShader","data/shaders/earthShader.vert","data/shaders/earthShader.frag"))
-    //     return false;
+     if(!ShaderManager::load("earthShader","data/shaders/earthShader.vert","data/shaders/earthShader.frag"))
+         return false;
 
-    // if(!TextureManager::load("earth","data/earthmap.jpg",2))
-    //     return false;
-    // if(!TextureManager::load("earthNight","data/lightsmap.jpg",3))
-    //     return false;
-    // if(!TextureManager::load("earthWater","data/earthwatermap.png",4))
-    //     return false;
+     if(!TextureManager::load("earth","data/earthmap.jpg",2))
+         return false;
+     if(!TextureManager::load("earthNight","data/lightsmap.jpg",3))
+         return false;
+     if(!TextureManager::load("earthWater","data/earthwatermap.png",4))
+         return false;
 
     /*
     * Earth chris style
@@ -140,14 +144,14 @@ bool SceneSolarSystem::loadResources() {
     if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
         return false;
 
-    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
-        return false;
-    if(!TextureManager::load("earth_nighttime","data/earth_nighttime.png",3))
-        return false;
-    if(!TextureManager::load("earth_cloud","data/earth_cloud.png",4))
-        return false;
-    if(!TextureManager::load("earth_specular","data/earth_specular.png",5))
-       return false;
+//    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
+//        return false;
+//    if(!TextureManager::load("earth_nighttime","data/earth_nighttime.png",3))
+//        return false;
+//    if(!TextureManager::load("earth_cloud","data/earth_cloud.png",4))
+//        return false;
+//    if(!TextureManager::load("earth_specular","data/earth_specular.png",5))
+//       return false;
     if(!TextureManager::load("stars4K","data/stars4K.png",2))
         return false;
 
@@ -217,17 +221,22 @@ void SceneSolarSystem::update(float deltaTime) {
     //Update logic
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
     if (paused) deltaTime = 0.0f;
-    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right) || SensorManager::gestureDetected() == 1)) {
+    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
         if (++currentObject != objectsOrder.end())
             cam->setArround(objectsMap.at((*currentObject)));
         else --currentObject;
     }
-    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left) || SensorManager::gestureDetected() == -1)) {
+    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
         if (currentObject != objectsOrder.begin())
             cam->setArround(objectsMap.at((*--currentObject)));
     }
     if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
     if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Num3)) {
+        if (stereoscopic3D)
+            glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
+        stereoscopic3D = !stereoscopic3D;
+    }
 
     //Update Camera
     cam->update(deltaTime);
@@ -248,19 +257,82 @@ void SceneSolarSystem::update(float deltaTime) {
 }
 
 void SceneSolarSystem::draw() const {
-	//calculate perspective matrix
-	getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+    if (not stereoscopic3D) {
+        //calculate perspective matrix
+        getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
 
-    //Move matrix to position (according to player/camera)
-    //getState().view = mat4f(1.0);
-    getState().view = cam->getViewMatrix();
+        //Move matrix to position (according to player/camera)
+        //getState().view = mat4f(1.0);
+        getState().view = cam->getViewMatrix();
 
-    //Drawable objects
-    glDisable(GL_CULL_FACE);
-    stars->draw();
-    glEnable(GL_CULL_FACE);
+        //Drawable objects
+        glDisable(GL_CULL_FACE);
+        stars->draw();
+        glEnable(GL_CULL_FACE);
 
-    for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
-        (*it)->draw();
+        for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+            (*it)->draw();
+
+        cam->drawHUD();
+    }
+    else {
+        //calculate perspective matrix (Parallel)
+        //getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+
+        //Move matrix to position (according to player/camera)
+        //getState().view = mat4f(1.0);
+        std::pair<mat4f,mat4f> eyes = cam->getViewMatrix3D();
+
+        float ratio  = float(SCRWIDTH) / float(SCRHEIGHT);
+        float radians = DEG_TO_RAD * FOV / 2.0;
+        float wd2     = ZNEAR * glm::tan(radians);
+        //float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
+        float ndfl    = ZNEAR / 375.0;
+
+        float left, right, top, bottom;
+
+        glViewport(float(SCRWIDTH)/2.0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Right eye
+        {
+            //Off Axis projection
+            left  = - ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
+            right =   ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
+            top    =   wd2;
+            bottom = - wd2;
+            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
+
+            getState().view = eyes.first;
+
+            //Drawable objects
+            glDisable(GL_CULL_FACE);
+            stars->draw();
+            glEnable(GL_CULL_FACE);
+
+            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+                (*it)->draw();
+
+            cam->drawHUD();
+        }
+        glViewport(0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Left eye
+        {
+            //Off Axis projection
+            left  = - ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
+            right =   ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
+            top    =   wd2;
+            bottom = - wd2;
+            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
+
+            getState().view = eyes.second;
+
+            //Drawable objects
+            glDisable(GL_CULL_FACE);
+            stars->draw();
+            glEnable(GL_CULL_FACE);
+
+            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+                (*it)->draw();
+
+            cam->drawHUD();
+        }
+    }
 }
 

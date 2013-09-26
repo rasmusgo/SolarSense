@@ -42,7 +42,7 @@ void OrbitingObject::drawFrom(mat4f from) const {
     TextureManager::get("sun")->bind();
     sph.program->uniform("sampler")->set(2);
     sph.program->uniform("modelViewProjectionMatrix")->set(transform);
-    sph.program->uniform("time")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
+    //sph.program->uniform("time")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
     sph.draw();
 
     //Draw sons
