@@ -92,6 +92,6 @@ void main(void)
    gl_FragColor = vec4(texture2D(sampler,vTexCoord).xyz + vec3( f * ( 0.25 + brightness * 0.1 ) * orange ) + starSphere*2.5 + orange + corona*orangeRed, 1.0f);
 
 //    gl_FragColor.rgb    = vec3( f * ( 0.75 + brightness * 0.3 ) * orange ) + starSphere + orange + starGlow * orangeRed;
-    gl_FragColor.a      = 1.0;
+   // gl_FragColor.a      = 1.0;
 }
 

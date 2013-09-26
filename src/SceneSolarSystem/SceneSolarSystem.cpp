@@ -67,8 +67,6 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     addObject("jupiter",jupiter);
     sun->addObject(jupiter);
 
-
-
     Sun* sun2 = new Sun(this, center, vec3f(1.0f, 1.0f, 1.0f)*10.f, 0, 0);
     addObject("sun",sun2);
     sun->addObject(sun2);
