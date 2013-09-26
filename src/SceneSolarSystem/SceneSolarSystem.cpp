@@ -189,12 +189,12 @@ void SceneSolarSystem::update(float deltaTime) {
     //Update logic
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
     if (paused) deltaTime = 0.0f;
-    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right) || SensorManager::gestureDetected() == 1)) {
+    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right) || SensorManager::gestureDetected() == SensorManager::SWIPE_RIGHT)) {
         if (++currentObject != objectsOrder.end())
             cam->setArround(objectsMap.at((*currentObject)));
         else --currentObject;
     }
-    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left) || SensorManager::gestureDetected() == -1)) {
+    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left) || SensorManager::gestureDetected() == SensorManager::SWIPE_LEFT)) {
         if (currentObject != objectsOrder.begin())
             cam->setArround(objectsMap.at((*--currentObject)));
     }

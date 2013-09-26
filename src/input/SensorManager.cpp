@@ -6,16 +6,22 @@ const float SensorManager::MOVEMENT_THRESHOLD = 100.f;
 bool SensorManager::running(false);
 bool SensorManager::trackingMovement(false);
 bool SensorManager::trackingGesture(false);
+
 openni::Device SensorManager::sensor;
 nite::HandTracker SensorManager::handTracker;
-nite::HandId SensorManager::movementHandId;
+nite::HandId SensorManager::handId;
 nite::HandId SensorManager::gestureHandId;
-vec3f SensorManager::initialMovementHandPos(-1,-1,-1);
-vec3f SensorManager::lastMovementHandPos(-1,-1,-1);
+
+vec3f SensorManager::initialHandPos(-1,-1,-1);
+vec3f SensorManager::lastHandPos(-1,-1,-1);
+vec3f SensorManager::displacement(0,0,0);
+vec3f SensorManager::velocity(0,0,0);
+
+
 vec3f SensorManager::lastGestureHandPos(-1,-1,-1);
 vec3f SensorManager::currentGestureHandPos(-1,-1,-1);
-vec3f SensorManager::displacement(0,0,0);
 vec3f SensorManager::displacementGesture(0,0,0);
+
 
 SensorManager::SensorManager() {}
 
@@ -127,12 +133,12 @@ void SensorManager::update() {
         const nite::HandData& hand2 = hands[1];
         nite::HandData movementHand, gestureHand;
 
-        if (hand1.getId() == movementHandId)
+        if (hand1.getId() == handId)
             movementHand = hand1;
         else if (hand1.getId() == gestureHandId)
             gestureHand = hand1;
 
-        if (hand2.getId() == movementHandId)
+        if (hand2.getId() == handId)
             movementHand = hand2;
         else if (hand2.getId() == gestureHandId)
             gestureHand = hand2;
@@ -147,7 +153,9 @@ void SensorManager::update() {
         // Check if the hand was lost.
         if (movementHand.isLost() && trackingMovement) {
             trackingMovement = false;
-            printf("SensorManager | Movement hand was lost, stopped tracking. (HandId: %d)\n", movementHandId);
+            // Reset velocity, otherwise gesture are recognized if the hand gets lost during a gesture.
+            velocity = vec3f(0,0,0);
+            printf("SensorManager | Movement hand was lost, stopped tracking. (HandId: %d)\n", handId);
         } else if (gestureHand.isLost() && trackingGesture) {
             trackingGesture = false;
             printf("SensorManager | Gesture hand was lost, stopped tracking. (HandId: %d)\n", gestureHandId);
@@ -165,12 +173,12 @@ void SensorManager::update() {
 
 void SensorManager::startTracking(nite::Point3f gesturePos) {
     if (!trackingMovement) {
-        handTracker.startHandTracking(gesturePos, &movementHandId);
+        handTracker.startHandTracking(gesturePos, &handId);
         trackingMovement = true;
-        printf("SensorManager | Hand detected, using hand for camera movement. (HandId: %d)\n", movementHandId);
+        printf("SensorManager | Hand detected, using hand for camera movement. (HandId: %d)\n", handId);
 
         // Save the initial hand position to determine the movement of the hand.
-        initialMovementHandPos = vec3f(gesturePos.x, gesturePos.y, gesturePos.z);
+        initialHandPos = vec3f(gesturePos.x, gesturePos.y, gesturePos.z);
     } else if (!trackingGesture) {
         handTracker.startHandTracking(gesturePos, &gestureHandId);
         trackingGesture = true;
@@ -188,16 +196,16 @@ void SensorManager::startTracking(nite::Point3f gesturePos) {
 void SensorManager::stopTracking(nite::Point3f gesturePos) {
     // Calculate the distance between the position of the hand performing the gesture
     // and the last known position of the hand currently being tracked.
-    vec3f tempMov = vec3f(gesturePos.x, gesturePos.y, gesturePos.z) - lastMovementHandPos;
-    vec3f tempGest = vec3f(gesturePos.x, gesturePos.y, gesturePos.z) - lastMovementHandPos;
+    vec3f tempMov = vec3f(gesturePos.x, gesturePos.y, gesturePos.z) - lastHandPos;
+    vec3f tempGest = vec3f(gesturePos.x, gesturePos.y, gesturePos.z) - lastHandPos;
     float distMov = sqrt(glm::dot(tempMov, tempMov));
     float distGest = sqrt(glm::dot(tempGest, tempGest));
 
     // Check if distance is sufficiently small
     if (distMov <= 100) {
-        handTracker.stopHandTracking(movementHandId);
+        handTracker.stopHandTracking(handId);
         trackingMovement = false;
-        printf("SensorManager | Stopped tracking the movement hand. (HandId: %d)\n", movementHandId);
+        printf("SensorManager | Stopped tracking the movement hand. (HandId: %d)\n", handId);
     } else if (distGest <= 100) {
         handTracker.stopHandTracking(gestureHandId);
         printf("SensorManager | Stopped tracking the gesturing hand. (HandId: %d)\n", gestureHandId);
@@ -209,21 +217,29 @@ void SensorManager::stopTracking(nite::Point3f gesturePos) {
 
 void SensorManager::updatePosition(nite::Point3f handPos) {
     // Update hand position
-    lastMovementHandPos = vec3f(handPos.x, handPos.y, handPos.z);
+    vec3f currentHandPos = vec3f(handPos.x, handPos.y, handPos.z);
 
     // Calculate displacement
-    displacement = lastMovementHandPos - initialMovementHandPos;
+    displacement = currentHandPos - initialHandPos;
+    velocity = currentHandPos - lastHandPos;
+
+    // Swap x and y coordinates for the camera
     displacement = vec3f(displacement.y, displacement.x, displacement.z);
+    velocity = vec3f(velocity.y, velocity.x, velocity.z);
+    printf("velocity: %.2f\n", velocity.y);
+
+    lastHandPos = currentHandPos;
+
 }
 
 int SensorManager::gestureDetected() {
-    if (displacementGesture.x >= 150) {
-        return 1;
-    } else if (displacementGesture.x <= -150) {
-        return -1;
+    if (velocity.y >= 80) {
+        return SWIPE_RIGHT;
+    } else if (velocity.y <= -80) {
+        return SWIPE_LEFT;
     }
 
-    return 0;
+    return NO_GESTURE;
 }
 
 vec3f SensorManager::getHandMovement() {

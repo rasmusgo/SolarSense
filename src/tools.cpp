@@ -1,8 +1,8 @@
 #include "tools.hpp"
 
 //extern'd in tools.hpp
-int SCRWIDTH = sf::VideoMode::getFullscreenModes()[0].width;
-int SCRHEIGHT = sf::VideoMode::getFullscreenModes()[0].height;
+int SCRWIDTH = sf::VideoMode::getDesktopMode().width;
+int SCRHEIGHT = sf::VideoMode::getDesktopMode().height;
 bool WINDOWFOCUS = false;
 sf::Clock GLOBALCLOCK;
 

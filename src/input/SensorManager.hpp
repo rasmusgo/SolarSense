@@ -58,6 +58,13 @@ class SensorManager {
 
        static int gestureDetected();
 
+       typedef enum
+       {
+           NO_GESTURE,
+           SWIPE_LEFT,
+           SWIPE_RIGHT
+       } GestureType;
+
 //       static void processGrabEvent(const PSLabs::IGrabEventListener::EventParams& params);
 
 //       // Inner class for the GrabListener
@@ -84,10 +91,10 @@ class SensorManager {
         static openni::Device sensor;
 
         static nite::HandTracker handTracker;
-        static nite::HandId movementHandId, gestureHandId;
+        static nite::HandId handId, gestureHandId;
         //static PSLabs::IGrabDetector* grabDetector;
 
-        static vec3f initialMovementHandPos ,lastGestureHandPos, lastMovementHandPos, currentGestureHandPos, displacement, displacementGesture;
+        static vec3f initialHandPos ,lastGestureHandPos, lastHandPos, currentGestureHandPos, displacement, displacementGesture, velocity;
         static int framesSinceLastMovement;
 };
 
