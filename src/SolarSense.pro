@@ -58,6 +58,7 @@ SOURCES += \
         $$PWD/SceneSolarSystem/RegularPolygonObject.cpp \
 	$$PWD/graphics/MeshManager.cpp \
     $$PWD/graphics/ShaderManager.cpp \
+    $$PWD/SceneSolarSystem/inputreader.cpp \
     SceneSolarSystem/SphereObject.cpp \
     Entity.cpp \
     SceneSolarSystem/Camera.cpp \
@@ -100,6 +101,7 @@ HEADERS += \
     SceneSolarSystem/Earth.hpp \
     input/InteractionListener.hpp \
     input/InteractionManager.hpp \
+    $$PWD/SceneSolarSystem/inputreader.h \
     input/SensorManager.hpp
 
 OTHER_FILES += \
