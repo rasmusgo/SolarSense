@@ -106,11 +106,15 @@ bool SceneSolarSystem::loadResources() {
 		return false;
     if(!ShaderManager::load("sun","data/shaders/sun.vert","data/shaders/sun.frag"))
         return false;
+    if(!ShaderManager::load("hand","data/shaders/hand.vert","data/shaders/hand.frag"))
+        return false;
 
 	//textures
     if(!TextureManager::load("cubetex","data/10x10tex.png",2))
 		return false;
     if(!TextureManager::load("sun","data/SunTexture_2048.png",2))
+        return false;
+    if(!TextureManager::load("hand","data/hand_white.png",2))
         return false;
 
     /*

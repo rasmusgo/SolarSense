@@ -114,4 +114,6 @@ OTHER_FILES += \
     data/shaders/planetShader.vert \
     data/shaders/planetShader.frag \
     data/shaders/sun.vert \
-    data/shaders/sun.frag
+    data/shaders/sun.frag \
+    data/shaders/hand.frag \
+    data/shaders/hand.vert

@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 #include "../input/KeyAndMouseManager.hpp"
 #include "../input/SensorManager.hpp"
+#include "../SolarSenseApp.hpp"
 
 Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.0,1.0)),
     rot(0.0f,0.0f), rotM(1.0f) {
@@ -17,12 +18,36 @@ Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.
     interpolating = false;
 
     eyeDistance3D = 0.03f;
+
+    hudHand.mesh = MeshManager::get("square");
+    hudHand.program = ShaderManager::get("hand");
+
+    wasTracking = false;
 }
 
 Camera::~Camera() {
 }
 
 void Camera::draw() {
+}
+
+void Camera::drawHUD() {
+    if (SensorManager::isTracking()) {
+        if (not wasTracking)
+            handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
+
+        hudHand.program->uniform("time")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
+        hudHand.program->uniform("lastTime")->set(handTime);
+
+        TextureManager::get("hand")->bind();
+        hudHand.program->uniform("sampler")->set(2);
+
+        glDisable(GL_CULL_FACE | GL_DEPTH_TEST);
+        hudHand.draw();
+        glEnable(GL_CULL_FACE | GL_DEPTH_TEST);
+    }
+
+    wasTracking = SensorManager::isTracking();
 }
 
 void Camera::update(float deltaTime) {
@@ -37,6 +62,12 @@ void Camera::update(float deltaTime) {
             case Arround:
                 displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
                 pos.z += displ;
+                if (pos.z < arrObject->scale.x*1.5f) { //Too close! to the object!
+                    pos.z = arrObject->scale.x*1.5f;
+                }
+                else if (pos.z > 250.0) { //Where the fuck are you going!?
+                    pos.z = 250.0;
+                }
 
                 m = glm::rotate(m,vel.y/2.0f,vec3f(0,1,0));
                 m = glm::rotate(m,vel.x/2.0f,vec3f(1,0,0));
@@ -194,10 +225,6 @@ void Camera::setMode(CameraMode m) {
     }
 
     mode = m;
-}
-
-void Camera::drawHUD() {
-
 }
 
 mat4f Camera::getViewMatrix() {
