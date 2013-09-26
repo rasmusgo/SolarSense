@@ -113,6 +113,7 @@ void Camera::update(float deltaTime) {
         else {
             rotM = rot;
             interpolating = false;
+            SensorManager::resetInitialHandPos();
         }
 
 

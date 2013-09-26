@@ -87,7 +87,7 @@ void SolarSenseApp::update(float deltaTime) {
 	// - Resizing window & viewport
 	// - Updating window focus
     KeyAndMouseManager::update(isRunning,window);
-    SensorManager::update();
+    SensorManager::update(deltaTime);
 
 	//Scene logic updating
 	if (currentScene != NULL)

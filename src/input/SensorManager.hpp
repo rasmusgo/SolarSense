@@ -16,6 +16,7 @@ class SensorManager {
         }
 
         static const float MOVEMENT_THRESHOLD;
+        static const float TIME_THRESHOLD;
 
         /**
           * Intializes the connected Sensor (PrimeSense, Kinect) and starts the gesture recognition.
@@ -26,7 +27,11 @@ class SensorManager {
          * Retrieves sensor data and processes it.
          * Should be called as often as possible.
          */
-       static void update();
+       static void update(float deltaTime);
+
+       static void resetInitialHandPos() {initialHandPos = lastHandPos;}
+
+       static void resetTracking(bool stopTracking = false);
 
        /**
          * Checks if there is currently a hand being tracked.
@@ -58,12 +63,11 @@ class SensorManager {
 
        static int checkGesture();
 
-       typedef enum
-       {
+       enum GestureType {
            NO_GESTURE,
            SWIPE_LEFT,
            SWIPE_RIGHT
-       } GestureType;
+       };
 
 //       static void processGrabEvent(const PSLabs::IGrabEventListener::EventParams& params);
 
@@ -81,22 +85,20 @@ class SensorManager {
         void operator=(SensorManager const&);
         ~SensorManager();
 
-        static void startTracking(nite::Point3f gesturePos);
+        static void startTracking(nite::Point3f gesturePos, float deltaTime);
         static void stopTracking(nite::Point3f gesturePos);
-        static void updatePosition(nite::Point3f handPos);
-        static void updateGestureData(nite::Point3f handPos);
+        static void updateHandData(nite::Point3f handPos);
 
-        static bool running, tracking, trackingGesture;
+        static bool running, tracking;
+        static float detectTime;
 
         static openni::Device sensor;
 
         static nite::HandTracker handTracker;
-        static nite::HandId handId, gestureHandId;
+        static nite::HandId handId;
         //static PSLabs::IGrabDetector* grabDetector;
 
         static vec3f initialHandPos, lastHandPos, displacement, velocity;
-//        static vec3f lastGestureHandPos, currentGestureHandPos, displacementGesture;
-        static int framesSinceLastMovement;
 };
 
 #endif // SENSORMANAGER_HPP
