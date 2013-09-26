@@ -186,7 +186,7 @@ void SensorManager::startTracking(nite::Point3f gesturePos) {
         printf("SensorManager | Hand detected, using hand gesture recognition. (HandId: %d)\n", gestureHandId);
 
         // Save the initial hand position to determine the movement of the hand.
-        lastGestureHandPos = vec3f(gesturePos.x, gesturePos.y, gesturePos.z);
+        //lastGestureHandPos = vec3f(gesturePos.x, gesturePos.y, gesturePos.z);
     } else {
         // Only two hands should be tracked simultaneously
         printf("SensorManager | Hand deteced but already tracking two hands, ignoring new hand.\n");

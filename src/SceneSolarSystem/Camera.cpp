@@ -38,13 +38,16 @@ void Camera::drawHUD() {
 
         hudHand.program->uniform("time")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
         hudHand.program->uniform("lastTime")->set(handTime);
+        hudHand.program->uniform("ratio")->set(((float)SCRWIDTH)/((float)SCRHEIGHT));
 
         TextureManager::get("hand")->bind();
         hudHand.program->uniform("sampler")->set(2);
 
-        glDisable(GL_CULL_FACE | GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
         hudHand.draw();
-        glEnable(GL_CULL_FACE | GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
     }
 
     wasTracking = SensorManager::isTracking();

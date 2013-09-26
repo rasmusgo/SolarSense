@@ -193,12 +193,12 @@ void SceneSolarSystem::update(float deltaTime) {
     //Update logic
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
     if (paused) deltaTime = 0.0f;
-    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right) || SensorManager::gestureDetected() == SensorManager::SWIPE_RIGHT)) {
+    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
         if (++currentObject != objectsOrder.end())
             cam->setArround(objectsMap.at((*currentObject)));
         else --currentObject;
     }
-    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left) || SensorManager::gestureDetected() == SensorManager::SWIPE_LEFT)) {
+    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
         if (currentObject != objectsOrder.begin())
             cam->setArround(objectsMap.at((*--currentObject)));
     }
@@ -244,6 +244,8 @@ void SceneSolarSystem::draw() const {
 
         for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
             (*it)->draw();
+
+        cam->drawHUD();
     }
     else {
         //calculate perspective matrix (Parallel)
@@ -256,8 +258,8 @@ void SceneSolarSystem::draw() const {
         float ratio  = float(SCRWIDTH) / float(SCRHEIGHT);
         float radians = DEG_TO_RAD * FOV / 2.0;
         float wd2     = ZNEAR * glm::tan(radians);
-        float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
-        //float ndfl    = ZNEAR / ZNEAR*2.0;
+        //float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
+        float ndfl    = ZNEAR / 250.0;
 
         float left, right, top, bottom;
 
@@ -279,6 +281,8 @@ void SceneSolarSystem::draw() const {
 
             for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
                 (*it)->draw();
+
+            cam->drawHUD();
         }
         glViewport(0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Left eye
         {
@@ -298,6 +302,8 @@ void SceneSolarSystem::draw() const {
 
             for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
                 (*it)->draw();
+
+            cam->drawHUD();
         }
     }
 }

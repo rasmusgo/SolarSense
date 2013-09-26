@@ -11,7 +11,7 @@ void main() {
     float alpha = 1.0;
     float handTime = time-lastTime;
     if (handTime > 2.5) {
-        alpha = max(0.5, 1.0 -(handTime-2.5)/3.0);
+        alpha = max(0.25, 1.0 -(handTime-2.5)/3.0);
     }
 
     gl_FragColor = vec4(color.xyz, alpha);
