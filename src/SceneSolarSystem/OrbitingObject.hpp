@@ -17,6 +17,8 @@ class OrbitingObject : public GameObject {
     private:
         float orbSpeed;
         float orbRadius;
+        float timeAcc;
+
         Model sph;//should be probably an abstract class so this would go out
         Model orbit;
         mat4f baseMatrix;

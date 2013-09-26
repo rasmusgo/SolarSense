@@ -6,6 +6,7 @@
 #include "SphereObject.hpp"
 #include "Planet.hpp"
 #include "Earth.hpp"
+#include "Sun.hpp"
 #include "StandardPlanet.hpp"
 
 #include "inputreader.h"
@@ -37,8 +38,7 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     addObject(stars);
     GameObject* center = new GameObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(1.0f, 1.0f, 1.0f));
     addObject(center);
-    OrbitingObject* sun = new OrbitingObject(this, center, vec3f(10.0f, 10.0f, 10.0f), 0, 0);
-    addDrawableObject("sun",sun);
+
 
     StandardPlanet* mercury = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 5, "planetShader", "mercury");
     addObject("mercury",mercury);
@@ -52,6 +52,7 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     addObject("earth",earth);
     sun->addObject(earth);
 
+
     StandardPlanet* moon = new StandardPlanet(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.2f, 3, 7, "planetShader", "moon");
     addObject("moon",moon);
     earth->addObject(moon);
@@ -63,6 +64,13 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     StandardPlanet* jupiter = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*4.f, 80, 1.5, "planetShader", "jupiter");
     addObject("jupiter",jupiter);
     sun->addObject(jupiter);
+
+    OrbitingObject* sun = new OrbitingObject(this, center, vec3f(4.6f, 4.6f, 4.6f), 0, 0);
+    addDrawableObject("sun",sun);
+
+    Sun* sun2 = new Sun(this, center, vec3f(1.0f, 1.0f, 1.0f)*10.f, 0, 0);
+    addObject("Sun",sun2);
+    sun->addObject(sun2);
 
 
     currentObject = objectsOrder.begin();
@@ -109,6 +117,8 @@ bool SceneSolarSystem::loadResources() {
 	if(!ShaderManager::load("sample2","data/shaders/sample2.vert","data/shaders/sample2.frag"))
 		return false;
     if(!ShaderManager::load("sun","data/shaders/sun.vert","data/shaders/sun.frag"))
+        return false;
+    if(!ShaderManager::load("sun3d","data/shaders/sun3d.vert","data/shaders/sun3d.frag"))
         return false;
     if(!ShaderManager::load("hand","data/shaders/hand.vert","data/shaders/hand.frag"))
         return false;

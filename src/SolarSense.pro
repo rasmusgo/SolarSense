@@ -64,6 +64,7 @@ SOURCES += \
     SceneSolarSystem/Camera.cpp \
     SceneSolarSystem/OrbitingObject.cpp \
     SceneSolarSystem/Earth.cpp \
+    SceneSolarSystem/Sun.cpp \
     SceneSolarSystem/Planet.cpp \
     input/InteractionListener.cpp \
     input/InteractionManager.cpp \
@@ -99,6 +100,7 @@ HEADERS += \
     SceneSolarSystem/OrbitingObject.hpp \
     SceneSolarSystem/Planet.hpp \
     SceneSolarSystem/Earth.hpp \
+    SceneSolarSystem/Sun.hpp \
     input/InteractionListener.hpp \
     input/InteractionManager.hpp \
     $$PWD/SceneSolarSystem/inputreader.h \

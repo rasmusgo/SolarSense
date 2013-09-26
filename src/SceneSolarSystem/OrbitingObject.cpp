@@ -8,7 +8,7 @@ OrbitingObject::OrbitingObject(Scene* parentScene, GameObject* parentObject,
                                 : GameObject(parentScene, parentObject->pos, scale)
                                 , orbRadius(orbRadius), orbSpeed(orbSpeed), parentObject(parentObject) {
     sph.mesh = MeshManager::get("sphere");
-    sph.program = ShaderManager::get("sun");
+    sph.program = ShaderManager::get("sun3d");
 
     orbit.mesh = MeshManager::get("square");
     orbit.program = ShaderManager::get("orbit");
@@ -18,17 +18,28 @@ OrbitingObject::~OrbitingObject() {
 }
 
 void OrbitingObject::update(float deltaTime) {
-    (void) deltaTime;
+    //(void) deltaTime;
+    timeAcc += deltaTime;
+
     updateMatrix();
 }
 
 void OrbitingObject::updateMatrix() {
-    mat4f m(1.0);
-    m = glm::translate(m, parentObject->pos); 
-    m = glm::rotate(m,GLOBALCLOCK.getElapsedTime().asSeconds()*orbSpeed,vec3f(0,1,0));
+    mat4f m(1.0), temp;
+    m = glm::rotate(m,timeAcc*orbSpeed,vec3f(0,1,0));
+    
     m = glm::translate(m,vec3f(orbRadius, 0.0f, 0.0f));
+
+   
     baseMatrix = m;
-    m = glm::scale(m,scale);
+
+     m = glm::scale(m,scale);
+
+     
+    //m = temp*m;
+
+
+    
     sph.modelMatrix = m;
 }
 
@@ -42,7 +53,7 @@ void OrbitingObject::drawFrom(mat4f from) const {
     TextureManager::get("sun")->bind();
     sph.program->uniform("sampler")->set(2);
     sph.program->uniform("modelViewProjectionMatrix")->set(transform);
-    //sph.program->uniform("time")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
+    sph.program->uniform("globaltime")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
     sph.draw();
 
     //Draw sons
