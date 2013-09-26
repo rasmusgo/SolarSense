@@ -17,6 +17,8 @@ class SensorManager {
 
         static const float MOVEMENT_THRESHOLD;
         static const float TIME_THRESHOLD;
+        static const float GESTURE_VELOCITY_THRESHOLD;
+        static const float GESTURE_DISTANCE_THRESHOLD;
 
         /**
           * Intializes the connected Sensor (PrimeSense, Kinect) and starts the gesture recognition.
@@ -86,7 +88,7 @@ class SensorManager {
         void operator=(SensorManager const&);
         ~SensorManager();
 
-        static void startTracking(nite::Point3f gesturePos, float deltaTime);
+        static void startTracking(nite::Point3f gesturePos);
         static void stopTracking(nite::Point3f gesturePos);
         static void updateHandData(nite::Point3f handPos);
 
