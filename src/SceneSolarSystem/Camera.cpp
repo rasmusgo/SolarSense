@@ -253,12 +253,9 @@ mat4f Camera::getViewMatrix() {
 
 std::pair<mat4f,mat4f> Camera::getViewMatrix3D() {
     mat4f c = getViewMatrix();
-
-    vec3f right = vec3f(c[0][0], c[1][0], c[2][0]);
-
     mat4f r(1.0f), l(1.0f);
-    r = glm::translate(r, right*(eyeDistance3D/2.0f));
-    l = glm::translate(l, -right*(eyeDistance3D/2.0f));
+    r = glm::translate(r, vec3f(1,0,0)*(eyeDistance3D/2.0f));
+    l = glm::translate(l, -vec3f(1,0,0)*(eyeDistance3D/2.0f));
 
     return std::pair<mat4f,mat4f>(r*c,l*c); //Right and Left
 }
