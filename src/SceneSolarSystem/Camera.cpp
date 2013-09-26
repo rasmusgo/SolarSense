@@ -145,11 +145,18 @@ void Camera::updateAcceleration(float deltaTime) {
 
         // Check SensorManager
         if (SensorManager::isTracking() && SensorManager::significantMovement()) {
+            float speedFactor = 1.f;
 
             vec3f handMovement = SensorManager::getHandMovement();
             if (mode == Free)
                 handMovement.x = -handMovement.x;
-            handMovement *= maxVel;
+            else {
+                float distToObj = (pos.z - arrObject->scale.x) / glm::min(arrObject->scale.x, 20.0f);
+                speedFactor = glm::min((distToObj - 0.5)/ 5.f, 0.8)  + 0.2f; // 0.5 is the minimum value for distToObject, 5 is the maximum value for distToObj
+            }
+
+            handMovement.z *= speedFactor;
+            handMovement *= maxVel*speedFactor;
 
             vel = handMovement;
         }
