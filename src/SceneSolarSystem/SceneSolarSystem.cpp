@@ -259,7 +259,7 @@ void SceneSolarSystem::draw() const {
         float radians = DEG_TO_RAD * FOV / 2.0;
         float wd2     = ZNEAR * glm::tan(radians);
         //float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
-        float ndfl    = ZNEAR / 250.0;
+        float ndfl    = ZNEAR / 375.0;
 
         float left, right, top, bottom;
 
