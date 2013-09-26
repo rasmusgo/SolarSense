@@ -29,5 +29,5 @@ float light() {
 }
 
 void main() {
-            gl_FragColor = vec4(texture2D(sampler,vTexCoord).xyz*light(), 1.0f);
+            gl_FragColor = vec4(texture2D(sampler,vTexCoord).xyz, 1.0f);//*light(), 1.0f);
 }

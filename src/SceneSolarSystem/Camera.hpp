@@ -29,6 +29,8 @@ class Camera : public Entity {
 
         bool interpolating;
 
+        float eyeDistance3D; //Total distance between eyes
+
     private:        
         const float INTERPOLATION_TIME = 3.0f;
 
@@ -36,8 +38,6 @@ class Camera : public Entity {
 
         inline vec3f posFromMatrix(mat4f& m);
         inline vec3f lerp(vec3f& a, vec3f& b, float t);
-
-        float eyeDistance3D;
 
         mat4f rotM;
         vec3f fromPos;

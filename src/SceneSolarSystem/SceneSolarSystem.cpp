@@ -242,16 +242,31 @@ void SceneSolarSystem::draw() const {
             (*it)->draw();
     }
     else {
-        //calculate perspective matrix
-        getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+        //calculate perspective matrix (Parallel)
+        //getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
 
         //Move matrix to position (according to player/camera)
         //getState().view = mat4f(1.0);
         std::pair<mat4f,mat4f> eyes = cam->getViewMatrix3D();
 
-        glViewport(0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT));
+        float ratio  = float(SCRWIDTH) / float(SCRHEIGHT);
+        float radians = DEG_TO_RAD * FOV / 2.0;
+        float wd2     = ZNEAR * glm::tan(radians);
+        float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
+        //float ndfl    = ZNEAR / ZNEAR*2.0;
+
+        float left, right, top, bottom;
+
+        glViewport(float(SCRWIDTH)/2.0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Right eye
         {
-            getState().view = eyes.second;
+            //Off Axis projection
+            left  = - ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
+            right =   ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
+            top    =   wd2;
+            bottom = - wd2;
+            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
+
+            getState().view = eyes.first;
 
             //Drawable objects
             glDisable(GL_CULL_FACE);
@@ -261,9 +276,16 @@ void SceneSolarSystem::draw() const {
             for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
                 (*it)->draw();
         }
-        glViewport(float(SCRWIDTH)/2.0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT));
+        glViewport(0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Left eye
         {
-            getState().view = eyes.first;
+            //Off Axis projection
+            left  = - ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
+            right =   ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
+            top    =   wd2;
+            bottom = - wd2;
+            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
+
+            getState().view = eyes.second;
 
             //Drawable objects
             glDisable(GL_CULL_FACE);
