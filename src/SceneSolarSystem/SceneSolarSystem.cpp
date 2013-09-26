@@ -120,15 +120,15 @@ bool SceneSolarSystem::loadResources() {
     /*
     * Earth ferran style
     */
-    // if(!ShaderManager::load("earthShader","data/shaders/earthShader.vert","data/shaders/earthShader.frag"))
-    //     return false;
+     if(!ShaderManager::load("earthShader","data/shaders/earthShader.vert","data/shaders/earthShader.frag"))
+         return false;
 
-    // if(!TextureManager::load("earth","data/earthmap.jpg",2))
-    //     return false;
-    // if(!TextureManager::load("earthNight","data/lightsmap.jpg",3))
-    //     return false;
-    // if(!TextureManager::load("earthWater","data/earthwatermap.png",4))
-    //     return false;
+     if(!TextureManager::load("earth","data/earthmap.jpg",2))
+         return false;
+     if(!TextureManager::load("earthNight","data/lightsmap.jpg",3))
+         return false;
+     if(!TextureManager::load("earthWater","data/earthwatermap.png",4))
+         return false;
 
     /*
     * Earth chris style
@@ -140,14 +140,14 @@ bool SceneSolarSystem::loadResources() {
     if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
         return false;
 
-    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
-        return false;
-    if(!TextureManager::load("earth_nighttime","data/earth_nighttime.png",3))
-        return false;
-    if(!TextureManager::load("earth_cloud","data/earth_cloud.png",4))
-        return false;
-    if(!TextureManager::load("earth_specular","data/earth_specular.png",5))
-       return false;
+//    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
+//        return false;
+//    if(!TextureManager::load("earth_nighttime","data/earth_nighttime.png",3))
+//        return false;
+//    if(!TextureManager::load("earth_cloud","data/earth_cloud.png",4))
+//        return false;
+//    if(!TextureManager::load("earth_specular","data/earth_specular.png",5))
+//       return false;
     if(!TextureManager::load("stars4K","data/stars4K.png",2))
         return false;
 

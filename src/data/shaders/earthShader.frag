@@ -32,7 +32,7 @@ vec4 light(vec4 texColor, vec3 N, vec3 V, vec3 L)
 }
 
 void main() {
-    float lightIntensity = max(0.05, min(dot(vLight, -vNormal) + 0.1, 1.0));
+    float lightIntensity = max(0.1, min(dot(vLight, -vNormal) + 0.1, 1.0));
 
     vec4 lightColor = texture2D(samplerNight,vTexCoord);
     if (lightIntensity > 0.4) lightColor = vec4(0.0);
@@ -43,7 +43,7 @@ void main() {
 
     vec4 color;
     if (waterColor.r < 0.5)
-        color = light(texColor, vNormal, vCam, vLight)*lightIntensity+lightColor;
+        color = min(light(texColor, vNormal, vCam, vLight), 0.7)*lightIntensity+lightColor;
     else color = texColor*lightIntensity+lightColor;
 
     gl_FragColor = vec4(color.xyz, 1.0);
