@@ -240,13 +240,14 @@ void SceneSolarSystem::update(float deltaTime) {
         if (currentObject != objectsOrder.begin())
             cam->setArround(objectsMap.at((*--currentObject)));
     }
-    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
+    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
     if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Num3)) {
         if (stereoscopic3D)
             glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
         stereoscopic3D = !stereoscopic3D;
     }
+    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::R)) SensorManager::resetTracking();
 
     //Update Camera
     cam->update(deltaTime);

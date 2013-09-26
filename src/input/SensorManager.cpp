@@ -3,10 +3,13 @@
 
 const float SensorManager::MOVEMENT_THRESHOLD = 100.f;
 const float SensorManager::TIME_THRESHOLD = 0.5f;
+const float SensorManager::GESTURE_VELOCITY_THRESHOLD = 60.f;
+const float SensorManager::GESTURE_DISTANCE_THRESHOLD = 25.f;
 
 
 bool SensorManager::running(false);
 bool SensorManager::tracking(false);
+bool SensorManager::gestureInProgress(false);
 float SensorManager::detectTime(0.f);
 
 openni::Device SensorManager::sensor;
@@ -15,8 +18,10 @@ nite::HandId SensorManager::handId;
 
 vec3f SensorManager::initialHandPos(-1,-1,-1);
 vec3f SensorManager::lastHandPos(-1,-1,-1);
+vec3f SensorManager::gestureStartPosition(0,0,0);
 vec3f SensorManager::displacement(0,0,0);
 vec3f SensorManager::velocity(0,0,0);
+vec3f SensorManager::gestureDistance(0,0,0);
 
 
 SensorManager::SensorManager() {}
@@ -117,9 +122,10 @@ void SensorManager::update(float deltaTime) {
             case nite::GESTURE_CLICK:
                 break;
             case nite::GESTURE_WAVE:
-                if (!tracking)
-                    startTracking(gestures[i].getCurrentPosition(), deltaTime);
-                else
+                if (!tracking) {
+                    startTracking(gestures[i].getCurrentPosition());
+                    detectTime = deltaTime;
+                } else
                     stopTracking(gestures[i].getCurrentPosition());
                 break;
             case nite::GESTURE_HAND_RAISE:
@@ -148,9 +154,8 @@ void SensorManager::update(float deltaTime) {
 
 }
 
-void SensorManager::resetTracking(bool stopTracking) {
-    if (stopTracking)
-        handTracker.stopHandTracking(handId);
+void SensorManager::resetTracking() {
+    handTracker.stopHandTracking(handId);
     tracking = false;
     detectTime = 0.f;
     velocity = vec3f(0,0,0);
@@ -168,32 +173,24 @@ void SensorManager::resetTracking(bool stopTracking) {
 
 //}
 
-void SensorManager::startTracking(nite::Point3f gesturePos, float deltaTime) {
-    if (!tracking) {
-        handTracker.startHandTracking(gesturePos, &handId);
-        tracking = true;
-        printf("SensorManager | Hand detected, id %d\n", handId);
+void SensorManager::startTracking(nite::Point3f gesturePos) {
+    handTracker.startHandTracking(gesturePos, &handId);
+    tracking = true;
+    printf("SensorManager | Hand detected, Id %d\n", handId);
 
-        // Save the initial hand position to determine the movement of the hand.
-        initialHandPos = vec3f(gesturePos.x, gesturePos.y, gesturePos.z);
-        // Start counting the passed time since the hand was tracked.
-        detectTime = deltaTime;
-    } else {
-        // Only two hands should be tracked simultaneously
-        printf("SensorManager | WARNING: Hand deteced but already tracking two hands, ignoring new hand.\n");
-    }
-
+    // Save the initial hand position to determine the movement of the hand.
+    initialHandPos = vec3f(gesturePos.x, gesturePos.y, gesturePos.z);
 }
 
 void SensorManager::stopTracking(nite::Point3f gesturePos) {
     // Calculate the distance between the position of the hand performing the gesture
     // and the last known position of the hand currently being tracked.
-    vec3f tempMov = vec3f(gesturePos.x, gesturePos.y, gesturePos.z) - lastHandPos;
-    float distance = sqrt(glm::dot(tempMov, tempMov));
+    vec3f temp = vec3f(gesturePos.x, gesturePos.y, gesturePos.z) - lastHandPos;
+    float distance = sqrt(glm::dot(temp, temp));
 
     // Check if distance is sufficiently small
     if (distance <= 100) {
-        resetTracking(true);
+        resetTracking();
     } else {
         printf("SensorManager | WARNING: Wave gesture detected but gesture position too far away from any hand position.\n");
     }
@@ -218,11 +215,38 @@ void SensorManager::updateHandData(nite::Point3f handPos) {
 int SensorManager::checkGesture() {
     // Do not recognize gestures when the tracking has just begun.
     if (detectTime >= TIME_THRESHOLD) {
+        if (!gestureInProgress) {
+            gestureStartPosition = lastHandPos;
+            gestureDistance = vec3f(0);
+        } else {
+            // Update distance the hand moved.
+            gestureDistance = glm::abs(lastHandPos - gestureStartPosition);
+        }
+
         // Check if the horizontal velocity is high enough
-        if (velocity.y >= 75) {
-            return SWIPE_RIGHT;
-        } else if (velocity.y <= -75) {
-            return SWIPE_LEFT;
+        if (velocity.y >= GESTURE_VELOCITY_THRESHOLD) {
+            gestureInProgress = true;
+
+            // Check if the distance the hand moved with the velocity is high enough.
+            if (gestureDistance.y >= GESTURE_DISTANCE_THRESHOLD)
+                return SWIPE_RIGHT;
+        } else if (velocity.y <= -GESTURE_VELOCITY_THRESHOLD) {
+            gestureInProgress = true;
+
+            // Check if the distance the hand moved with the velocity is high enough.
+            if (gestureDistance.y >= GESTURE_DISTANCE_THRESHOLD)
+                return SWIPE_LEFT;
+        } else {
+            gestureInProgress = false;
+        }
+
+        if (velocity.z <= -125) {
+            //gestureInProgress = true;
+
+            //if (gestureDistance.z >= GESTURE_DISTANCE_THRESHOLD)
+                return PUNCH;
+        } else {
+            //gestureInProgress = false;
         }
     }
 
