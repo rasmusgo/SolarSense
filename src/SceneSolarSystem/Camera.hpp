@@ -32,13 +32,13 @@ class Camera : public Entity {
 
         float eyeDistance3D; //Total distance between eyes
 
+        static vec3f posFromMatrix(mat4f& m);
+        static vec3f lerp(vec3f& a, vec3f& b, float t);
+
     private:        
         const float INTERPOLATION_TIME = 3.0f;
 
         void updateAcceleration(float deltaTime);
-
-        inline vec3f posFromMatrix(mat4f& m);
-        inline vec3f lerp(vec3f& a, vec3f& b, float t);
 
         mat4f rotM;
         vec3f fromPos;
