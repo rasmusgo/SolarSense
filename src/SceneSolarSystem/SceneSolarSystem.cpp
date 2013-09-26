@@ -8,9 +8,13 @@
 #include "Earth.hpp"
 #include "StandardPlanet.hpp"
 
+#include "inputreader.h"
+
 SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 	Scene(parent),
     debugCounter(0.0), fpsCount(0), paused(false) {
+
+    readInput();
 
 	//SCENE INIT
     std::cout << "* Loading new scene: SolarSystem" << std::endl;
@@ -185,6 +189,30 @@ void SceneSolarSystem::update(float deltaTime) {
 		debugCounter -= 1;
 		fpsCount = 0;
 	}
+    static command cmd;
+    m_cmd_q.lock();
+    while(!cmd_q.empty()){
+        cmd = cmd_q.front(); cmd_q.pop();
+        if( ! cam->interpolating){
+            switch(cmd.opcode){
+                case '1':
+                    if(--currentObject != objectsOrder.end()){
+                        cam->setArround(objectsMap.at((*currentObject)));
+                    }
+                    break;
+                case '2':
+                    if(++currentObject != objectsOrder.end()){
+                        cam->setArround(objectsMap.at((*currentObject)));
+                    }
+                    break;
+                case '3':
+                    cam->setMode(Camera::Free);
+                    break;
+            }
+        }
+    }
+    m_cmd_q.unlock();
+
 
     //Update logic
     if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
