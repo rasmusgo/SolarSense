@@ -2,6 +2,7 @@
 #define CAMERA_HPP
 
 #include "Entity.hpp"
+#include "../graphics/Model.hpp"
 
 class Camera : public Entity {
     public:
@@ -48,6 +49,9 @@ class Camera : public Entity {
         float maxVel;
         sf::Clock cameraClock;
         vec3f originalPos;
+        bool wasTracking;
+        float handTime;
+        Model hudHand;
 };
 
 #endif // CAMERA_HPP
