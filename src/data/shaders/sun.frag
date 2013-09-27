@@ -5,7 +5,7 @@ varying vec2 vTexCoord;
 
 float snoise(vec3 uv, float res)    // by trisomie21
 {
-    const vec3 s = vec3(1e0, 1e2, 1e4);
+    const vec3 s = vec3(1.0, 100, 10000);
     
     uv *= res;
     
@@ -17,10 +17,10 @@ float snoise(vec3 uv, float res)    // by trisomie21
     vec4 v = vec4(uv0.x+uv0.y+uv0.z, uv1.x+uv0.y+uv0.z,
                   uv0.x+uv1.y+uv0.z, uv1.x+uv1.y+uv0.z);
     
-    vec4 r = fract(sin(v*1e-3)*1e5);
+    vec4 r = fract(sin(v*0.001)*100000.0);
     float r0 = mix(mix(r.x, r.y, f.x), mix(r.z, r.w, f.x), f.y);
     
-    r = fract(sin((v + uv1.z - uv0.z)*1e-3)*1e5);
+    r = fract(sin((v + uv1.z - uv0.z)*0.001)*100000.0);
     float r1 = mix(mix(r.x, r.y, f.x), mix(r.z, r.w, f.x), f.y);
     
     return mix(r0, r1, f.z)*2.-1.;
@@ -54,7 +54,7 @@ void main(void)
     
     float newTime1  = abs( snoise( coord + vec3( 0.0, -time * ( 0.35 + brightness * 0.001 ), time * 0.015 ), 15.0 ) );
     float newTime2  = abs( snoise( coord + vec3( 0.0, -time * ( 0.15 + brightness * 0.001 ), time * 0.015 ), 45.0 ) );  
-    for( int i=1; i<=7; i++ ){
+    for( int i=1; i<=3; i++ ){
         float power = pow( 2.0, float(i + 1) );
         fVal1 += ( 0.5 / power ) * snoise( coord + vec3( 0.0, -time, time * 0.2 ), ( power * ( 10.0 ) * ( newTime1 + 1.0 ) ) );
         fVal2 += ( 0.5 / power ) * snoise( coord + vec3( 0.0, -time, time * 0.2 ), ( power * ( 25.0 ) * ( newTime2 + 1.0 ) ) );
