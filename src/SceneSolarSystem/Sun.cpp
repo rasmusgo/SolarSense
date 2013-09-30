@@ -52,7 +52,10 @@ void Sun::draw() const {
 void Sun::drawFrom(mat4f from) const {
      mat4f projection = parentScene->getState().projection;
      mat4f view = parentScene->getState().view;
-     mat4f model = from*glm::transpose(view)*sphere.modelMatrix;
+
+     vec3f camP = Camera::posFromMatrix(view);
+     mat4f rot = glm::translate(mat4f(1.0f), -camP)*view;
+     mat4f model = from*glm::transpose(rot)*sphere.modelMatrix;
      mat4f transform = projection*view*model;
 
      TextureManager::get("sun")->bind();

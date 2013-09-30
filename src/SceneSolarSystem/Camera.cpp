@@ -32,11 +32,12 @@ void Camera::draw() {
 }
 
 void Camera::drawHUD() {
-    if (SensorManager::isTracking()) {
-        if (not wasTracking)
-            handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
+    if (not wasTracking)
+        handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
 
-        hudHand.program->uniform("time")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
+    if (!SensorManager::isTracking()) {
+
+        hudHand.program->uniform("time")->set(glm::mod(GLOBALCLOCK.getElapsedTime().asSeconds(), 20.0f));
         hudHand.program->uniform("lastTime")->set(handTime);
         hudHand.program->uniform("ratio")->set(((float)SCRWIDTH)/((float)SCRHEIGHT));
 
@@ -269,10 +270,10 @@ std::pair<mat4f,mat4f> Camera::getViewMatrix3D() {
 }
 
 
-inline vec3f Camera::posFromMatrix(mat4f &m) {
+vec3f Camera::posFromMatrix(mat4f &m) {
     return vec3f(m[3][0],m[3][1],m[3][2]);
 }
 
-inline vec3f Camera::lerp(vec3f& from, vec3f& to, float t) {
+vec3f Camera::lerp(vec3f& from, vec3f& to, float t) {
     return to*t + from*(1.0f-t) ;
 }
