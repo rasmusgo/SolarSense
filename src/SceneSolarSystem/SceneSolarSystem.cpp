@@ -207,23 +207,39 @@ void SceneSolarSystem::update(float deltaTime) {
     m_cmd_q.lock();
     while(!cmd_q.empty()){
         cmd = cmd_q.front(); cmd_q.pop();
-        if( ! cam->interpolating){
-            switch(cmd.opcode){
-                case '1':
-                    if(--currentObject != objectsOrder.end()){
-                        cam->setArround(objectsMap.at((*currentObject)));
+        switch(cmd.opcode){
+            case 1: //Planet switch commands
+            {
+                int action;
+                sscanf(cmd.buffer, "%d", &action);
+                if( ! cam->interpolating){
+                    switch(action){
+                        case 1:
+                            if(--currentObject != objectsOrder.end()){
+                                cam->setArround(objectsMap.at((*currentObject)));
+                            }
+                            break;
+                        case 2:
+                            if(++currentObject != objectsOrder.end()){
+                                cam->setArround(objectsMap.at((*currentObject)));
+                            }
+                            break;
+                        case 3:
+                            cam->setMode(Camera::Free);
+                            break;
                     }
-                    break;
-                case '2':
-                    if(++currentObject != objectsOrder.end()){
-                        cam->setArround(objectsMap.at((*currentObject)));
-                    }
-                    break;
-                case '3':
-                    cam->setMode(Camera::Free);
-                    break;
+                }
+
             }
+           case 2: //rotation commands
+                double xdelta, ydelta;
+                sscanf(cmd.buffer, "%lf %lf", &xdelta, &ydelta);
+                cam->vel.x = 2 * ydelta;
+                cam->vel.y = 2 * xdelta;
+        
         }
+
+       delete[] cmd.buffer;
     }
     m_cmd_q.unlock();
 
