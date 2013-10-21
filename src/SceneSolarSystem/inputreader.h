@@ -5,7 +5,9 @@
 
 
 struct command {
-	char opcode;
+	int opcode;
+	int len;
+	char* buffer;
 };
 
 extern std::queue<command> cmd_q;

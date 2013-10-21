@@ -32,11 +32,12 @@ void Camera::draw() {
 }
 
 void Camera::drawHUD() {
-    if (SensorManager::isTracking()) {
-        if (not wasTracking)
-            handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
+    if (not wasTracking)
+        handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
 
-        hudHand.program->uniform("time")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
+    if (!SensorManager::isTracking()) {
+
+        hudHand.program->uniform("time")->set(glm::mod(GLOBALCLOCK.getElapsedTime().asSeconds(), 20.0f));
         hudHand.program->uniform("lastTime")->set(handTime);
         hudHand.program->uniform("ratio")->set(((float)SCRWIDTH)/((float)SCRHEIGHT));
 

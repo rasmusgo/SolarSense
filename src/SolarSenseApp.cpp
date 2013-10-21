@@ -4,24 +4,15 @@
 #include <GL/glut.h>
 
 SolarSenseApp::SolarSenseApp() : currentScene(NULL), nextScene(NULL) {
-    // settings = sf::ContextSettings(24,8,4,3,0);
-    // settings.antialiasingLevel = 16;
-    // settings.depthBits = 24;
-    // settings.stencilBits = 8;
-
-    // if(settings.antialiasingLevel > 0)
-        glEnable(GL_MULTISAMPLE_ARB);
-    window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Fullscreen,sf::ContextSettings(24,8,4));
-	window.setMouseCursorVisible(false);
-	window.setKeyRepeatEnabled(false);
-	window.setVerticalSyncEnabled(true);
-
-    std::cout << "Antialiasing Level: " << window.getSettings().antialiasingLevel << std::endl;
-    std::cout << "Depth Bits: " << window.getSettings().depthBits << std::endl;
-    std::cout << "Stencil Bits: " << window.getSettings().stencilBits << std::endl;
-
-	WINDOWFOCUS = true;
+    window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Fullscreen,CONTEXT_SETTINGS_OPENGL);
+        window.setMouseCursorVisible(false);
+        window.setKeyRepeatEnabled(false);
+        window.setVerticalSyncEnabled(true);
+        WINDOWFOCUS = true;
     glClearColor(0.0/255.0,0.0/255.0,0.0/255.0,1);
+
+    std::cout << "OpenGL version: " << window.getSettings().majorVersion << std::endl;
+    std::cout << "Anti aliasing level" << std::endl << window.getSettings().antialiasingLevel << std::endl;
 }
 
 SolarSenseApp::~SolarSenseApp() {

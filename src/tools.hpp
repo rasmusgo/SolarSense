@@ -51,7 +51,7 @@ std::string toString(float num);
 
 //defines (global settings and constants)
 #define WINDOW_TITLE "SolarSense"
-#define CONTEXT_SETTINGS_OPENGL sf::ContextSettings(32,32,0,2,0) //OpenGL version
+#define CONTEXT_SETTINGS_OPENGL sf::ContextSettings(32,32,4,2,0) //OpenGL version
 #define DEG_TO_RAD ((2*M_PI)/360.0f)
 
 //frustum settings

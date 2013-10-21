@@ -1,0 +1,184 @@
+<html>
+<head>
+<title>SolarSense Controller</title>
+<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha256.js"></script> -->
+<script type="text/javascript" src="jquery.js"></script>
+<script src="sha256.js"></script>
+<script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src="Touchscreen-Joystick/TouchControl.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<style type="text/css">
+
+
+body {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    /*min-height: 100%;*/
+    height: 97%;
+    background: gray;
+}
+
+#log {
+    background: white;
+    margin: 0;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
+    right: 0.5em;
+    bottom: 3em;
+    overflow: auto;
+}
+
+#form {
+    padding: 0 0.5em 0 0.5em;
+    margin: 0;
+    position: absolute;
+    bottom: 1em;
+    left: 0px;
+    width: 100%;
+    overflow: hidden;
+}
+#content {
+    /*width: 80em;*/
+    height: 98%;
+    overflow: hidden;
+    width: 98%;
+    padding: 1em;
+    min-height: 95%;
+    background-color: white; 
+    margin: 1em auto 1em auto;
+    box-shadow: 0px 0px 10px black;
+}
+/**/
+.buttonset {
+    width: 100%;
+    margin-bottom: 0.3em;
+}
+
+
+.buttonset a.btn {
+    width: 96.2%;
+}
+.buttonset.two a.btn {
+    width: 48%;
+}
+
+
+joystick {
+    display: block;
+    background: red;
+    border-style:solid;
+    border-width:2px;
+    border-color:black;
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: 50px;
+    height: 50px;
+    border-radius:50%;
+    z-index: 2;
+}
+joystickbackground {
+    display:block;
+    position: absolute;
+    left: 100px;
+    bottom: 100px;
+    /*top: 5em;*/
+    background:#00A3FF;
+    border-style:solid;
+    border-width:2px;
+    border-color:black;
+    border-radius:50%;
+    width: 150px;
+    height: 150px;
+    margin-top: 7em;
+    margin: auto;
+    z-index: 2;
+}
+joystickhitzone {
+    display:block;
+    position: absolute;
+    left: 48px;
+    top: 48px;
+    background:#004F7C;
+    border-style:solid;
+    border-width:2px;
+    border-color:black;
+    border-radius:50%;
+    width: 50px;
+    height: 50px;
+    z-index: 2;
+}
+
+#joystick_container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+   margin: auto; 
+}
+/*
+#actual_joystick {
+   width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    z-index: 1;
+    
+}*/
+</style>
+</head>
+
+<body>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <div id="content">
+    <div class="btn-group buttonset .btn-group-lg two" >
+        <a  class="btn btn-lg  input-block-level" name="Previous" value="Previous" id="b1" data-code="1">Previous</a>
+        <a type="button" class="btn btn-lg  input-block-level" name="Next" value="Next" id="b2" data-code="2">Next</a>
+    </div>
+    <div class="btn-group buttonset .btn-group-lg">
+        <a class="btn btn-lg  input-block-level" name="Freemode" value="Freemode" id="b3" data-code="3">Free Mode</a>
+    </div>
+
+    <!--<div id="actual_joystick">
+        </div>
+        
+    <div id="joystick_container"> 
+        
+    </div>-->
+    
+    <div id="msg"></div><br/>
+
+       <!-- <h2>Proof of Work</h2>
+        This search function is protected by proof of work.<br/>
+           
+        The default difficulty requires the client to solve <span id="problems">{{.Problems}}</span> puzzles of difficulty <span id="zeroes">{{.Zeroes}}</span>.
+        <br/><br/>
+        <input type="text" id="search_field">
+        
+        
+        <div id="result"></div><br/>-->
+        
+    </div>
+  </body>
+</html>

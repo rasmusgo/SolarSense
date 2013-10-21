@@ -121,5 +121,5 @@ OTHER_FILES += \
     data/shaders/sun.frag \
     data/shaders/hand.frag \
     data/shaders/hand.vert \
-    data/shaders/sun3d.frag \
-    data/shaders/sun3d.vert
+    data/shaders/sun3d.vert \
+    data/shaders/sun3d.frag

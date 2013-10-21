@@ -10,11 +10,15 @@ std::thread inputThread;
 void readInput(){
 	readInput_ = true;
 	inputThread = std::thread([](){
-		   char c;
+		   int opcode;
+		   int count;
+		   char *buf;
            while(readInput_){
-           		scanf("%c", &c);
+           		scanf("%d %d", &opcode, &count);
+           		buf = new char[count+10];
+           		scanf("%[^\n]", buf);
            		m_cmd_q.lock();
-           		cmd_q.push(command{c});
+           		cmd_q.push(command{opcode, count, buf});
            		m_cmd_q.unlock();
            }
         });
