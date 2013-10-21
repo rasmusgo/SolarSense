@@ -50,6 +50,7 @@ class SolarSenseApp {
 		// by init() once
 
 		//context
+    	sf::ContextSettings settings;
 		sf::RenderWindow window;
 		Scene* currentScene;
 		Scene* nextScene;

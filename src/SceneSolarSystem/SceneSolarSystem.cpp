@@ -39,7 +39,7 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     GameObject* center = new GameObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(1.0f, 1.0f, 1.0f));
     addObject(center);
 
-    OrbitingObject* sun = new OrbitingObject(this, center, vec3f(4.6f, 4.6f, 4.6f), 0, 0);
+    OrbitingObject* sun = new OrbitingObject(this, center, vec3f(4.7f, 4.7f, 4.7f), 0, 0);
     addDrawableObject("sun",sun);
 
     StandardPlanet* mercury = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 5, "planetShader", "mercury");
