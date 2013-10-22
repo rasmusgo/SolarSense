@@ -1,12 +1,11 @@
 #ifndef PLANET_HPP
 #define PLANET_HPP
 
-#include "../GameObject.hpp"
-#include "../graphics/Model.hpp"
+#include "Commons.hpp"
 
 class Planet : public GameObject {
     public:
-        Planet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed);
+        Planet(vec3f scale, float orbRadius, float orbSpeed);
         ~Planet();
 
         virtual void update(float deltaTime) = 0;

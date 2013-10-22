@@ -1,17 +1,16 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "Entity.hpp"
-#include "../graphics/Model.hpp"
+#include "Commons.hpp"
 
-class Camera : public Entity {
+class Camera : public GameObject {
     public:
         enum CameraMode {
             Arround,
             Free
         };
 
-        Camera(Scene* scene, const vec3f &pos);
+        Camera(const vec3f &pos);
         ~Camera();
 
         void draw();
@@ -21,7 +20,10 @@ class Camera : public Entity {
         void setArround(GameObject* object);
         void setMode(CameraMode m);
 
-        vec2f rot;
+        vec3f pos;
+        vec3f rot;
+        mat4f projection;
+        mat4f view;
 
         mat4f getViewMatrix();
         std::pair<mat4f,mat4f> getViewMatrix3D();

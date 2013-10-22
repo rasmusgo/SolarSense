@@ -1,5 +1,5 @@
 #include "SceneSolarSystem.hpp"
-#include "../SolarSenseApp.hpp"
+#include "Camera.hpp"
 #include "TriangleObject.hpp"
 #include "RegularPolygonObject.hpp"
 #include "OrbitingObject.hpp"
@@ -12,23 +12,33 @@
 #include "inputreader.h"
 
 SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
-	Scene(parent),
     debugCounter(0.0), fpsCount(0), paused(false), stereoscopic3D(false) {
+    this->setName("SCENE");
 
     readInput();
 
-	//SCENE INIT
-    std::cout << "* Loading new scene: SolarSystem" << std::endl;
-	if (!loadResources()) {
-        std::cout << "Could not load resources for SceneSolarSystem" << std::endl;
-		parent.isRunning = false;
-		return;
-	}
+    //SCENE INIT
+    if (!loadResources())
+        VBE_ASSERT(false,"Could not load resources for SceneSolarSystem");
+
+    //GL stuff..
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_ALPHA_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glDepthFunc(GL_LEQUAL);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_CULL_FACE); //enable backface culling
+    glCullFace(GL_BACK);
+    glShadeModel(GL_SMOOTH);
+
 	//Center mouse
     KeyAndMouseManager::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
     //Init Camera
 
     cam = new Camera(this, vec3f(0.0f,0.0f,30.0f));
+    cam->addTo(this);
     //add gameObjects
 
     //addObject(new       TriangleObject(this, vec3f( 10.0f, 0.0f,10.0f),   vec3f(0.1f)));
@@ -78,79 +88,79 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
 }
 
 SceneSolarSystem::~SceneSolarSystem() {
-	//SECENE CLOSE
-    std::cout << "* Deleting GameObjects on SceneSolarSystem" << std::endl;
-	for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
-		delete *it;
-}
+    Textures.clear();
+    Meshes.clear();
+    Programs.clear();
+    Animations.clear();
 
-void SceneSolarSystem::addObject(GameObject *obj) {
-    GameObject::addObject(obj);
-}
-
-void SceneSolarSystem::addObject(const std::string &name, GameObject *obj) {
-    addObject(obj);
-    objectsMap.insert(std::pair<std::string, GameObject*>(name, obj));
-    objectsOrder.push_back(name);
-}
-
-void SceneSolarSystem::addDrawableObject(const std::string &name, GameObject* dObj) {
-    addObject(dObj);
-    drawList.push_back(dObj);
-    objectsMap.insert(std::pair<std::string, GameObject*>(name, dObj));
-    objectsOrder.push_back(name);
-}
-
-void SceneSolarSystem::addDrawableObject(GameObject* dObj) {
-    addObject(dObj);
-    drawList.push_back(dObj);
+    AudioManager::clear();
 }
 
 bool SceneSolarSystem::loadResources() {
+
+    ShaderProgram* p;
+    Texture* tex;
+
 	//shaders
-    if(!ShaderManager::load("sample","data/shaders/sample.vert","data/shaders/sample.frag"))
-		return false;
-    if(!ShaderManager::load("orbit","data/shaders/orbit.vert","data/shaders/orbit.frag"))
-        return false;
-	if(!ShaderManager::load("sample2","data/shaders/sample2.vert","data/shaders/sample2.frag"))
-		return false;
-    if(!ShaderManager::load("sun","data/shaders/sun.vert","data/shaders/sun.frag"))
-        return false;
-    if(!ShaderManager::load("sun3d","data/shaders/sun3d.vert","data/shaders/sun3d.frag"))
-        return false;
-    if(!ShaderManager::load("hand","data/shaders/hand.vert","data/shaders/hand.frag"))
-        return false;
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/sample.vert","data/shaders/sample.frag")) return false;
+    Programs.add("sample",p);
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/orbit.vert","data/shaders/orbit.frag")) return false;
+    Programs.add("orbit",p);
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/sample2.vert","data/shaders/sample2.frag")) return false;
+    Programs.add("sample2",p);
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/sun.vert","data/shaders/sun.frag")) return false;
+    Programs.add("sun",p);
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/sun3d.vert","data/sun3d/sample.frag")) return false;
+    Programs.add("sun3d",p);
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/hand.vert","data/shaders/hand.frag")) return false;
+    Programs.add("hand",p);
 
 	//textures
-    if(!TextureManager::load("cubetex","data/10x10tex.png",2))
-		return false;
-    if(!TextureManager::load("sun","data/SunTexture_2048.png",2))
-        return false;
-    if(!TextureManager::load("hand","data/hand_white.png",2))
-        return false;
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/10x10tex.png",true)) return false;
+    Textures.add("cubetex", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/SunTexture_2048.png",true)) return false;
+    Textures.add("sun", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/hand_white.png",true)) return false;
+    Textures.add("hand", tex);
 
     /*
     * Earth ferran style
     */
-     if(!ShaderManager::load("earthShader","data/shaders/earthShader.vert","data/shaders/earthShader.frag"))
-         return false;
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/earthShader.vert","data/shaders/earthShader.frag")) return false;
+    Programs.add("earthShader",p);
 
-     if(!TextureManager::load("earth","data/earthmap.jpg",2))
-         return false;
-     if(!TextureManager::load("earthNight","data/lightsmap.jpg",3))
-         return false;
-     if(!TextureManager::load("earthWater","data/earthwatermap.png",4))
-         return false;
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/earthmap.png",true)) return false;
+    Textures.add("earth", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/lightsmap.png",true)) return false;
+    Textures.add("earthNight", tex);
+    tex = new Texture(3);
+    if(!tex->loadFromFile("data/earthwatermap.png",true)) return false;
+    Textures.add("earthWater", tex);
 
     /*
     * Earth chris style
     */
-    if(!ShaderManager::load("planetShader","data/shaders/planetShader.vert","data/shaders/planetShader.frag"))
-        return false;
-    if(!ShaderManager::load("planetShaderBump","data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag"))
-        return false;
-    if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
-        return false;
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/planetShader.vert","data/shaders/planetShader.frag")) return false;
+    Programs.add("planetShader",p);
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag")) return false;
+    Programs.add("planetShaderBump",p);
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/testshader.vert","data/shaders/testshader.frag")) return false;
+    Programs.add("earthtest",p);
 
 //    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
 //        return false;
@@ -160,34 +170,36 @@ bool SceneSolarSystem::loadResources() {
 //        return false;
 //    if(!TextureManager::load("earth_specular","data/earth_specular.png",5))
 //       return false;
-    if(!TextureManager::load("stars4K","data/stars4K.png",2))
-        return false;
 
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/stars4K.png",true)) return false;
+    Textures.add("stars4K", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/moonmap4k.jpg",true)) return false;
+    Textures.add("moon", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/moonbump4k.jpg",true)) return false;
+    Textures.add("moonbump", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
+    Textures.add("earthmap", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/marsmap1k.jpg",true)) return false;
+    Textures.add("mars", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/venusmap.jpg",true)) return false;
+    Textures.add("venus", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/mercurymap.jpg",true)) return false;
+    Textures.add("mercury", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/jupitermap.jpg",true)) return false;
+    Textures.add("jupiter", tex);
 
-    if(!TextureManager::load("moon","data/moonmap4k.jpg",2))
-        return false;
-    if(!TextureManager::load("moonbump","data/moonbump4k.jpg",3))
-        return false;
-    //if(!TextureManager::load("earth8k","data/earth8k.jpg",2))
-    //    return false;
-    if(!TextureManager::load("earthmap","data/earthmap.jpg",2))
-        return false;
-    if(!TextureManager::load("mars","data/marsmap1k.jpg",2))
-        return false;
-    if(!TextureManager::load("venus","data/venusmap.jpg",2))
-        return false;
-
-    if(!TextureManager::load("mercury","data/mercurymap.jpg",2))
-        return false;
-    if(!TextureManager::load("jupiter","data/jupitermap.jpg",2))
-        return false;
-
-
-
-	//Create meshes
-	MeshManager::add("cube",new Mesh("data/10x10.obj"));
-    MeshManager::add("sphere",new Mesh("data/bola.obj"));
-    MeshManager::add("square",new Mesh("data/square.obj"));
+    //Create meshes
+    Meshes.add("cube",new Mesh("data/10x10.obj"));
+    Meshes.add("sphere",new Mesh("data/bola.obj"));
+    Meshes.add("square",new Mesh("data/square.obj"));
 
 	return true;
 }

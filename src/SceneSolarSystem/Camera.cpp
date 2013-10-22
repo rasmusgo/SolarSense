@@ -1,10 +1,9 @@
 #include "Camera.hpp"
 #include "../input/KeyAndMouseManager.hpp"
 #include "../input/SensorManager.hpp"
-#include "../SolarSenseApp.hpp"
 
-Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.0,1.0)),
-    rot(0.0f,0.0f), rotM(1.0f) {
+Camera::Camera(const vec3f &pos) : pos(1.0f,1.0f,1.0f),
+    rot(0.0f,0.0f,0.0f), projection(1.0f), view(1.0f), rotM(1.0f) {
 
     mode = Free;
     maxAcc = 5.0f;
@@ -19,8 +18,8 @@ Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.
 
     eyeDistance3D = 0.03f;
 
-    hudHand.mesh = MeshManager::get("square");
-    hudHand.program = ShaderManager::get("hand");
+    hudHand.mesh = Meshes.get("square");
+    hudHand.program = Programs.get("hand");
 
     wasTracking = false;
 }
