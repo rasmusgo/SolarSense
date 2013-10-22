@@ -1,0 +1,3 @@
+[submodule "src/VBE"]
+	path = src/VBE
+	url = https://github.com/Towerthousand/VBE
