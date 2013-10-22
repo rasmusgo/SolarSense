@@ -67,11 +67,9 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     addObject("jupiter",jupiter);
     sun->addObject(jupiter);
 
-
     Sun* sun2 = new Sun(this, center, vec3f(1.0f, 1.0f, 1.0f)*10.f, 0, 0);
     addObject("sun2",sun2);
     sun->addObject(sun2);
-
 
     currentObject = objectsOrder.begin();
     cam->setArround(objectsMap.at((*currentObject)));
@@ -188,7 +186,7 @@ bool SceneSolarSystem::loadResources() {
 
 	//Create meshes
 	MeshManager::add("cube",new Mesh("data/10x10.obj"));
-    MeshManager::add("sphere",new Mesh("data/sphere.obj"));
+    MeshManager::add("sphere",new Mesh("data/bola.obj"));
     MeshManager::add("square",new Mesh("data/square.obj"));
 
 	return true;
