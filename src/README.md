@@ -1,8 +1,7 @@
-VBE
+SolarSense
 ===
 
-Engine Test
-
+Using VBE engine at
 https://github.com/Towerthousand/VBE
 
 ===
