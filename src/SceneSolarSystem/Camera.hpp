@@ -10,22 +10,25 @@ class Camera : public GameObject {
             Free
         };
 
-        Camera(const vec3f &pos);
+        Camera(const vec3f& pos = vec3f(0.0f), const vec3f& rot = vec3f(0.0f), const mat4f& projection = mat4f(1.0f));
         ~Camera();
 
         void draw();
         void update(float deltaTime);
         void drawHUD();
 
-        void setArround(GameObject* object);
-        void setMode(CameraMode m);
-
         vec3f pos;
         vec3f rot;
         mat4f projection;
         mat4f view;
 
-        mat4f getViewMatrix();
+        //
+        vec3f vel;
+        vec3f acc;
+
+        void setArround(GameObject* object);
+        void setMode(CameraMode m);
+
         std::pair<mat4f,mat4f> getViewMatrix3D();
 
         CameraMode mode;
@@ -34,15 +37,11 @@ class Camera : public GameObject {
 
         float eyeDistance3D; //Total distance between eyes
 
-        static vec3f posFromMatrix(mat4f& m);
-        static vec3f lerp(vec3f& a, vec3f& b, float t);
-
     private:        
         const float INTERPOLATION_TIME = 3.0f;
 
         void updateAcceleration(float deltaTime);
 
-        mat4f rotM;
         vec3f fromPos;
         float interpolatingTimer;
         GameObject* arrObject;

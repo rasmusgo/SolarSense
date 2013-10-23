@@ -39,17 +39,14 @@ linux-g++:contains(QMAKE_TARGET.arch, i686):{
 QMAKE_CXXFLAGS += -std=c++11
 SOURCES += \
     $$PWD/main.cpp \
-    $$PWD/input/KeyAndMouseManager.cpp \
     $$PWD/SceneSolarSystem/SceneSolarSystem.cpp \
     $$PWD/SceneSolarSystem/StandardPlanet.cpp \
-    $$PWD/SceneSolarSystem/TriangleObject.cpp \
-    $$PWD/SceneSolarSystem/RegularPolygonObject.cpp \
     $$PWD/SceneSolarSystem/inputreader.cpp \
     $$PWD/SceneSolarSystem/SphereObject.cpp \
     $$PWD/SceneSolarSystem/Camera.cpp \
-    $$PWD/SceneSolarSystem/OrbitingObject.cpp \
-    $$PWD/SceneSolarSystem/Earth.cpp \
     $$PWD/SceneSolarSystem/Sun.cpp \
+    $$PWD/SceneSolarSystem/Earth.cpp \
+    $$PWD/SceneSolarSystem/SunHalo.cpp \
     $$PWD/SceneSolarSystem/Planet.cpp \
     $$PWD/input/InteractionListener.cpp \
     $$PWD/input/InteractionManager.cpp \
@@ -57,17 +54,14 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/input/KeyAndMouseManager.hpp \
     $$PWD/SceneSolarSystem/SceneSolarSystem.hpp \
-    $$PWD/SceneSolarSystem/TriangleObject.hpp \
-    $$PWD/SceneSolarSystem/RegularPolygonObject.hpp \
     $$PWD/SceneSolarSystem/SphereObject.hpp \
     $$PWD/SceneSolarSystem/Camera.hpp \
     $$PWD/SceneSolarSystem/StandardPlanet.hpp \
-    $$PWD/SceneSolarSystem/OrbitingObject.hpp \
+    $$PWD/SceneSolarSystem/Sun.hpp \
     $$PWD/SceneSolarSystem/Planet.hpp \
     $$PWD/SceneSolarSystem/Earth.hpp \
-    $$PWD/SceneSolarSystem/Sun.hpp \
+    $$PWD/SceneSolarSystem/SunHalo.hpp \
     $$PWD/input/InteractionListener.hpp \
     $$PWD/input/InteractionManager.hpp \
     $$PWD/SceneSolarSystem/inputreader.h \

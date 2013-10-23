@@ -1,17 +1,18 @@
 #ifndef SPHEREOBJECT_HPP
 #define SPHEREOBJECT_HPP
 
-#include "../GameObject.hpp"
-#include "../graphics/Model.hpp"
+#include "Commons.hpp"
 
 class SphereObject : public GameObject {
     public:
-        SphereObject(Scene* parentScene, vec3f pos, vec3f scale);
+        SphereObject();
         virtual ~SphereObject();
 
         void update(float deltaTime);
         void updateMatrix();
         void draw() const;
+
+        float radius;
     private:
         Model sph;
 };

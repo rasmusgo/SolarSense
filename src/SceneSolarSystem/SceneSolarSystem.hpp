@@ -2,12 +2,14 @@
 #define SCENESOLARSYSTEM_HPP
 
 #include "Commons.hpp"
+#include "Camera.hpp"
+#include "SphereObject.hpp"
 
 class Game;
 class SceneSolarSystem : public GameObject {
 	public:
 		//virtual overrides
-        SceneSolarSystem(SolarSenseApp &parent);
+        SceneSolarSystem();
         ~SceneSolarSystem();
 
         void update(float deltaTime);
@@ -19,7 +21,7 @@ class SceneSolarSystem : public GameObject {
 		float debugCounter;
 		int fpsCount;
 
-        GameObject* stars;
+        SphereObject* stars;
         bool paused;
         bool stereoscopic3D;
         std::list<std::string> objectsOrder;
