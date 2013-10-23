@@ -353,8 +353,12 @@ void SceneSolarSystem::draw() const {
             stars->draw();
             glEnable(GL_CULL_FACE);
 
+
+            //Render the shadow map
+            //m_defferedRendering->startRenderToShadowMap();
             for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
                 (*it)->draw();
+            //m_defferedRendering->stopRenderToShadowMap();
 
             cam->drawHUD();
         }
