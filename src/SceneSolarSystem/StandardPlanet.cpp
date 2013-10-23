@@ -4,10 +4,12 @@
 
 StandardPlanet::StandardPlanet(const std::string& name, const std::string& shaderprogram, const std::string& texture)
                                 : Planet(name), shaderprogram(shaderprogram), texturemapname(texture) {
+    sphere.mesh = Meshes.get("sphere");
     sphere.program = Programs.get(shaderprogram);
 }
 StandardPlanet::StandardPlanet(const std::string& name, const std::string& shaderprogram, const std::string& texture, const std::string& bumpmap)
                                 : Planet(name), bumpmap(bumpmap), shaderprogram(shaderprogram), texturemapname(texture) {
+    sphere.mesh = Meshes.get("sphere");
     sphere.program = Programs.get(shaderprogram);
 }
 

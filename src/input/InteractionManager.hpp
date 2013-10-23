@@ -3,7 +3,6 @@
 
 #include "tools.hpp"
 #include "InteractionListener.hpp"
-#include "KeyAndMouseManager.hpp"
 #include "SensorManager.hpp"
 
 /*

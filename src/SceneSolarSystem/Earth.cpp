@@ -86,6 +86,7 @@ void Earth::draw() const {
     sphere.program->uniform("modelMatrix")->set(model);
     sphere.program->uniform("viewMatrix")->set(view);
 
-
     sphere.draw();
+
+    Planet::draw();
 }

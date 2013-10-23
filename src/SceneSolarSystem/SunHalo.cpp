@@ -3,6 +3,7 @@
 #include "Camera.hpp"
 
 SunHalo::SunHalo() : time(0.0f) {
+    this->setName("sunHalo");
     model.mesh = Meshes.get("square");
     model.program = Programs.get("sun");
 }
@@ -25,7 +26,7 @@ void SunHalo::draw() const {
 
     vec3f camP = Utils::posFromMatrix(view);
     mat4f rot = glm::translate(mat4f(1.0f), -camP)*view;
-    mat4f modelM = glm::transpose(rot)*fullTransform;
+    mat4f modelM = glm::transpose(rot)*glm::scale(fullTransform, vec3f(scale));
     mat4f t = projection*view*modelM;
 
     Texture* tex = Textures.get("sun");

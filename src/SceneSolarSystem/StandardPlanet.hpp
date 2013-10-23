@@ -12,7 +12,6 @@ public:
 
     void update(float deltaTime);
     void draw() const;
-    using Planet::draw;
 private:
     const std::string shaderprogram;
     const std::string texturemapname;

@@ -108,6 +108,8 @@ bool SceneSolarSystem::loadResources() {
     ShaderProgram* p;
     Texture* tex;
 
+    VBE_LOG("Loading resources..");
+
 	//shaders
     p = new ShaderProgram();
     if(!p->makeProgram("data/shaders/sample.vert","data/shaders/sample.frag")) return false;
@@ -122,11 +124,31 @@ bool SceneSolarSystem::loadResources() {
     if(!p->makeProgram("data/shaders/sun.vert","data/shaders/sun.frag")) return false;
     Programs.add("sun",p);
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/sun3d.vert","data/sun3d/sample.frag")) return false;
+    if(!p->makeProgram("data/shaders/sun3d.vert","data/shaders/sun3d.frag")) return false;
     Programs.add("sun3d",p);
     p = new ShaderProgram();
     if(!p->makeProgram("data/shaders/hand.vert","data/shaders/hand.frag")) return false;
     Programs.add("hand",p);
+
+    // Earth Ferran Style
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/earthShader.vert","data/shaders/earthShader.frag")) return false;
+    Programs.add("earthShader",p);
+
+    // Earth Chris style
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/planetShader.vert","data/shaders/planetShader.frag")) return false;
+    Programs.add("planetShader",p);
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag")) return false;
+    Programs.add("planetShaderBump",p);
+    p = new ShaderProgram();
+    if(!p->makeProgram("data/shaders/testshader.vert","data/shaders/testshader.frag")) return false;
+    Programs.add("earthtest",p);
+
+
+    VBE_LOG("Shaders Loaded");
+
 
 	//textures
     tex = new Texture(1);
@@ -139,36 +161,17 @@ bool SceneSolarSystem::loadResources() {
     if(!tex->loadFromFile("data/hand_white.png",true)) return false;
     Textures.add("hand", tex);
 
-    /*
-    * Earth ferran style
-    */
-    p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/earthShader.vert","data/shaders/earthShader.frag")) return false;
-    Programs.add("earthShader",p);
-
+    // Earth Ferran style
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/earthmap.png",true)) return false;
+    if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
     Textures.add("earth", tex);
     tex = new Texture(2);
-    if(!tex->loadFromFile("data/lightsmap.png",true)) return false;
+    if(!tex->loadFromFile("data/lightsmap.jpg",true)) return false;
     Textures.add("earthNight", tex);
     tex = new Texture(3);
     if(!tex->loadFromFile("data/earthwatermap.png",true)) return false;
     Textures.add("earthWater", tex);
-
-    /*
-    * Earth chris style
-    */
-    p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/planetShader.vert","data/shaders/planetShader.frag")) return false;
-    Programs.add("planetShader",p);
-    p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag")) return false;
-    Programs.add("planetShaderBump",p);
-    p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/testshader.vert","data/shaders/testshader.frag")) return false;
-    Programs.add("earthtest",p);
-
+    //Earth Chris style
 //    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
 //        return false;
 //    if(!TextureManager::load("earth_nighttime","data/earth_nighttime.png",3))
@@ -203,10 +206,17 @@ bool SceneSolarSystem::loadResources() {
     if(!tex->loadFromFile("data/jupitermap.jpg",true)) return false;
     Textures.add("jupiter", tex);
 
+
+    VBE_LOG("Textures Loaded");
+
+
     //Create meshes
     Meshes.add("cube",new Mesh("data/10x10.obj"));
     Meshes.add("sphere",new Mesh("data/bola.obj"));
     Meshes.add("square",new Mesh("data/square.obj"));
+
+
+    VBE_LOG("Meshes Loaded");
 
 	return true;
 }
@@ -216,7 +226,7 @@ void SceneSolarSystem::update(float deltaTime) {
 	++fpsCount;
 	debugCounter += deltaTime;
 	if (debugCounter > 1) {
-        VBE_LOG("FPS: " << fpsCount << ". Amount of GameObjects: " << objects.size() << ". Amount of Drawables: " << drawList.size());
+        std::cout << "FPS: " << fpsCount << ". Amount of GameObjects: " << getGame()->getObjectCount() << std::endl;
 		debugCounter -= 1;
 		fpsCount = 0;
 	}
