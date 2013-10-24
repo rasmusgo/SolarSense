@@ -19,7 +19,7 @@ void main () {
     vTexCoord = a_texCoord;
 
     vec4 mpos = modelMatrix * vec4(a_position,1.0);
-    vec4 mnormal = modelMatrix * vec4(a_position + a_normal,1.0);
+    vec4 mnormal = modelMatrix * vec4(a_position + normalize(a_position),1.0);
     vec3 pos = mpos.xyz;
     vec3 norm = mnormal.xyz;
     vec3 camForw = -vec3(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2]);

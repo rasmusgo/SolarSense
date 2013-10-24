@@ -29,7 +29,9 @@ bool Texture::load(const std::string &filePath) {
 				0,
 				GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
 				);
-	setFilter(GL_NEAREST);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	setFilter(GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR); 
+	//setFilter(GL_NEAREST, GL_NEAREST); 
 	setWrap(GL_REPEAT);
 	return true;
 }
@@ -39,10 +41,10 @@ void Texture::bind() const {
 	glBindTexture(GL_TEXTURE_2D, handle);
 }
 
-void Texture::setFilter(GLenum filter) const {
+void Texture::setFilter(GLenum min_filter, GLenum mag_filter) const {
 	bind();
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, min_filter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mag_filter);
 }
 
 void Texture::setWrap(GLenum wrap) const {

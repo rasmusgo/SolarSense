@@ -4,12 +4,15 @@
 #include <GL/glut.h>
 
 SolarSenseApp::SolarSenseApp() : currentScene(NULL), nextScene(NULL) {
-    window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Fullscreen,CONTEXT_SETTINGS_OPENGL);
-	window.setMouseCursorVisible(false);
-	window.setKeyRepeatEnabled(false);
-	window.setVerticalSyncEnabled(true);
-	WINDOWFOCUS = true;
+    window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Default,CONTEXT_SETTINGS_OPENGL);
+        window.setMouseCursorVisible(false);
+        window.setKeyRepeatEnabled(false);
+        window.setVerticalSyncEnabled(true);
+        WINDOWFOCUS = true;
     glClearColor(0.0/255.0,0.0/255.0,0.0/255.0,1);
+
+    std::cout << "OpenGL version: " << window.getSettings().majorVersion << std::endl;
+    std::cout << "Anti aliasing level" << std::endl << window.getSettings().antialiasingLevel << std::endl;
 }
 
 SolarSenseApp::~SolarSenseApp() {

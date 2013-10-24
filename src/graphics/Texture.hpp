@@ -8,7 +8,7 @@ class Texture
         Texture(unsigned int slot);
 		~Texture();
 
-		void setFilter(GLenum filter) const;
+		void setFilter(GLenum min_filter, GLenum mag_filter) const;
 		void setWrap(GLenum wrap) const;
         void setSlot(unsigned int newSlot);
         unsigned int getSlot();

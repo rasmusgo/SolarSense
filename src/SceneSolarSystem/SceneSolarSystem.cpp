@@ -39,7 +39,7 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     GameObject* center = new GameObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(1.0f, 1.0f, 1.0f));
     addObject(center);
 
-    OrbitingObject* sun = new OrbitingObject(this, center, vec3f(4.6f, 4.6f, 4.6f), 0, 0);
+    OrbitingObject* sun = new OrbitingObject(this, center, vec3f(4.7f, 4.7f, 4.7f), 0, 0);
     addDrawableObject("sun",sun);
 
     StandardPlanet* mercury = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 5, "planetShader", "mercury");
@@ -67,11 +67,9 @@ SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
     addObject("jupiter",jupiter);
     sun->addObject(jupiter);
 
-
     Sun* sun2 = new Sun(this, center, vec3f(1.0f, 1.0f, 1.0f)*10.f, 0, 0);
     addObject("sun2",sun2);
     sun->addObject(sun2);
-
 
     currentObject = objectsOrder.begin();
     cam->setArround(objectsMap.at((*currentObject)));
@@ -188,7 +186,7 @@ bool SceneSolarSystem::loadResources() {
 
 	//Create meshes
 	MeshManager::add("cube",new Mesh("data/10x10.obj"));
-    MeshManager::add("sphere",new Mesh("data/sphere.obj"));
+    MeshManager::add("sphere",new Mesh("data/bola.obj"));
     MeshManager::add("square",new Mesh("data/square.obj"));
 
 	return true;
@@ -361,8 +359,12 @@ void SceneSolarSystem::draw() const {
             stars->draw();
             glEnable(GL_CULL_FACE);
 
+
+            //Render the shadow map
+            //m_defferedRendering->startRenderToShadowMap();
             for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
                 (*it)->draw();
+            //m_defferedRendering->stopRenderToShadowMap();
 
             cam->drawHUD();
         }
