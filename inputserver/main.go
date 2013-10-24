@@ -71,8 +71,10 @@ func main() {
 	serveStatic("app.js")
 	serveStatic("css/bootstrap.min.css")
 	serveStatic("css/bootstrap-theme.min.css")
+	serveStatic("css/slider.css")
 	serveStatic("js/bootstrap.min.js")
 	serveStatic("Touchscreen-Joystick/TouchControl.js")
+	serveStatic("js/bootstrap-slider.js")
 	
 	http.Handle("/ws", websocket.Handler(wsHandler))
 	//http.Handle("/monitor_ws", websocket.Handler(monitorHandler))

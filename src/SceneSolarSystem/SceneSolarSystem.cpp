@@ -236,6 +236,12 @@ void SceneSolarSystem::update(float deltaTime) {
                 sscanf(cmd.buffer, "%lf %lf", &xdelta, &ydelta);
                 cam->vel.x = 2 * ydelta;
                 cam->vel.y = 2 * xdelta;
+            break;
+            case 3:  // zoom
+                double zdelta;
+                sscanf(cmd.buffer, "%lf", &zdelta);
+                cam->vel.z = -1 * zdelta;
+
         
         }
 

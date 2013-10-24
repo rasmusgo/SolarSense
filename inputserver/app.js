@@ -71,8 +71,13 @@ $(document).ready(function(){
   		var request = {"Opcode": 1, "Query": q};
   		conn.send(JSON.stringify(request));  // log("Sending " + JSON.stringify(request));
  	});
-	buildJoystick();
 
+	buildJoystick();
+	//$('#foo').slider().on('slide', function(ev){
+	 //		var request = {"Opcode": 3, "Query": String(ev.value)};
+  		//	conn.send(JSON.stringify(request));
+  		//});
+	//.slider('setValue', value)
 
 
 
@@ -126,5 +131,7 @@ function buildJoystick() {
   			conn.send(JSON.stringify(request));
 
 	 	});
+
+	 	
 }
 
