@@ -2,8 +2,9 @@
 #define PLANET_HPP
 
 #include "Commons.hpp"
+#include "WorldObject.hpp"
 
-class Planet : public GameObject {
+class Planet : public WorldObject {
     public:
         Planet(const std::string& name);
         ~Planet();

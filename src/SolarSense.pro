@@ -52,7 +52,8 @@ SOURCES += \
     $$PWD/SceneSolarSystem/Planet.cpp \
     $$PWD/input/InteractionListener.cpp \
     $$PWD/input/InteractionManager.cpp \
-    $$PWD/input/SensorManager.cpp
+    $$PWD/input/SensorManager.cpp \
+    SceneSolarSystem/WorldObject.cpp
 
 
 HEADERS += \
@@ -68,7 +69,8 @@ HEADERS += \
     $$PWD/input/InteractionManager.hpp \
     $$PWD/SceneSolarSystem/inputreader.h \
     $$PWD/input/SensorManager.hpp \
-    Commons.hpp
+    Commons.hpp \
+    SceneSolarSystem/WorldObject.hpp
 
 OTHER_FILES += \
     $$PWD/data/shaders/sample.vert \

@@ -2,6 +2,10 @@
 #define COMMONS_HPP
 
 #include "VBE/includes.hpp"
+#include "glm/gtc/quaternion.hpp"  // Quaternions
+
+typedef glm::detail::tquat<float> quat;
+typedef glm::detail::tquat<double> dquat;
 
 namespace Utils {
     inline vec3f posFromMatrix(mat4f& m) {

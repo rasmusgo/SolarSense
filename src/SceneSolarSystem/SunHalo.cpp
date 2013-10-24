@@ -16,6 +16,7 @@ SunHalo::~SunHalo(){
 void SunHalo::update(float deltaTime) {
     time += deltaTime;
     transform = glm::rotate(mat4f(1.0f),90.f,vec3f(1,0,0));
+    transform = glm::scale(transform, vec3f(scale));
 }
 
 void SunHalo::draw() const {
@@ -24,9 +25,10 @@ void SunHalo::draw() const {
     mat4f projection = cam->projection;
     mat4f view = cam->view;
 
-    vec3f camP = Utils::posFromMatrix(view);
-    mat4f rot = glm::translate(mat4f(1.0f), -camP)*view;
-    mat4f modelM = glm::transpose(rot)*glm::scale(fullTransform, vec3f(scale));
+    //vec3f camP = cam->getPosition();
+    //mat4f rot = glm::translate(mat4f(1.0f), camP)*view;
+    //mat4f modelM = glm::transpose(rot)*glm::scale(fullTransform, vec3f(scale));
+    mat4f modelM = cam->billboard(vec3f(0.0f)) * fullTransform;
     mat4f t = projection*view*modelM;
 
     Texture* tex = Textures.get("sun");

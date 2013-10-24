@@ -35,8 +35,7 @@ SceneSolarSystem::SceneSolarSystem() :
     Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 
     //Init Camera
-    cam = new Camera();
-    cam->pos = vec3f(0.0f,0.0f,30.0f);
+    cam = new Camera(vec3f(0.0f,0.0f,30.0f));
     cam->addTo(this);
 
     //add gameObjects
@@ -49,40 +48,41 @@ SceneSolarSystem::SceneSolarSystem() :
     sun->radius = 4.7f;
     sun->addTo(this);
 
+    float fa = 40.0f;
     StandardPlanet* mercury = new StandardPlanet("mercury","planetShader", "mercury");
     mercury->radius = 0.5f;
     mercury->orbRadius = 15.0f;
-    mercury->orbSpeed = 5.0f;
+    mercury->orbSpeed = 6.0f/fa;
     mercury->addTo(sun);
 
     StandardPlanet* venus = new StandardPlanet("venus","planetShader","venus");
     venus->radius = 0.4f;
     venus->orbRadius = 20.0f;
-    venus->orbSpeed = 4.0f;
+    venus->orbSpeed = 4.0f/fa;
     venus->addTo(sun);
 
     Earth* earth = new Earth("earth");
     earth->radius = 1.0f;
     earth->orbRadius = 30.0f;
-    earth->orbSpeed = 3.0f;
+    earth->orbSpeed = 3.0f/fa;
     earth->addTo(sun);
 
     StandardPlanet* moon = new StandardPlanet("moon", "planetShader", "moon");
     moon->radius = 0.2f;
     moon->orbRadius = 3.0f;
-    moon->orbSpeed = 7.0f;
+    //moon->orbSpeed = 7.0f/fa;
     moon->addTo(earth);
 
     StandardPlanet* mars = new StandardPlanet("mars", "planetShader", "mars");
     mars->radius = 0.8f;
     mars->orbRadius = 50.0f;
-    mars->orbSpeed = 2.0f;
+    mars->orbSpeed = 2.0f/fa;
     mars->addTo(sun);
 
     StandardPlanet* jupiter = new StandardPlanet("jupiter", "planetShader", "jupiter");
     jupiter->radius = 4.0f;
     jupiter->orbRadius = 80.0f;
-    jupiter->orbSpeed = 1.5f;
+    jupiter->orbSpeed = 1.5f/fa;
     jupiter->addTo(sun);
 
     SunHalo* sunhalo = new SunHalo();
@@ -112,38 +112,38 @@ bool SceneSolarSystem::loadResources() {
 
 	//shaders
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/sample.vert","data/shaders/sample.frag")) return false;
+    p->makeProgramFromFile("data/shaders/sample.vert","data/shaders/sample.frag");
     Programs.add("sample",p);
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/orbit.vert","data/shaders/orbit.frag")) return false;
+    p->makeProgramFromFile("data/shaders/orbit.vert","data/shaders/orbit.frag");
     Programs.add("orbit",p);
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/sample2.vert","data/shaders/sample2.frag")) return false;
+    p->makeProgramFromFile("data/shaders/sample2.vert","data/shaders/sample2.frag");
     Programs.add("sample2",p);
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/sun.vert","data/shaders/sun.frag")) return false;
+    p->makeProgramFromFile("data/shaders/sun.vert","data/shaders/sun.frag");
     Programs.add("sun",p);
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/sun3d.vert","data/shaders/sun3d.frag")) return false;
+    p->makeProgramFromFile("data/shaders/sun3d.vert","data/shaders/sun3d.frag");
     Programs.add("sun3d",p);
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/hand.vert","data/shaders/hand.frag")) return false;
+    p->makeProgramFromFile("data/shaders/hand.vert","data/shaders/hand.frag");
     Programs.add("hand",p);
 
     // Earth Ferran Style
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/earthShader.vert","data/shaders/earthShader.frag")) return false;
+    p->makeProgramFromFile("data/shaders/earthShader.vert","data/shaders/earthShader.frag");
     Programs.add("earthShader",p);
 
     // Earth Chris style
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/planetShader.vert","data/shaders/planetShader.frag")) return false;
+    p->makeProgramFromFile("data/shaders/planetShader.vert","data/shaders/planetShader.frag");
     Programs.add("planetShader",p);
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag")) return false;
+    p->makeProgramFromFile("data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag");
     Programs.add("planetShaderBump",p);
     p = new ShaderProgram();
-    if(!p->makeProgram("data/shaders/testshader.vert","data/shaders/testshader.frag")) return false;
+    p->makeProgramFromFile("data/shaders/testshader.vert","data/shaders/testshader.frag");
     Programs.add("earthtest",p);
 
 

@@ -2,23 +2,22 @@
 #define CAMERA_HPP
 
 #include "Commons.hpp"
+#include "WorldObject.hpp"
 
-class Camera : public GameObject {
+class Camera : public WorldObject {
     public:
         enum CameraMode {
             Arround,
             Free
         };
 
-        Camera(const vec3f& pos = vec3f(0.0f), const vec3f& rot = vec3f(0.0f), const mat4f& projection = mat4f(1.0f));
+        Camera(const vec3f& pos = vec3f(0.0f), const mat4f& projection = mat4f(1.0f));
         ~Camera();
 
         void draw();
         void update(float deltaTime);
         void drawHUD();
 
-        vec3f pos;
-        vec3f rot;
         mat4f projection;
         mat4f view;
 
@@ -36,6 +35,8 @@ class Camera : public GameObject {
         bool interpolating;
 
         float eyeDistance3D; //Total distance between eyes
+
+        mat4f billboard (vec3f position);
 
     private:        
         const float INTERPOLATION_TIME = 3.0f;

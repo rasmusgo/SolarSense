@@ -2,8 +2,9 @@
 #define ORBITINGOBJECT_HPP
 
 #include "Commons.hpp"
+#include "WorldObject.hpp"
 
-class Sun : public GameObject {
+class Sun : public WorldObject {
     public:
         Sun();
         ~Sun();
@@ -13,7 +14,7 @@ class Sun : public GameObject {
 
         float radius;
     private:
-        Model sph;//should be probably an abstract class so this would go out
+        Model sph;
 
         float time;
 };

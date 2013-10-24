@@ -1,12 +1,14 @@
 #include "Camera.hpp"
 #include "../input/SensorManager.hpp"
 
-Camera::Camera(const vec3f& pos, const vec3f& rot, const mat4f& projection) :
-    pos(pos), rot(rot), projection(projection) {
+Camera::Camera(const vec3f& pos, const mat4f& projection) :
+    projection(projection) {
 
     this->setName("cam");
     this->setUpdatePriority(2);
     this->projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+
+    position = pos;
 
     mode = Free;
     maxAcc = 5.0f;
@@ -82,14 +84,10 @@ void Camera::update(float deltaTime) {
 
             case Free:
                 displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
-                pos.z += displ;
-                m = glm::translate(m, -vec3f(0,0,displ));
-                view = m*view;
+                position += (vec3f(0,0,displ) * rotation);
 
-                m = mat4f(1.0);
-                m = glm::rotate(m,vel.y/2.0f,vec3f(0,1,0));
-                m = glm::rotate(m,vel.x/2.0f,vec3f(1,0,0));
-                view = m*view;
+                rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
+                rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
         }
     }
     else { //Interpolating
@@ -118,6 +116,12 @@ void Camera::update(float deltaTime) {
 //            SensorManager::resetInitialHandPos();
 //        }
     }
+
+
+    // Update transform matrix
+    transform = glm::translate(glm::mat4_cast(rotation), -position);
+
+    view = transform;
 }
 
 void Camera::updateAcceleration(float deltaTime) {
@@ -267,3 +271,21 @@ std::pair<mat4f,mat4f> Camera::getViewMatrix3D() {
 
     return std::pair<mat4f,mat4f>(r*c,l*c); //Right and Left
 }
+
+mat4f Camera::billboard (vec3f position) {
+    vec3f cameraPos = -getPosition();
+    vec3f cameraUp = getRotation() * vec3f(0,1,0);
+
+    vec3f look = glm::normalize(cameraPos - position);
+    vec3f right = glm::cross(cameraUp, look);
+    vec3f up2 = glm::cross(look, right);
+    mat4f transform;
+    transform[0] = vec4f(right, 0);
+    transform[1] = vec4f(up2, 0);
+    transform[2] = vec4f(look, 0);
+    // Uncomment this line to translate the position as well
+    // (without it, it's just a rotation)
+    //transform[3] = vec4f(position, 0);
+    return transform;
+}
+

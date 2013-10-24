@@ -2,9 +2,9 @@
 #define SUNHALO_HPP
 
 #include "Commons.hpp"
-#include "Planet.hpp"
+#include "WorldObject.hpp"
 
-class SunHalo : public GameObject {
+class SunHalo : public WorldObject {
     public:
         SunHalo();
         ~SunHalo();

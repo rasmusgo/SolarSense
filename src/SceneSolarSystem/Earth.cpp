@@ -15,9 +15,10 @@ Earth::~Earth(){
 void Earth::update(float deltaTime) {
     time += deltaTime;
 
-    transform = glm::rotate(mat4f(1.0f),time*orbSpeed,vec3f(0,1,0));
-    transform = glm::translate(transform,vec3f(orbRadius, 0.0f, 0.0f));
-    transform = glm::rotate(transform,time*orbSpeed*2,vec3f(0,1,0));
+    position = vec3f(orbRadius*cos(time*orbSpeed), 0.0f, orbRadius*sin(time*orbSpeed));
+    rotation = glm::rotate(rotation, deltaTime*orbSpeed*2, vec3f(0,1,0));
+
+    WorldObject::update(deltaTime);
 }
 
 void Earth::draw() const {
