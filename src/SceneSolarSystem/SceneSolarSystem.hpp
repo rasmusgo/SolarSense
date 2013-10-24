@@ -26,6 +26,8 @@ class SceneSolarSystem : public GameObject {
         bool stereoscopic3D;
         std::list<std::string> objectsOrder;
         std::list<std::string>::iterator currentObject;
+
+        void setArroundClosestWorldObject();
 };
 
 #endif // SCENESOLARSYSTEM_HPP

@@ -3,7 +3,7 @@
 #include "Earth.hpp"
 #include "Camera.hpp"
 
-Earth::Earth(const std::string& name) : Planet(name), time(0.0f) {
+Earth::Earth(const std::string& name, float radius, float orbRadius) : Planet(name, radius, orbRadius), time(0.0f) {
     sphere.mesh = Meshes.get("sphere");
     sphere.program = Programs.get("earthShader");
 }
@@ -16,7 +16,7 @@ void Earth::update(float deltaTime) {
     time += deltaTime;
 
     position = vec3f(orbRadius*cos(time*orbSpeed), 0.0f, orbRadius*sin(time*orbSpeed));
-    rotation = glm::rotate(rotation, deltaTime*orbSpeed*2, vec3f(0,1,0));
+    rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0));
 
     WorldObject::update(deltaTime);
 }
@@ -54,7 +54,7 @@ void Earth::draw() const {
 
     mat4f projection = cam->projection;
     mat4f view = cam->view;
-    mat4f model = glm::scale(fullTransform, vec3f(radius));
+    mat4f model = glm::scale(fullTransform, getScale());
     mat4f t = projection*view*model;
 
     vec3f lightPos = vec3f(0.0f);

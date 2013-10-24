@@ -25,7 +25,8 @@ class Camera : public WorldObject {
         vec3f vel;
         vec3f acc;
 
-        void setArround(GameObject* object);
+        void setArround(const std::string& objectName);
+        void setArround(WorldObject* object);
         void setMode(CameraMode m);
 
         std::pair<mat4f,mat4f> getViewMatrix3D();
@@ -45,7 +46,8 @@ class Camera : public WorldObject {
 
         vec3f fromPos;
         float interpolatingTimer;
-        GameObject* arrObject;
+        WorldObject* arrObject;
+        float lastArrDist;
         float maxAcc;
         float friction;
         float maxVel;

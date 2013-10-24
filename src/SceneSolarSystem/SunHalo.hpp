@@ -6,13 +6,11 @@
 
 class SunHalo : public WorldObject {
     public:
-        SunHalo();
+        SunHalo(const std::string& name, float size);
         ~SunHalo();
 
         void update(float deltaTime);
         void draw() const;
-
-        float scale;
 
         Model model;
     private:

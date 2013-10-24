@@ -44,52 +44,51 @@ SceneSolarSystem::SceneSolarSystem() :
     stars->setDrawPriority(-10);
     stars->addTo(this);
 
-    Sun* sun = new Sun();
-    sun->radius = 4.7f;
+    Sun* sun = new Sun("sun", 4.7f);
     sun->addTo(this);
+    objectsOrder.push_back("sun");
 
     float fa = 40.0f;
-    StandardPlanet* mercury = new StandardPlanet("mercury","planetShader", "mercury");
-    mercury->radius = 0.5f;
-    mercury->orbRadius = 15.0f;
+    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f ,"planetShader", "mercury");
     mercury->orbSpeed = 6.0f/fa;
+    mercury->rotSpeed = 12.0f/fa;
     mercury->addTo(sun);
+    objectsOrder.push_back("mercury");
 
-    StandardPlanet* venus = new StandardPlanet("venus","planetShader","venus");
-    venus->radius = 0.4f;
-    venus->orbRadius = 20.0f;
+    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f,"planetShader","venus");
     venus->orbSpeed = 4.0f/fa;
+    venus->rotSpeed = 8.0f/fa;
     venus->addTo(sun);
+    objectsOrder.push_back("venus");
 
-    Earth* earth = new Earth("earth");
-    earth->radius = 1.0f;
-    earth->orbRadius = 30.0f;
+    Earth* earth = new Earth("earth", 1.0f, 30.0f);
     earth->orbSpeed = 3.0f/fa;
+    earth->rotSpeed = 6.0f/fa;
     earth->addTo(sun);
+    objectsOrder.push_back("earth");
 
-    StandardPlanet* moon = new StandardPlanet("moon", "planetShader", "moon");
-    moon->radius = 0.2f;
-    moon->orbRadius = 3.0f;
-    //moon->orbSpeed = 7.0f/fa;
+    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShader", "moon");
+    moon->orbSpeed = 3.0f/fa;
+    moon->rotSpeed = earth->rotSpeed - 4.0f*moon->orbSpeed;
     moon->addTo(earth);
+    objectsOrder.push_back("moon");
 
-    StandardPlanet* mars = new StandardPlanet("mars", "planetShader", "mars");
-    mars->radius = 0.8f;
-    mars->orbRadius = 50.0f;
+    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f, "planetShader", "mars");
     mars->orbSpeed = 2.0f/fa;
+    mars->rotSpeed = 4.0f/fa;
     mars->addTo(sun);
+    objectsOrder.push_back("mars");
 
-    StandardPlanet* jupiter = new StandardPlanet("jupiter", "planetShader", "jupiter");
-    jupiter->radius = 4.0f;
-    jupiter->orbRadius = 80.0f;
+    StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter");
     jupiter->orbSpeed = 1.5f/fa;
+    jupiter->rotSpeed = 3.0f/fa;
     jupiter->addTo(sun);
+    objectsOrder.push_back("jupiter");
 
-    SunHalo* sunhalo = new SunHalo();
-    sunhalo->scale = 10.f;
+    SunHalo* sunhalo = new SunHalo("sunHalo", 10.0f);
     sunhalo->addTo(sun);
 
-    //currentObject = objectsOrder.begin();
+    currentObject = objectsOrder.begin();
     //cam->setArround(objectsMap.at((*currentObject)));
 
 	std::cout << "* Init done" << std::endl;
@@ -230,146 +229,167 @@ void SceneSolarSystem::update(float deltaTime) {
 		debugCounter -= 1;
 		fpsCount = 0;
 	}
-//    static command cmd;
-//    m_cmd_q.lock();
-//    while(!cmd_q.empty()){
-//        cmd = cmd_q.front(); cmd_q.pop();
-//        switch(cmd.opcode){
-//            case 1: //Planet switch commands
-//            {
-//                int action;
-//                sscanf(cmd.buffer, "%d", &action);
-//                if( ! cam->interpolating){
-//                    switch(action){
-//                        case 1:
-//                            if(--currentObject != objectsOrder.end()){
-//                                cam->setArround(objectsMap.at((*currentObject)));
-//                            }
-//                            break;
-//                        case 2:
-//                            if(++currentObject != objectsOrder.end()){
-//                                cam->setArround(objectsMap.at((*currentObject)));
-//                            }
-//                            break;
-//                        case 3:
-//                            cam->setMode(Camera::Free);
-//                            break;
-//                    }
-//                }
 
-//            }
-//           case 2: //rotation commands
-//                double xdelta, ydelta;
-//                sscanf(cmd.buffer, "%lf %lf", &xdelta, &ydelta);
-//                cam->vel.x = 2 * ydelta;
-//                cam->vel.y = 2 * xdelta;
+    // Comunication outside
+    static command cmd;
+    m_cmd_q.lock();
+    while(!cmd_q.empty()){
+        cmd = cmd_q.front(); cmd_q.pop();
+        switch(cmd.opcode){
+            case 1: //Planet switch commands
+            {
+                int action;
+                sscanf(cmd.buffer, "%d", &action);
+                if( ! cam->interpolating){
+                    switch(action){
+                        case 1:
+                            if(--currentObject != objectsOrder.end()){
+                                cam->setArround((*currentObject));
+                            }
+                            break;
+                        case 2:
+                            if(++currentObject != objectsOrder.end()){
+                                cam->setArround((*currentObject));
+                            }
+                            break;
+                        case 3:
+                            cam->setMode(Camera::Free);
+                            break;
+                    }
+                }
+
+            }
+           case 2: //rotation commands
+                double xdelta, ydelta;
+                sscanf(cmd.buffer, "%lf %lf", &xdelta, &ydelta);
+                cam->vel.x = 2 * ydelta;
+                cam->vel.y = 2 * xdelta;
         
-//        }
+        }
 
-//       delete[] cmd.buffer;
-//    }
-//    m_cmd_q.unlock();
+       delete[] cmd.buffer;
+    }
+    m_cmd_q.unlock();
 
 
     //Update logic
-//    if (Input::isKeyPressed(sf::Keyboard::P)) paused = !paused;
-//    if (paused) deltaTime = 0.0f;
-//    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
-//        if (++currentObject != objectsOrder.end())
-//            cam->setArround(objectsMap.at((*currentObject)));
-//        else --currentObject;
-//    }
-//    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
-//        if (currentObject != objectsOrder.begin())
-//            cam->setArround(objectsMap.at((*--currentObject)));
-//    }
-//    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
-//    if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
-//    if (Input::isKeyPressed(sf::Keyboard::Num3)) {
-//        if (stereoscopic3D)
-//            glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
-//        stereoscopic3D = !stereoscopic3D;
-//    }
-//    if (Input::isKeyPressed(sf::Keyboard::R)) SensorManager::resetTracking();
+    if (Input::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+    if (Input::isKeyPressed(sf::Keyboard::Space)) setArroundClosestWorldObject();
+    if (paused) deltaTime = 0.0f;
+    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
+        if (++currentObject != objectsOrder.end())
+            cam->setArround((*currentObject));
+        else --currentObject;
+    }
+    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
+        if (currentObject != objectsOrder.begin())
+            cam->setArround((*--currentObject));
+    }
+    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
+    if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
+    if (Input::isKeyPressed(sf::Keyboard::Num3)) {
+        //if (stereoscopic3D)
+        //    glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
+        //stereoscopic3D = !stereoscopic3D;
+    }
+    if (Input::isKeyPressed(sf::Keyboard::R)) SensorManager::resetTracking();
 
-    //Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
+    Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 }
 
-//void SceneSolarSystem::draw() const {
-//    if (not stereoscopic3D) {
-//        //calculate perspective matrix
-//        getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+void SceneSolarSystem::setArroundClosestWorldObject() {
+    std::vector<WorldObject*> wobs;
+    getAllObjectsOfType<WorldObject>(wobs);
+    WorldObject* closestObject = (WorldObject*)(getGame()->getObjectByName("sun"));
+    vec3f camPos = cam->getPosition();
+    float minDist = glm::length(closestObject->getPosition() - camPos);
 
-//        //Move matrix to position (according to player/camera)
-//        //getState().view = mat4f(1.0);
-//        getState().view = cam->getViewMatrix();
+    for (uint i = 0; i < wobs.size(); ++i) {
+        float dist = glm::length(wobs[i]->getPosition() - camPos);
+        if (!(wobs[i]->id == cam->id) and dist < minDist) {
+            minDist = dist;
+            closestObject = wobs[i];
+        }
+    }
 
-//        //Drawable objects
+    cam->setArround(closestObject);
+}
+
+/*void SceneSolarSystem::draw() const {
+    if (not stereoscopic3D) {
+        //calculate perspective matrix
+        getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+
+        //Move matrix to position (according to player/camera)
+        //getState().view = mat4f(1.0);
+        getState().view = cam->getViewMatrix();
+
+        //Drawable objects
 
 
-//        for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
-//            (*it)->draw();
+        for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+            (*it)->draw();
 
-//        cam->drawHUD();
-//    }
-//    else {
-//        //calculate perspective matrix (Parallel)
-//        //getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+        cam->drawHUD();
+    }
+    else {
+        //calculate perspective matrix (Parallel)
+        //getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
 
-//        //Move matrix to position (according to player/camera)
-//        //getState().view = mat4f(1.0);
-//        std::pair<mat4f,mat4f> eyes = cam->getViewMatrix3D();
+        //Move matrix to position (according to player/camera)
+        //getState().view = mat4f(1.0);
+        std::pair<mat4f,mat4f> eyes = cam->getViewMatrix3D();
 
-//        float ratio  = float(SCRWIDTH) / float(SCRHEIGHT);
-//        float radians = DEG_TO_RAD * FOV / 2.0;
-//        float wd2     = ZNEAR * glm::tan(radians);
-//        //float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
-//        float ndfl    = ZNEAR / 375.0;
+        float ratio  = float(SCRWIDTH) / float(SCRHEIGHT);
+        float radians = DEG_TO_RAD * FOV / 2.0;
+        float wd2     = ZNEAR * glm::tan(radians);
+        //float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
+        float ndfl    = ZNEAR / 375.0;
 
-//        float left, right, top, bottom;
+        float left, right, top, bottom;
 
-//        glViewport(float(SCRWIDTH)/2.0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Right eye
-//        {
-//            //Off Axis projection
-//            left  = - ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
-//            right =   ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
-//            top    =   wd2;
-//            bottom = - wd2;
-//            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
+        glViewport(float(SCRWIDTH)/2.0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Right eye
+        {
+            //Off Axis projection
+            left  = - ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
+            right =   ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
+            top    =   wd2;
+            bottom = - wd2;
+            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
 
-//            getState().view = eyes.first;
+            getState().view = eyes.first;
 
-//            //Drawable objects
-//            glDisable(GL_CULL_FACE);
-//            stars->draw();
-//            glEnable(GL_CULL_FACE);
+            //Drawable objects
+            glDisable(GL_CULL_FACE);
+            stars->draw();
+            glEnable(GL_CULL_FACE);
 
-//            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
-//                (*it)->draw();
+            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+                (*it)->draw();
 
-//            cam->drawHUD();
-//        }
-//        glViewport(0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Left eye
-//        {
-//            //Off Axis projection
-//            left  = - ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
-//            right =   ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
-//            top    =   wd2;
-//            bottom = - wd2;
-//            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
+            cam->drawHUD();
+        }
+        glViewport(0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Left eye
+        {
+            //Off Axis projection
+            left  = - ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
+            right =   ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
+            top    =   wd2;
+            bottom = - wd2;
+            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
 
-//            getState().view = eyes.second;
+            getState().view = eyes.second;
 
-//            //Drawable objects
-//            glDisable(GL_CULL_FACE);
-//            stars->draw();
-//            glEnable(GL_CULL_FACE);
+            //Drawable objects
+            glDisable(GL_CULL_FACE);
+            stars->draw();
+            glEnable(GL_CULL_FACE);
 
-//            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
-//                (*it)->draw();
+            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
+                (*it)->draw();
 
-//            cam->drawHUD();
-//        }
-//    }
-//}
+            cam->drawHUD();
+        }
+    }
+}*/
 

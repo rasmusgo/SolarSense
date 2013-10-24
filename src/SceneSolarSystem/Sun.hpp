@@ -2,20 +2,17 @@
 #define ORBITINGOBJECT_HPP
 
 #include "Commons.hpp"
-#include "WorldObject.hpp"
+#include "Planet.hpp"
 
-class Sun : public WorldObject {
+class Sun : public Planet {
     public:
-        Sun();
+        Sun(const std::string& name, float radius);
         ~Sun();
 
         void update(float deltaTime);
         void draw() const;
 
-        float radius;
     private:
-        Model sph;
-
         float time;
 };
 

@@ -1,12 +1,15 @@
 #include "Planet.hpp"
 #include "Camera.hpp"
 
-Planet::Planet(const std::string& name)
-    : radius(0.0f), orbRadius(0.0f), orbSpeed(0.0f), drawOrbit(true) {
+Planet::Planet(const std::string& name, float radius, float orbRadius)
+    : radius(radius), orbRadius(orbRadius), orbSpeed(0.0f), drawOrbit(true) {
 
     this->setName(name);
     orbit.mesh = Meshes.get("square");
     orbit.program = Programs.get("orbit");
+
+    scale = vec3f(radius);
+    position = vec3f(orbRadius, 0, 0);
 }
 
 Planet::~Planet(){

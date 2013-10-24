@@ -5,7 +5,7 @@
 
 class Earth : public Planet {
     public:
-        Earth(const std::string& name);
+        Earth(const std::string& name, float radius, float orbRadius);
         ~Earth();
 
         void update(float deltaTime);

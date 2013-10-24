@@ -18,9 +18,15 @@ public:
     const quat getRotation() const;
     const quat getLocalRotation() const;
 
+    const vec3f getScale() const;
+    const vec3f getLocalScale() const;
+
 protected:
     vec3f position;
     quat rotation;
+    vec3f scale;
+
+    void onObjectAdd(GameObject* object);
 };
 
 #endif // WORLDOBJECT_HPP

@@ -6,18 +6,19 @@
 
 class Planet : public WorldObject {
     public:
-        Planet(const std::string& name);
+        Planet(const std::string& name, float radius, float orbRadius);
         ~Planet();
 
         virtual void update(float deltaTime) = 0;
         virtual void draw() const;
 
         float radius;
-        float orbSpeed;
         float orbRadius;
+        float orbSpeed;
+        float rotSpeed;
         bool drawOrbit;
     protected:
-        Model sphere;//should be probably an abstract class so this would go out
+        Model sphere;
         Model orbit;
 };
 

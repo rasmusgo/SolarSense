@@ -2,8 +2,9 @@
 #include "SunHalo.hpp"
 #include "Camera.hpp"
 
-SunHalo::SunHalo() : time(0.0f) {
-    this->setName("sunHalo");
+SunHalo::SunHalo(const std::string& name, float size) : time(0.0f) {
+    this->setName(name);
+    this->scale = vec3f(size);
     model.mesh = Meshes.get("square");
     model.program = Programs.get("sun");
 }
@@ -16,7 +17,7 @@ SunHalo::~SunHalo(){
 void SunHalo::update(float deltaTime) {
     time += deltaTime;
     transform = glm::rotate(mat4f(1.0f),90.f,vec3f(1,0,0));
-    transform = glm::scale(transform, vec3f(scale));
+    transform = glm::scale(transform, vec3f(getScale()));
 }
 
 void SunHalo::draw() const {
@@ -25,9 +26,6 @@ void SunHalo::draw() const {
     mat4f projection = cam->projection;
     mat4f view = cam->view;
 
-    //vec3f camP = cam->getPosition();
-    //mat4f rot = glm::translate(mat4f(1.0f), camP)*view;
-    //mat4f modelM = glm::transpose(rot)*glm::scale(fullTransform, vec3f(scale));
     mat4f modelM = cam->billboard(vec3f(0.0f)) * fullTransform;
     mat4f t = projection*view*modelM;
 
