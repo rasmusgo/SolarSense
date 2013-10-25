@@ -35,7 +35,7 @@ SceneSolarSystem::SceneSolarSystem() :
     Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 
     //Init Camera
-    cam = new Camera(vec3f(0.0f,0.0f,30.0f));
+    cam = new Camera(vec3f(0.0f,3.0f,30.0f));
     cam->addTo(this);
 
     //add gameObjects
@@ -45,43 +45,44 @@ SceneSolarSystem::SceneSolarSystem() :
     stars->addTo(this);
 
     Sun* sun = new Sun("sun", 4.7f);
+    sun->rotSpeed = 1.0f;
     sun->addTo(this);
     objectsOrder.push_back("sun");
 
-    float fa = 40.0f;
+    float fa = 80.0f;
     StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f ,"planetShader", "mercury");
     mercury->orbSpeed = 6.0f/fa;
-    mercury->rotSpeed = 12.0f/fa;
+    mercury->rotSpeed = 6.0f;
     mercury->addTo(sun);
     objectsOrder.push_back("mercury");
 
     StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f,"planetShader","venus");
     venus->orbSpeed = 4.0f/fa;
-    venus->rotSpeed = 8.0f/fa;
+    venus->rotSpeed = 4.0f;
     venus->addTo(sun);
     objectsOrder.push_back("venus");
 
     Earth* earth = new Earth("earth", 1.0f, 30.0f);
     earth->orbSpeed = 3.0f/fa;
-    earth->rotSpeed = 6.0f/fa;
+    earth->rotSpeed = 3.0f;
     earth->addTo(sun);
     objectsOrder.push_back("earth");
 
     StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShader", "moon");
     moon->orbSpeed = 3.0f/fa;
-    moon->rotSpeed = earth->rotSpeed - 4.0f*moon->orbSpeed;
+    //moon->rotSpeed = 3.0f/8.0f;
     moon->addTo(earth);
     objectsOrder.push_back("moon");
 
     StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f, "planetShader", "mars");
     mars->orbSpeed = 2.0f/fa;
-    mars->rotSpeed = 4.0f/fa;
+    mars->rotSpeed = 2.0f;
     mars->addTo(sun);
     objectsOrder.push_back("mars");
 
     StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter");
     jupiter->orbSpeed = 1.5f/fa;
-    jupiter->rotSpeed = 3.0f/fa;
+    jupiter->rotSpeed = 1.5f;
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
 
@@ -89,7 +90,7 @@ SceneSolarSystem::SceneSolarSystem() :
     sunhalo->addTo(sun);
 
     currentObject = objectsOrder.begin();
-    //cam->setArround(objectsMap.at((*currentObject)));
+    cam->setArround((*currentObject));
 
 	std::cout << "* Init done" << std::endl;
 }
@@ -304,21 +305,25 @@ void SceneSolarSystem::update(float deltaTime) {
 }
 
 void SceneSolarSystem::setArroundClosestWorldObject() {
-    std::vector<WorldObject*> wobs;
-    getAllObjectsOfType<WorldObject>(wobs);
-    WorldObject* closestObject = (WorldObject*)(getGame()->getObjectByName("sun"));
-    vec3f camPos = cam->getPosition();
-    float minDist = glm::length(closestObject->getPosition() - camPos);
 
-    for (uint i = 0; i < wobs.size(); ++i) {
-        float dist = glm::length(wobs[i]->getPosition() - camPos);
-        if (!(wobs[i]->id == cam->id) and dist < minDist) {
+    if (objectsOrder.begin() == objectsOrder.end()) return; // No objects on list
+
+    std::list<std::string>::iterator it = objectsOrder.begin();
+    currentObject = it;
+    vec3f camPos = cam->getPosition();
+    float minDist = glm::length(((WorldObject*)getGame()->getObjectByName(*currentObject))->getPosition() - camPos);
+    ++it;
+
+    for (; it != objectsOrder.end(); ++it) {
+        WorldObject* wo = (WorldObject*)(getGame()->getObjectByName(*it));
+        float dist = glm::length(wo->getPosition() - camPos);
+        if (!(wo->id == cam->id) and dist < minDist) {
             minDist = dist;
-            closestObject = wobs[i];
+            currentObject = it;
         }
     }
 
-    cam->setArround(closestObject);
+    cam->setArround(*currentObject);
 }
 
 /*void SceneSolarSystem::draw() const {

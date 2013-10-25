@@ -98,7 +98,7 @@ void Camera::update(float deltaTime) {
 
         interpolatingTimer += deltaTime;
 
-        vec3f wantedPos = arrObject->getPosition() + vec3f(0,0, arrObject->getScale().x*2) * rotation;
+        vec3f wantedPos = arrObject->getPosition() + vec3f(0,0, arrObject->getScale().x*3.0f) * rotation;
 
         if (interpolatingTimer < INTERPOLATION_TIME) {
             position = Utils::lerp(fromPos, wantedPos, interpolatingTimer/INTERPOLATION_TIME);
