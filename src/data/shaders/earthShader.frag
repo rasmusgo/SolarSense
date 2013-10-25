@@ -33,18 +33,16 @@ vec4 light(vec4 texColor, vec3 N, vec3 V, vec3 L)
 }
 
 void main() {
-    vec3 N = normalize(texture2D(samplerNormal, vTexCoord).xyz - vec3{0.5, 0.5, 0.5});
-
-    //N = RemapNormal(N); 
+    vec3 N = normalize(texture2D(samplerNormal, vTexCoord).xyz * 2.0 - 1;
   
     // Tangent  
-    float3 t = normalize(cross(N, float3(1,0,0))); 
+    vec3 t = normalize(cross(N, vec3(1,0,0)));
   
     // Binormal  
-    float3 b = normalize(cross(N, t)); 
+    vec3 b = normalize(cross(N, t));
  
     // Rotation matrix to rotate detail normal by 
-    float3x3 rotMatrix = float3x3( 
+    mat3 rotMatrix = mat3(
         t.x, t.y, t.z,  
         b.x, b.y, b.z, 
         N.x, N.y, N.z 
@@ -52,11 +50,11 @@ void main() {
  
     // Rotate detail normal to be on the terrain surface.  
     // The detail normal comes from a detail normal map. 
-    detailNormal = mul(vNormal, rotMatrix); 
+    vec3 detailNormal = normalize(rotMatrix * vNormal);
  
 
 
-    float lightIntensity = max(0.1, min(dot(vLight, -detailNormal) + 0.1, 1.0));
+    float lightIntensity = max(0.1, min(dot(vLight, detailNormal) + 0.1, 1.0));
 
     vec4 lightColor = texture2D(samplerNight,vTexCoord);
     if (lightIntensity > 0.4) lightColor = vec4(0.0);
