@@ -77,12 +77,19 @@ void Earth::draw() const {
     tex = Textures.get("earth");
     tex->bind();
     sphere.program->uniform("sampler")->set((int)tex->getSlot());
+
     tex = Textures.get("earthNight");
     tex->bind();
     sphere.program->uniform("samplerNight")->set((int)tex->getSlot());
+
     tex = Textures.get("earthWater");
     tex->bind();
     sphere.program->uniform("samplerWater")->set((int)tex->getSlot());
+
+    tex = Textures.get("earthNormal");
+    tex->bind();
+    sphere.program->uniform("samplerNormal")->set((int)tex->getSlot());
+    
     sphere.program->uniform("modelViewProjectionMatrix")->set(t);
     sphere.program->uniform("modelMatrix")->set(model);
     sphere.program->uniform("viewMatrix")->set(view);

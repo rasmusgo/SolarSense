@@ -9,6 +9,8 @@
 
 #include "inputreader.h"
 
+extern bool isWindow;
+
 SceneSolarSystem::SceneSolarSystem() :
     debugCounter(0.0), fpsCount(0), paused(false), stereoscopic3D(false) {
     this->setName("SCENE");
@@ -170,6 +172,9 @@ bool SceneSolarSystem::loadResources() {
     tex = new Texture(3);
     if(!tex->loadFromFile("data/earthwatermap.png",true)) return false;
     Textures.add("earthWater", tex);
+    tex = new Texture(4);
+    if(!tex->loadFromFile("data/EarthNormal.png",true)) return false;
+    Textures.add("earthNormal", tex);
     //Earth Chris style
 //    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
 //        return false;
@@ -300,7 +305,7 @@ void SceneSolarSystem::update(float deltaTime) {
     }
     if (Input::isKeyPressed(sf::Keyboard::R)) SensorManager::resetTracking();
 
-    Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
+    if(!isWindow) Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 }
 
 void SceneSolarSystem::setArroundClosestWorldObject() {

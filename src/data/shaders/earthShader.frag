@@ -1,6 +1,7 @@
 uniform sampler2D sampler;
 uniform sampler2D samplerNight;
 uniform sampler2D samplerWater;
+uniform sampler2D samplerNormal;
 
 uniform float shininess;
 uniform vec3 emission;
@@ -32,7 +33,30 @@ vec4 light(vec4 texColor, vec3 N, vec3 V, vec3 L)
 }
 
 void main() {
-    float lightIntensity = max(0.1, min(dot(vLight, -vNormal) + 0.1, 1.0));
+    vec3 N = normalize(texture2D(samplerNormal, vTexCoord).xyz - vec3{0.5, 0.5, 0.5});
+
+    //N = RemapNormal(N); 
+  
+    // Tangent  
+    float3 t = normalize(cross(N, float3(1,0,0))); 
+  
+    // Binormal  
+    float3 b = normalize(cross(N, t)); 
+ 
+    // Rotation matrix to rotate detail normal by 
+    float3x3 rotMatrix = float3x3( 
+        t.x, t.y, t.z,  
+        b.x, b.y, b.z, 
+        N.x, N.y, N.z 
+    ); 
+ 
+    // Rotate detail normal to be on the terrain surface.  
+    // The detail normal comes from a detail normal map. 
+    detailNormal = mul(vNormal, rotMatrix); 
+ 
+
+
+    float lightIntensity = max(0.1, min(dot(vLight, -detailNormal) + 0.1, 1.0));
 
     vec4 lightColor = texture2D(samplerNight,vTexCoord);
     if (lightIntensity > 0.4) lightColor = vec4(0.0);
