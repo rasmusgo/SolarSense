@@ -1,29 +1,34 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "Entity.hpp"
-#include "../graphics/Model.hpp"
+#include "Commons.hpp"
+#include "WorldObject.hpp"
 
-class Camera : public Entity {
+class Camera : public WorldObject {
     public:
         enum CameraMode {
             Arround,
             Free
         };
 
-        Camera(Scene* scene, const vec3f &pos);
+        Camera(const vec3f& pos = vec3f(0.0f), const mat4f& projection = mat4f(1.0f));
         ~Camera();
 
         void draw();
         void update(float deltaTime);
         void drawHUD();
 
-        void setArround(GameObject* object);
+        mat4f projection;
+        mat4f view;
+
+        //
+        vec3f vel;
+        vec3f acc;
+
+        void setArround(const std::string& objectName);
+        void setArround(WorldObject* object);
         void setMode(CameraMode m);
 
-        vec2f rot;
-
-        mat4f getViewMatrix();
         std::pair<mat4f,mat4f> getViewMatrix3D();
 
         CameraMode mode;
@@ -32,18 +37,17 @@ class Camera : public Entity {
 
         float eyeDistance3D; //Total distance between eyes
 
-        static vec3f posFromMatrix(mat4f& m);
-        static vec3f lerp(vec3f& a, vec3f& b, float t);
+        mat4f billboard (vec3f position);
 
     private:        
         const float INTERPOLATION_TIME = 3.0f;
 
         void updateAcceleration(float deltaTime);
 
-        mat4f rotM;
         vec3f fromPos;
         float interpolatingTimer;
-        GameObject* arrObject;
+        WorldObject* arrObject;
+        float lastArrDist;
         float maxAcc;
         float friction;
         float maxVel;

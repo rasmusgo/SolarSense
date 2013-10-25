@@ -1,28 +1,22 @@
 #ifndef STANDARDPLANET_HPP
 #define STANDARDPLANET_HPP
 
-#include "../GameObject.hpp"
-#include "../graphics/Model.hpp"
 #include "Planet.hpp"
 
 class StandardPlanet : public Planet {
-    public:
-        StandardPlanet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed, const char* shaderprogram, const char* texture);
-       	StandardPlanet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed, const char* shaderprogram, const char* texture, const char* bumpmap);
+public:
+    StandardPlanet(const std::string& name, float radius, float orbRadius, const std::string& shaderprogram, const std::string& texture);
+    StandardPlanet(const std::string& name, float radius, float orbRadius, const std::string& shaderprogram, const std::string& texture, const std::string& bumpmap);
 
-        ~StandardPlanet();
+    ~StandardPlanet();
 
-        void update(float deltaTime);
-        void draw() const;
-        void drawFrom(mat4f from) const;
-        mat4f getModelMatrix();
-
-   	GameObject* parentObject;
-   private:
-   	const char* shaderprogram;
-   	const char* texturemapname;
-   	const char* bumpmap;
-   	
+    void update(float deltaTime);
+    void draw() const;
+private:
+    const std::string shaderprogram;
+    const std::string texturemapname;
+    const std::string bumpmap;
+    float time;
 };
 
 #endif // STANDARDPLANET_HPP

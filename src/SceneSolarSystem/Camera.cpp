@@ -1,26 +1,28 @@
 #include "Camera.hpp"
-#include "../input/KeyAndMouseManager.hpp"
 #include "../input/SensorManager.hpp"
-#include "../SolarSenseApp.hpp"
 
-Camera::Camera(Scene* scene, const vec3f &pos) : Entity(scene, pos, vec3f(1.0,1.0,1.0)),
-    rot(0.0f,0.0f), rotM(1.0f) {
+Camera::Camera(const vec3f& pos, const mat4f& projection) :
+    projection(projection) {
+
+    this->setName("cam");
+    this->setUpdatePriority(2);
+    this->projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+
+    position = pos;
 
     mode = Free;
     maxAcc = 5.0f;
     friction = 5.0f;
     maxVel = 10.0f;
+    eyeDistance3D = 0.03f;
 
-    rotM = glm::translate(mat4f(1.0), -pos);
     cameraClock.restart();
 
     originalPos = pos;
     interpolating = false;
 
-    eyeDistance3D = 0.03f;
-
-    hudHand.mesh = MeshManager::get("square");
-    hudHand.program = ShaderManager::get("hand");
+    hudHand.mesh = Meshes.get("square");
+    hudHand.program = Programs.get("hand");
 
     wasTracking = false;
 }
@@ -41,8 +43,9 @@ void Camera::drawHUD() {
         hudHand.program->uniform("lastTime")->set(handTime);
         hudHand.program->uniform("ratio")->set(((float)SCRWIDTH)/((float)SCRHEIGHT));
 
-        TextureManager::get("hand")->bind();
-        hudHand.program->uniform("sampler")->set(2);
+        Texture* tex = Textures.get("hand");
+        tex->bind();
+        hudHand.program->uniform("sampler")->set((int)tex->getSlot());
 
         glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
@@ -61,86 +64,79 @@ void Camera::update(float deltaTime) {
 
     if (not interpolating) {
         mat4f m(1.0);
-        float displ;
+        float displ, objScale;
         switch (mode) {
             case Arround:
+                rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
+                rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
+
+                objScale = arrObject->getScale().x;
+
                 displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
-                pos.z += displ;
-                if (pos.z < arrObject->scale.x*1.5f) { //Too close! to the object!
-                    pos.z = arrObject->scale.x*1.5f;
+                lastArrDist += displ;
+                if (lastArrDist < objScale*1.5f) { //Too close! to the object!
+                    lastArrDist = objScale*1.5f;
                 }
-                else if (pos.z > 250.0) { //Where the fuck are you going!?
-                    pos.z = 250.0;
+                else if (lastArrDist > 250.0) { //Where the fuck are you going!?
+                    lastArrDist = 250.0;
                 }
-
-                m = glm::rotate(m,vel.y/2.0f,vec3f(0,1,0));
-                m = glm::rotate(m,vel.x/2.0f,vec3f(1,0,0));
-                rotM = m*rotM;
-
+                position = arrObject->getPosition() + (vec3f(0,0,lastArrDist) * rotation);
+                //lastArrDist = glm::length(position - arrObject->getPosition());
                 break;
 
             case Free:
                 displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
-                pos.z += displ;
-                m = glm::translate(m, -vec3f(0,0,displ));
-                rotM = m*rotM;
+                position += (vec3f(0,0,displ) * rotation);
 
-                m = mat4f(1.0);
-                m = glm::rotate(m,vel.y/2.0f,vec3f(0,1,0));
-                m = glm::rotate(m,vel.x/2.0f,vec3f(1,0,0));
-                rotM = m*rotM;
+                rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
+                rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
         }
     }
     else { //Interpolating
+        rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
+        rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
+
         interpolatingTimer += deltaTime;
 
-        //mat4f m = arrObject->getModelMatrix();
-        //vec3f wantedPos = -posFromMatrix(m) - pos;
+        vec3f wantedPos = arrObject->getPosition() + vec3f(0,0, arrObject->getScale().x*2) * rotation;
 
-        vec3f p = posFromMatrix(rotM);
-        mat4f rot = glm::translate(mat4f(1.0f), -p)*rotM;
-
-        mat4f m = arrObject->getModelMatrix();
-        mat4f trans = glm::translate(mat4f(1.0f), -posFromMatrix(m));
-        mat4f posMatrix = glm::translate(mat4f(1.0f), -pos)*rot;
-        mat4f finalM = posMatrix*trans;
-        vec3f wantedPos = posFromMatrix(finalM);
-
-        vec3f newPos;
         if (interpolatingTimer < INTERPOLATION_TIME) {
-            newPos = lerp(fromPos, wantedPos, interpolatingTimer/INTERPOLATION_TIME);
-            rotM[3][0] = newPos.x; rotM[3][1] = newPos.y; rotM[3][2] = newPos.z;
+            position = Utils::lerp(fromPos, wantedPos, interpolatingTimer/INTERPOLATION_TIME);
         }
         else {
-            rotM = rot;
             interpolating = false;
             SensorManager::resetInitialHandPos();
+            lastArrDist = glm::length(position - arrObject->getPosition());
         }
-
-
     }
+
+
+    // Update transform matrix
+    transform = glm::translate(glm::mat4_cast(rotation), -position);
+
+    view = transform;
 }
 
 void Camera::updateAcceleration(float deltaTime) {
     acc = vec3f(0.0f);
 
-    if (not interpolating) { //If not interpolating matrices we can change them
-        if(KeyAndMouseManager::isKeyDown(sf::Keyboard::W)){
+    //if (not interpolating) { //If not interpolating matrices we can change them
+        if(Input::isKeyDown(sf::Keyboard::W)){
             acc.z = -maxAcc;
         }
-        else if(KeyAndMouseManager::isKeyDown(sf::Keyboard::S)){
+        else if(Input::isKeyDown(sf::Keyboard::S)){
             acc.z = maxAcc;
         }
-        if(KeyAndMouseManager::isKeyDown(sf::Keyboard::D)){
+        if(Input::isKeyDown(sf::Keyboard::D)){
             acc.y = maxAcc;
         }
-        else if(KeyAndMouseManager::isKeyDown(sf::Keyboard::A)){
+        else if(Input::isKeyDown(sf::Keyboard::A)){
             acc.y = -maxAcc;
         }
-        if(KeyAndMouseManager::isKeyDown(sf::Keyboard::Q)){
+        if(Input::isKeyDown(sf::Keyboard::Q)){
             acc.x = maxAcc;
         }
-        else if(KeyAndMouseManager::isKeyDown(sf::Keyboard::E)){
+        else if(Input::isKeyDown(sf::Keyboard::E)){
             acc.x = -maxAcc;
         }
 
@@ -152,7 +148,7 @@ void Camera::updateAcceleration(float deltaTime) {
             if (mode == Free)
                 handMovement.x = -handMovement.x;
             else {
-                float distToObj = (pos.z - arrObject->scale.x) / glm::min(arrObject->scale.x, 20.0f);
+                float distToObj = glm::length(position - arrObject->getPosition()) / glm::min(arrObject->getScale().x, 20.0f);
                 speedFactor = glm::min((distToObj - 0.5)/ 5.f, 0.8)  + 0.2f; // 0.5 is the minimum value for distToObject, 5 is the maximum value for distToObj
             }
 
@@ -162,20 +158,20 @@ void Camera::updateAcceleration(float deltaTime) {
             vel = handMovement;
         }
 
-        if (KeyAndMouseManager::isMouseDown(sf::Mouse::Left)) {
-            vec2i dis = KeyAndMouseManager::getMouseDisplacement();
+        if (Input::isMouseDown(sf::Mouse::Left)) {
+            vec2i dis = Input::getMouseDisplacement();
             vec2f mouseDis = vec2f(dis.x, dis.y);
             vec2f scr = vec2f(SCRWIDTH/100, SCRHEIGHT/100);
             vec2f mouseDisRel = vec2f(mouseDis.y/scr.y, mouseDis.x/scr.x);
             vec2f newRot = mouseDisRel*maxAcc;
-            std::cout << mouseDis.y << "," << mouseDisRel.y << "," << newRot.y << std::endl;
+            //std::cout << mouseDis.y << "," << mouseDisRel.y << "," << newRot.y << std::endl;
 
             if (newRot.x > 0.1f) acc.x = glm::min(maxAcc, newRot.x);
             else if (newRot.x < -0.1f) acc.x = glm::max(-maxAcc, newRot.x);
             if (newRot.y > 0.1f) acc.y = glm::min(maxAcc, newRot.y);
             else if (newRot.y < -0.1f) acc.y = glm::max(-maxAcc, newRot.y);
         }
-    }
+    //}
 
     //Friction and physics
     float minVal = 0.1f;
@@ -204,64 +200,29 @@ void Camera::updateAcceleration(float deltaTime) {
     }
 }
 
-void Camera::setArround(GameObject *object) {
-    if (mode == Arround) {
-        mat4f m2(1.0f);
-        m2 = arrObject->getModelMatrix();
-        m2 = glm::translate(mat4f(1.0f), -posFromMatrix(m2));
-        rotM = glm::translate(mat4f(1.0f), -pos)*rotM*m2;
-    }
+void Camera::setArround(const std::string& objectName) {
+    WorldObject* obj = dynamic_cast<WorldObject*>(getGame()->getObjectByName(objectName));
 
-    arrObject = object;
-    //rotM = mat4f(1.0f);
-    pos = vec3f(0,0,object->scale.x*3);
-    fromPos = posFromMatrix(rotM);
+    if (obj)
+        setArround(obj);
+}
+
+void Camera::setArround(WorldObject* obj) {
+    arrObject = obj;
     mode = Arround;
+
+    fromPos = position;
 
     interpolating = true;
     interpolatingTimer = 0.0f;
 }
 
 void Camera::setMode(CameraMode m) {
-    mat4f m2 (1.0f);
-    switch (m) {
-        case Free:
-            if (mode == Arround) {
-                m2 = arrObject->getModelMatrix();
-                m2 = glm::translate(mat4f(1.0f), -posFromMatrix(m2));
-                rotM = glm::translate(mat4f(1.0f), -pos)*rotM*m2;
-            }
-            break;
-        default:
-            break;
-    }
-
     mode = m;
 }
 
-mat4f Camera::getViewMatrix() {
-    switch (mode) {
-    case Free:
-        return rotM;
-    case Arround:
-        if (not interpolating) {
-            if (arrObject) {
-                mat4f m = arrObject->getModelMatrix();
-                mat4f trans = glm::translate(mat4f(1.0f), -posFromMatrix(m));
-                return glm::translate(mat4f(1.0f), -pos)*rotM*trans;
-            }
-            else return glm::translate(mat4f(1.0f), -pos)*rotM;
-        }
-        else {
-            return rotM;
-        }
-    default:
-        return rotM;
-    }
-}
-
 std::pair<mat4f,mat4f> Camera::getViewMatrix3D() {
-    mat4f c = getViewMatrix();
+    mat4f c = view;
     mat4f r(1.0f), l(1.0f);
     r = glm::translate(r, vec3f(1,0,0)*(eyeDistance3D/2.0f));
     l = glm::translate(l, -vec3f(1,0,0)*(eyeDistance3D/2.0f));
@@ -269,11 +230,20 @@ std::pair<mat4f,mat4f> Camera::getViewMatrix3D() {
     return std::pair<mat4f,mat4f>(r*c,l*c); //Right and Left
 }
 
+mat4f Camera::billboard (vec3f position) {
+    vec3f cameraPos = -getPosition();
+    vec3f cameraUp = getRotation() * vec3f(0,1,0);
 
-vec3f Camera::posFromMatrix(mat4f &m) {
-    return vec3f(m[3][0],m[3][1],m[3][2]);
+    vec3f look = glm::normalize(cameraPos - position);
+    vec3f right = glm::cross(cameraUp, look);
+    vec3f up2 = glm::cross(look, right);
+    mat4f transform;
+    transform[0] = vec4f(right, 0);
+    transform[1] = vec4f(up2, 0);
+    transform[2] = vec4f(look, 0);
+    // Uncomment this line to translate the position as well
+    // (without it, it's just a rotation)
+    //transform[3] = vec4f(position, 0);
+    return transform;
 }
 
-vec3f Camera::lerp(vec3f& from, vec3f& to, float t) {
-    return to*t + from*(1.0f-t) ;
-}

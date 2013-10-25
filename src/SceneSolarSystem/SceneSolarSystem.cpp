@@ -1,157 +1,176 @@
 #include "SceneSolarSystem.hpp"
-#include "../SolarSenseApp.hpp"
-#include "TriangleObject.hpp"
-#include "RegularPolygonObject.hpp"
-#include "OrbitingObject.hpp"
-#include "SphereObject.hpp"
+#include "Camera.hpp"
+#include "Sun.hpp"
 #include "Planet.hpp"
 #include "Earth.hpp"
-#include "Sun.hpp"
+#include "SunHalo.hpp"
 #include "StandardPlanet.hpp"
+#include "input/SensorManager.hpp"
 
 #include "inputreader.h"
 
-SceneSolarSystem::SceneSolarSystem(SolarSenseApp &parent) :
-	Scene(parent),
+SceneSolarSystem::SceneSolarSystem() :
     debugCounter(0.0), fpsCount(0), paused(false), stereoscopic3D(false) {
+    this->setName("SCENE");
 
     readInput();
 
-	//SCENE INIT
-    std::cout << "* Loading new scene: SolarSystem" << std::endl;
-	if (!loadResources()) {
-        std::cout << "Could not load resources for SceneSolarSystem" << std::endl;
-		parent.isRunning = false;
-		return;
-	}
+    //SCENE INIT
+    if (!loadResources())
+        VBE_ASSERT(false,"Could not load resources for SceneSolarSystem");
+
+    //GL stuff..
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_ALPHA_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glDepthFunc(GL_LEQUAL);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_CULL_FACE); //enable backface culling
+    glCullFace(GL_BACK);
+    glShadeModel(GL_SMOOTH);
+
 	//Center mouse
-    KeyAndMouseManager::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
+    Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
+
     //Init Camera
+    cam = new Camera(vec3f(0.0f,0.0f,30.0f));
+    cam->addTo(this);
 
-    cam = new Camera(this, vec3f(0.0f,0.0f,30.0f));
     //add gameObjects
+    stars = new SphereObject();
+    stars->radius = 500.0f;
+    stars->setDrawPriority(-10);
+    stars->addTo(this);
 
-    //addObject(new       TriangleObject(this, vec3f( 10.0f, 0.0f,10.0f),   vec3f(0.1f)));
-    //addObject(new RegularPolygonObject(this, vec3f(-10.0f, 0.0f,10.0f),   vec3f(1.0f), 6));
+    Sun* sun = new Sun("sun", 4.7f);
+    sun->addTo(this);
+    objectsOrder.push_back("sun");
 
-    stars = new SphereObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(500.0f, 500.0f, 500.0f));
-    addObject(stars);
-    GameObject* center = new GameObject(this, vec3f(0.0f, 0.0f, 0.0f), vec3f(1.0f, 1.0f, 1.0f));
-    addObject(center);
+    float fa = 40.0f;
+    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f ,"planetShader", "mercury");
+    mercury->orbSpeed = 6.0f/fa;
+    mercury->rotSpeed = 12.0f/fa;
+    mercury->addTo(sun);
+    objectsOrder.push_back("mercury");
 
-    OrbitingObject* sun = new OrbitingObject(this, center, vec3f(4.7f, 4.7f, 4.7f), 0, 0);
-    addDrawableObject("sun",sun);
+    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f,"planetShader","venus");
+    venus->orbSpeed = 4.0f/fa;
+    venus->rotSpeed = 8.0f/fa;
+    venus->addTo(sun);
+    objectsOrder.push_back("venus");
 
-    StandardPlanet* mercury = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.5f, 15, 5, "planetShader", "mercury");
-    addObject("mercury",mercury);
-    sun->addObject(mercury);
+    Earth* earth = new Earth("earth", 1.0f, 30.0f);
+    earth->orbSpeed = 3.0f/fa;
+    earth->rotSpeed = 6.0f/fa;
+    earth->addTo(sun);
+    objectsOrder.push_back("earth");
 
-    StandardPlanet* venus = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.4f, 20, 4, "planetShader", "venus");
-    addObject("venus",venus);
-    sun->addObject(venus);
+    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShader", "moon");
+    moon->orbSpeed = 3.0f/fa;
+    moon->rotSpeed = earth->rotSpeed - 4.0f*moon->orbSpeed;
+    moon->addTo(earth);
+    objectsOrder.push_back("moon");
 
-    Earth* earth = new Earth(this, sun, vec3f(1.0f, 1.0f, 1.0f), 30, 3);
-    addObject("earth",earth);
-    sun->addObject(earth);
+    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f, "planetShader", "mars");
+    mars->orbSpeed = 2.0f/fa;
+    mars->rotSpeed = 4.0f/fa;
+    mars->addTo(sun);
+    objectsOrder.push_back("mars");
 
+    StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter");
+    jupiter->orbSpeed = 1.5f/fa;
+    jupiter->rotSpeed = 3.0f/fa;
+    jupiter->addTo(sun);
+    objectsOrder.push_back("jupiter");
 
-    StandardPlanet* moon = new StandardPlanet(this, earth, vec3f(1.0f, 1.0f, 1.0f)*0.2f, 3, 7, "planetShader", "moon");
-    addObject("moon",moon);
-    earth->addObject(moon);
-
-    StandardPlanet* mars = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*0.8f, 50, 2, "planetShader", "mars");
-    addObject("mars",mars);
-    sun->addObject(mars);
-
-    StandardPlanet* jupiter = new StandardPlanet(this, sun, vec3f(1.0f, 1.0f, 1.0f)*4.f, 80, 1.5, "planetShader", "jupiter");
-    addObject("jupiter",jupiter);
-    sun->addObject(jupiter);
-
-    Sun* sun2 = new Sun(this, center, vec3f(1.0f, 1.0f, 1.0f)*10.f, 0, 0);
-    addObject("sun2",sun2);
-    sun->addObject(sun2);
+    SunHalo* sunhalo = new SunHalo("sunHalo", 10.0f);
+    sunhalo->addTo(sun);
 
     currentObject = objectsOrder.begin();
-    cam->setArround(objectsMap.at((*currentObject)));
+    //cam->setArround(objectsMap.at((*currentObject)));
 
 	std::cout << "* Init done" << std::endl;
 }
 
 SceneSolarSystem::~SceneSolarSystem() {
-	//SECENE CLOSE
-    std::cout << "* Deleting GameObjects on SceneSolarSystem" << std::endl;
-	for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
-		delete *it;
-}
+    Textures.clear();
+    Meshes.clear();
+    Programs.clear();
 
-void SceneSolarSystem::addObject(GameObject *obj) {
-    GameObject::addObject(obj);
-}
-
-void SceneSolarSystem::addObject(const std::string &name, GameObject *obj) {
-    addObject(obj);
-    objectsMap.insert(std::pair<std::string, GameObject*>(name, obj));
-    objectsOrder.push_back(name);
-}
-
-void SceneSolarSystem::addDrawableObject(const std::string &name, GameObject* dObj) {
-    addObject(dObj);
-    drawList.push_back(dObj);
-    objectsMap.insert(std::pair<std::string, GameObject*>(name, dObj));
-    objectsOrder.push_back(name);
-}
-
-void SceneSolarSystem::addDrawableObject(GameObject* dObj) {
-    addObject(dObj);
-    drawList.push_back(dObj);
+    AudioManager::clear();
 }
 
 bool SceneSolarSystem::loadResources() {
+
+    ShaderProgram* p;
+    Texture* tex;
+
+    VBE_LOG("Loading resources..");
+
 	//shaders
-    if(!ShaderManager::load("sample","data/shaders/sample.vert","data/shaders/sample.frag"))
-		return false;
-    if(!ShaderManager::load("orbit","data/shaders/orbit.vert","data/shaders/orbit.frag"))
-        return false;
-	if(!ShaderManager::load("sample2","data/shaders/sample2.vert","data/shaders/sample2.frag"))
-		return false;
-    if(!ShaderManager::load("sun","data/shaders/sun.vert","data/shaders/sun.frag"))
-        return false;
-    if(!ShaderManager::load("sun3d","data/shaders/sun3d.vert","data/shaders/sun3d.frag"))
-        return false;
-    if(!ShaderManager::load("hand","data/shaders/hand.vert","data/shaders/hand.frag"))
-        return false;
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/sample.vert","data/shaders/sample.frag");
+    Programs.add("sample",p);
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/orbit.vert","data/shaders/orbit.frag");
+    Programs.add("orbit",p);
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/sample2.vert","data/shaders/sample2.frag");
+    Programs.add("sample2",p);
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/sun.vert","data/shaders/sun.frag");
+    Programs.add("sun",p);
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/sun3d.vert","data/shaders/sun3d.frag");
+    Programs.add("sun3d",p);
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/hand.vert","data/shaders/hand.frag");
+    Programs.add("hand",p);
+
+    // Earth Ferran Style
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/earthShader.vert","data/shaders/earthShader.frag");
+    Programs.add("earthShader",p);
+
+    // Earth Chris style
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/planetShader.vert","data/shaders/planetShader.frag");
+    Programs.add("planetShader",p);
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag");
+    Programs.add("planetShaderBump",p);
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/testshader.vert","data/shaders/testshader.frag");
+    Programs.add("earthtest",p);
+
+
+    VBE_LOG("Shaders Loaded");
+
 
 	//textures
-    if(!TextureManager::load("cubetex","data/10x10tex.png",2))
-		return false;
-    if(!TextureManager::load("sun","data/SunTexture_2048.png",2))
-        return false;
-    if(!TextureManager::load("hand","data/hand_white.png",2))
-        return false;
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/10x10tex.png",true)) return false;
+    Textures.add("cubetex", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/SunTexture_2048.png",true)) return false;
+    Textures.add("sun", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/hand_white.png",true)) return false;
+    Textures.add("hand", tex);
 
-    /*
-    * Earth ferran style
-    */
-     if(!ShaderManager::load("earthShader","data/shaders/earthShader.vert","data/shaders/earthShader.frag"))
-         return false;
-
-     if(!TextureManager::load("earth","data/earthmap.jpg",2))
-         return false;
-     if(!TextureManager::load("earthNight","data/lightsmap.jpg",3))
-         return false;
-     if(!TextureManager::load("earthWater","data/earthwatermap.png",4))
-         return false;
-
-    /*
-    * Earth chris style
-    */
-    if(!ShaderManager::load("planetShader","data/shaders/planetShader.vert","data/shaders/planetShader.frag"))
-        return false;
-    if(!ShaderManager::load("planetShaderBump","data/shaders/planetShaderBump.vert","data/shaders/planetShaderBump.frag"))
-        return false;
-    if(!ShaderManager::load("earthtest","data/shaders/testshader.vert","data/shaders/testshader.frag"))
-        return false;
-
+    // Earth Ferran style
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
+    Textures.add("earth", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/lightsmap.jpg",true)) return false;
+    Textures.add("earthNight", tex);
+    tex = new Texture(3);
+    if(!tex->loadFromFile("data/earthwatermap.png",true)) return false;
+    Textures.add("earthWater", tex);
+    //Earth Chris style
 //    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
 //        return false;
 //    if(!TextureManager::load("earth_nighttime","data/earth_nighttime.png",3))
@@ -160,34 +179,43 @@ bool SceneSolarSystem::loadResources() {
 //        return false;
 //    if(!TextureManager::load("earth_specular","data/earth_specular.png",5))
 //       return false;
-    if(!TextureManager::load("stars4K","data/stars4K.png",2))
-        return false;
+
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/stars4K.png",true)) return false;
+    Textures.add("stars4K", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/moonmap4k.jpg",true)) return false;
+    Textures.add("moon", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/moonbump4k.jpg",true)) return false;
+    Textures.add("moonbump", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
+    Textures.add("earthmap", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/marsmap1k.jpg",true)) return false;
+    Textures.add("mars", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/venusmap.jpg",true)) return false;
+    Textures.add("venus", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/mercurymap.jpg",true)) return false;
+    Textures.add("mercury", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/jupitermap.jpg",true)) return false;
+    Textures.add("jupiter", tex);
 
 
-    if(!TextureManager::load("moon","data/moonmap4k.jpg",2))
-        return false;
-    if(!TextureManager::load("moonbump","data/moonbump4k.jpg",3))
-        return false;
-    //if(!TextureManager::load("earth8k","data/earth8k.jpg",2))
-    //    return false;
-    if(!TextureManager::load("earthmap","data/earthmap.jpg",2))
-        return false;
-    if(!TextureManager::load("mars","data/marsmap1k.jpg",2))
-        return false;
-    if(!TextureManager::load("venus","data/venusmap.jpg",2))
-        return false;
-
-    if(!TextureManager::load("mercury","data/mercurymap.jpg",2))
-        return false;
-    if(!TextureManager::load("jupiter","data/jupitermap.jpg",2))
-        return false;
+    VBE_LOG("Textures Loaded");
 
 
+    //Create meshes
+    Meshes.add("cube",new Mesh("data/10x10.obj"));
+    Meshes.add("sphere",new Mesh("data/bola.obj"));
+    Meshes.add("square",new Mesh("data/square.obj"));
 
-	//Create meshes
-	MeshManager::add("cube",new Mesh("data/10x10.obj"));
-    MeshManager::add("sphere",new Mesh("data/bola.obj"));
-    MeshManager::add("square",new Mesh("data/square.obj"));
+
+    VBE_LOG("Meshes Loaded");
 
 	return true;
 }
@@ -197,10 +225,12 @@ void SceneSolarSystem::update(float deltaTime) {
 	++fpsCount;
 	debugCounter += deltaTime;
 	if (debugCounter > 1) {
-        std::cout << "FPS: " << fpsCount << ". Amount of GameObjects: " << objects.size() << ". Amount of Drawables: " << drawList.size() << std::endl;
+        std::cout << "FPS: " << fpsCount << ". Amount of GameObjects: " << getGame()->getObjectCount() << std::endl;
 		debugCounter -= 1;
 		fpsCount = 0;
 	}
+
+    // Comunication outside
     static command cmd;
     m_cmd_q.lock();
     while(!cmd_q.empty()){
@@ -214,12 +244,12 @@ void SceneSolarSystem::update(float deltaTime) {
                     switch(action){
                         case 1:
                             if(--currentObject != objectsOrder.end()){
-                                cam->setArround(objectsMap.at((*currentObject)));
+                                cam->setArround((*currentObject));
                             }
                             break;
                         case 2:
                             if(++currentObject != objectsOrder.end()){
-                                cam->setArround(objectsMap.at((*currentObject)));
+                                cam->setArround((*currentObject));
                             }
                             break;
                         case 3:
@@ -249,45 +279,49 @@ void SceneSolarSystem::update(float deltaTime) {
 
 
     //Update logic
-    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+    if (Input::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+    if (Input::isKeyPressed(sf::Keyboard::Space)) setArroundClosestWorldObject();
     if (paused) deltaTime = 0.0f;
-    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
+    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
         if (++currentObject != objectsOrder.end())
-            cam->setArround(objectsMap.at((*currentObject)));
+            cam->setArround((*currentObject));
         else --currentObject;
     }
-    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
+    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
         if (currentObject != objectsOrder.begin())
-            cam->setArround(objectsMap.at((*--currentObject)));
+            cam->setArround((*--currentObject));
     }
-    if (not cam->interpolating && (KeyAndMouseManager::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
-    if (not cam->interpolating && KeyAndMouseManager::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
-    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::Num3)) {
-        if (stereoscopic3D)
-            glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
-        stereoscopic3D = !stereoscopic3D;
+    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
+    if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
+    if (Input::isKeyPressed(sf::Keyboard::Num3)) {
+        //if (stereoscopic3D)
+        //    glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
+        //stereoscopic3D = !stereoscopic3D;
     }
-    if (KeyAndMouseManager::isKeyPressed(sf::Keyboard::R)) SensorManager::resetTracking();
+    if (Input::isKeyPressed(sf::Keyboard::R)) SensorManager::resetTracking();
 
-    //Update Camera
-    cam->update(deltaTime);
-
-	for(std::list<GameObject*>::iterator it = objects.begin();it != objects.end(); ++it) {
-		(*it)->update(deltaTime);
-	}
-	//Erase dead game objects
-	for(std::list<GameObject*>::iterator it = objects.begin(); it != objects.end();)
-		if (!(*it)->isAlive) {
-			delete *it;
-            it = objects.erase(it);
-		}
-		else
-			++it;
-
-    //KeyAndMouseManager::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,parent.getWindow());
+    Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 }
 
-void SceneSolarSystem::draw() const {
+void SceneSolarSystem::setArroundClosestWorldObject() {
+    std::vector<WorldObject*> wobs;
+    getAllObjectsOfType<WorldObject>(wobs);
+    WorldObject* closestObject = (WorldObject*)(getGame()->getObjectByName("sun"));
+    vec3f camPos = cam->getPosition();
+    float minDist = glm::length(closestObject->getPosition() - camPos);
+
+    for (uint i = 0; i < wobs.size(); ++i) {
+        float dist = glm::length(wobs[i]->getPosition() - camPos);
+        if (!(wobs[i]->id == cam->id) and dist < minDist) {
+            minDist = dist;
+            closestObject = wobs[i];
+        }
+    }
+
+    cam->setArround(closestObject);
+}
+
+/*void SceneSolarSystem::draw() const {
     if (not stereoscopic3D) {
         //calculate perspective matrix
         getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
@@ -297,9 +331,7 @@ void SceneSolarSystem::draw() const {
         getState().view = cam->getViewMatrix();
 
         //Drawable objects
-        glDisable(GL_CULL_FACE);
-        stars->draw();
-        glEnable(GL_CULL_FACE);
+
 
         for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
             (*it)->draw();
@@ -369,5 +401,5 @@ void SceneSolarSystem::draw() const {
             cam->drawHUD();
         }
     }
-}
+}*/
 

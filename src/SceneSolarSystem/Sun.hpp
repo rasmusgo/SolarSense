@@ -1,21 +1,19 @@
-#ifndef SUN_HPP
-#define SUN_HPP
+#ifndef ORBITINGOBJECT_HPP
+#define ORBITINGOBJECT_HPP
 
-#include "../GameObject.hpp"
-#include "../graphics/Model.hpp"
+#include "Commons.hpp"
 #include "Planet.hpp"
 
 class Sun : public Planet {
     public:
-        Sun(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed);
+        Sun(const std::string& name, float radius);
         ~Sun();
 
         void update(float deltaTime);
         void draw() const;
-        void drawFrom(mat4f from) const;
-        mat4f getModelMatrix();
 
-    GameObject* parentObject;
+    private:
+        float time;
 };
 
-#endif // SUN_HPP
+#endif // ORBITINGOBJECT_HPP

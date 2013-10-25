@@ -1,21 +1,17 @@
 #ifndef EARTH_HPP
 #define EARTH_HPP
 
-#include "../GameObject.hpp"
-#include "../graphics/Model.hpp"
 #include "Planet.hpp"
 
 class Earth : public Planet {
     public:
-        Earth(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed);
+        Earth(const std::string& name, float radius, float orbRadius);
         ~Earth();
 
         void update(float deltaTime);
         void draw() const;
-        void drawFrom(mat4f from) const;
-        mat4f getModelMatrix();
-
-   	GameObject* parentObject;
+    private:
+        float time;
 };
 
 #endif // EARTH_HPP

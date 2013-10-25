@@ -1,29 +1,25 @@
 #ifndef PLANET_HPP
 #define PLANET_HPP
 
-#include "../GameObject.hpp"
-#include "../graphics/Model.hpp"
+#include "Commons.hpp"
+#include "WorldObject.hpp"
 
-class Planet : public GameObject {
+class Planet : public WorldObject {
     public:
-        Planet(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed);
+        Planet(const std::string& name, float radius, float orbRadius);
         ~Planet();
 
         virtual void update(float deltaTime) = 0;
-        virtual void draw() const = 0;
-        virtual void drawFrom(mat4f from) const = 0;
+        virtual void draw() const;
 
-
-    protected:
-        float orbSpeed;
+        float radius;
         float orbRadius;
-        Model sphere;//should be probably an abstract class so this would go out
+        float orbSpeed;
+        float rotSpeed;
+        bool drawOrbit;
+    protected:
+        Model sphere;
         Model orbit;
-        mat4f baseMatrix;
-        float timeAcc;
-
-    friend class OrbitingObject;
-    friend class Earth;
 };
 
 #endif // PLANET_HPP

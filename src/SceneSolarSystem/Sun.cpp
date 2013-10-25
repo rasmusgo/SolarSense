@@ -1,76 +1,35 @@
-#include "SceneSolarSystem.hpp"
-#include <glm/gtc/matrix_inverse.hpp>
-#include "../SolarSenseApp.hpp"
-#include "Planet.hpp"
 #include "Sun.hpp"
+#include "Camera.hpp"
+#include "Planet.hpp"
 
-Sun::Sun(Scene* parentScene, GameObject* parentObject, vec3f scale, float orbRadius, float orbSpeed)
-                                : Planet(parentScene, parentObject, scale, orbRadius, orbSpeed), parentObject(parentObject) {
-    sphere.mesh = MeshManager::get("square");
-    sphere.program = ShaderManager::get("sun");
+Sun::Sun(const std::string& name, float radius) : Planet(name, radius, 0.0f), time(0.0f) {
+    this->setDrawPriority(-1);
+
+    sphere.mesh = Meshes.get("sphere");
+    sphere.program = Programs.get("sun3d");
+
+    transform = mat4f(1.0f);
 }
 
-Sun::~Sun(){
-
+Sun::~Sun() {
 }
-
 
 void Sun::update(float deltaTime) {
-    mat4f m(1.0), temp;
-    timeAcc += deltaTime;
+    time += deltaTime;
 
-    m = glm::translate(m, parentObject->pos); 
-    // m = glm::rotate(m,timeAcc*orbSpeed,vec3f(0,1,0));
-    
-    // m = glm::translate(m,vec3f(orbRadius, 0.0f, 0.0f));
-
-   
-    baseMatrix = m;
-
-     m = glm::scale(m,scale);
-
-     
-    //m = temp*m;
-
-
-    
-
-
-    // //pos = vec3f(m*vec4f(orbRadius, 0.f, 0.f, 0.f));
-
-     m = glm::rotate(m,90.f,vec3f(1,0,0));
-    
-
-   
-    sphere.modelMatrix = m;
+    WorldObject::update(deltaTime);
 }
 
 void Sun::draw() const {
-    drawFrom(mat4f(1.0f));
-}
+    Camera* cam = static_cast<Camera*>(getGame()->getObjectByName("cam"));
 
-void Sun::drawFrom(mat4f from) const {
-     mat4f projection = parentScene->getState().projection;
-     mat4f view = parentScene->getState().view;
+    mat4f viewProjection = cam->projection*cam->view;
+    mat4f t = viewProjection*glm::scale(fullTransform, getScale());
 
-     vec3f camP = Camera::posFromMatrix(view);
-     mat4f rot = glm::translate(mat4f(1.0f), -camP)*view;
-     mat4f model = glm::transpose(rot)*from*sphere.modelMatrix;
-     mat4f transform = projection*view*model;
-
-     TextureManager::get("sun")->bind();
-     sphere.program->uniform("sampler")->set(2);
-     sphere.program->uniform("modelViewProjectionMatrix")->set(transform);
-     sphere.program->uniform("globaltime")->set(GLOBALCLOCK.getElapsedTime().asSeconds());
-     // sphere.program->uniform("modelMatrix")->set(model);
-     // sphere.program->uniform("viewMatrix")->set(view);
-
-
-    glDisable(GL_CULL_FACE);
+    Texture* tex = Textures.get("sun");
+    tex->bind();
+    sphere.program->uniform("sampler")->set((int)tex->getSlot());
+    sphere.program->uniform("modelViewProjectionMatrix")->set(t);
+    sphere.program->uniform("globaltime")->set(time);
     sphere.draw();
-    glEnable(GL_CULL_FACE);
-}
-
-mat4f Sun::getModelMatrix() {
-    return baseMatrix;
 }

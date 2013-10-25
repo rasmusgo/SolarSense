@@ -1,3 +1,7 @@
+include(VBE/VBE.pro)
+
+#DEFINES += __DEBUG __LOG
+
 TEMPLATE = app
 LD_LIBRARY_PATH += libs:
 CONFIG -= qt
@@ -37,89 +41,51 @@ linux-g++:contains(QMAKE_TARGET.arch, i686):{
 QMAKE_CXXFLAGS += -std=c++11
 SOURCES += \
     $$PWD/main.cpp \
-    $$PWD/SolarSenseApp.cpp \
-    $$PWD/tools.cpp \
-    $$PWD/Scene.cpp \
-    $$PWD/graphics/Texture.cpp \
-    $$PWD/graphics/TextureManager.cpp \
-    $$PWD/graphics/Shader.cpp \
-	$$PWD/graphics/ShaderProgram.cpp \
-	$$PWD/audio/AudioManager.cpp \
-    $$PWD/input/KeyAndMouseManager.cpp \
     $$PWD/SceneSolarSystem/SceneSolarSystem.cpp \
     $$PWD/SceneSolarSystem/StandardPlanet.cpp \
-	$$PWD/GameObject.cpp \
-        $$PWD/SceneSolarSystem/TriangleObject.cpp \
-	$$PWD/graphics/Mesh.cpp \
-	$$PWD/graphics/Vertex.cpp \
-	$$PWD/graphics/Model.cpp \
-	$$PWD/graphics/Uniform.cpp \
-	$$PWD/graphics/ShaderBinding.cpp \
-        $$PWD/SceneSolarSystem/RegularPolygonObject.cpp \
-	$$PWD/graphics/MeshManager.cpp \
-    $$PWD/graphics/ShaderManager.cpp \
     $$PWD/SceneSolarSystem/inputreader.cpp \
-    SceneSolarSystem/SphereObject.cpp \
-    Entity.cpp \
-    SceneSolarSystem/Camera.cpp \
-    SceneSolarSystem/OrbitingObject.cpp \
-    SceneSolarSystem/Earth.cpp \
-    SceneSolarSystem/Sun.cpp \
-    SceneSolarSystem/Planet.cpp \
-    input/InteractionListener.cpp \
-    input/InteractionManager.cpp \
-    input/SensorManager.cpp
+    $$PWD/SceneSolarSystem/SphereObject.cpp \
+    $$PWD/SceneSolarSystem/Camera.cpp \
+    $$PWD/SceneSolarSystem/Sun.cpp \
+    $$PWD/SceneSolarSystem/Earth.cpp \
+    $$PWD/SceneSolarSystem/SunHalo.cpp \
+    $$PWD/SceneSolarSystem/Planet.cpp \
+    $$PWD/input/InteractionListener.cpp \
+    $$PWD/input/InteractionManager.cpp \
+    $$PWD/input/SensorManager.cpp \
+    SceneSolarSystem/WorldObject.cpp
 
 
 HEADERS += \
-    $$PWD/Scene.hpp \
-    $$PWD/SolarSenseApp.hpp \
-    $$PWD/tools.hpp \
-    $$PWD/graphics/Texture.hpp \
-    $$PWD/graphics/TextureManager.hpp \
-    $$PWD/graphics/Shader.hpp \
-    $$PWD/graphics/ShaderProgram.hpp \
-    $$PWD/audio/AudioManager.hpp \
-    $$PWD/input/KeyAndMouseManager.hpp \
     $$PWD/SceneSolarSystem/SceneSolarSystem.hpp \
-    $$PWD/GameObject.hpp \
-    $$PWD/glm/*.hpp \
-    $$PWD/SceneSolarSystem/TriangleObject.hpp \
-    $$PWD/graphics/Mesh.hpp \
-    $$PWD/graphics/Vertex.hpp \
-    $$PWD/graphics/Model.hpp \
-    $$PWD/graphics/Uniform.hpp \
-    $$PWD/graphics/ShaderBinding.hpp \
-    $$PWD/SceneSolarSystem/RegularPolygonObject.hpp \
-    $$PWD/graphics/MeshManager.hpp \
-    $$PWD/graphics/ShaderManager.hpp \
     $$PWD/SceneSolarSystem/SphereObject.hpp \
-    $$PWD/Entity.hpp \
     $$PWD/SceneSolarSystem/Camera.hpp \
     $$PWD/SceneSolarSystem/StandardPlanet.hpp \
-    SceneSolarSystem/OrbitingObject.hpp \
-    SceneSolarSystem/Planet.hpp \
-    SceneSolarSystem/Earth.hpp \
-    SceneSolarSystem/Sun.hpp \
-    input/InteractionListener.hpp \
-    input/InteractionManager.hpp \
+    $$PWD/SceneSolarSystem/Sun.hpp \
+    $$PWD/SceneSolarSystem/Planet.hpp \
+    $$PWD/SceneSolarSystem/Earth.hpp \
+    $$PWD/SceneSolarSystem/SunHalo.hpp \
+    $$PWD/input/InteractionListener.hpp \
+    $$PWD/input/InteractionManager.hpp \
     $$PWD/SceneSolarSystem/inputreader.h \
-    input/SensorManager.hpp
+    $$PWD/input/SensorManager.hpp \
+    Commons.hpp \
+    SceneSolarSystem/WorldObject.hpp
 
 OTHER_FILES += \
-	$$PWD/data/shaders/sample.vert \
-	$$PWD/data/shaders/sample.frag \
-        $$PWD/data/shaders/orbit.vert \
-        $$PWD/data/shaders/orbit.frag \
-	$$PWD/data/shaders/sample2.vert \
-	$$PWD/data/shaders/sample2.frag \
-    data/shaders/earthShader.vert \
-    data/shaders/earthShader.frag \
-    data/shaders/planetShader.vert \
-    data/shaders/planetShader.frag \
-    data/shaders/sun.vert \
-    data/shaders/sun.frag \
-    data/shaders/hand.frag \
-    data/shaders/hand.vert \
-    data/shaders/sun3d.vert \
-    data/shaders/sun3d.frag
+    $$PWD/data/shaders/sample.vert \
+    $$PWD/data/shaders/sample.frag \
+    $$PWD/data/shaders/orbit.vert \
+    $$PWD/data/shaders/orbit.frag \
+    $$PWD/data/shaders/sample2.vert \
+    $$PWD/data/shaders/sample2.frag \
+    $$PWD/data/shaders/earthShader.vert \
+    $$PWD/data/shaders/earthShader.frag \
+    $$PWD/data/shaders/planetShader.vert \
+    $$PWD/data/shaders/planetShader.frag \
+    $$PWD/data/shaders/sun.vert \
+    $$PWD/data/shaders/sun.frag \
+    $$PWD/data/shaders/hand.frag \
+    $$PWD/data/shaders/hand.vert \
+    $$PWD/data/shaders/sun3d.vert \
+    $$PWD/data/shaders/sun3d.frag
