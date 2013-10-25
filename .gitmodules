@@ -1,3 +1,6 @@
 [submodule "src/VBE"]
 	path = src/VBE
 	url = https://github.com/Towerthousand/VBE
+[submodule "inputserver/Touchscreen-Joystick"]
+	path = inputserver/Touchscreen-Joystick
+	url = https://github.com/Squarific/Touchscreen-Joystick
