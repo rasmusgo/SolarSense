@@ -58,6 +58,7 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/SceneSolarSystem/SceneSolarSystem.hpp \
+    $$PWD/SceneSolarSystem/FrameBuffer.hpp \
     $$PWD/SceneSolarSystem/SphereObject.hpp \
     $$PWD/SceneSolarSystem/Camera.hpp \
     $$PWD/SceneSolarSystem/StandardPlanet.hpp \

@@ -19,6 +19,9 @@ SceneSolarSystem::SceneSolarSystem() :
     if (!loadResources())
         VBE_ASSERT(false,"Could not load resources for SceneSolarSystem");
 
+
+    //Init shadow map FBO
+
     //GL stuff..
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_ALPHA_TEST);
@@ -102,6 +105,15 @@ SceneSolarSystem::~SceneSolarSystem() {
 
     AudioManager::clear();
 }
+GLvoid* shadowMapTexture;
+
+void createTexture(){
+
+    Texture* tex = new Texture(1);
+    tex->loadRawRGBA8888(shadowMapTexture, sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height, true);
+}             
+
+
 
 bool SceneSolarSystem::loadResources() {
 
