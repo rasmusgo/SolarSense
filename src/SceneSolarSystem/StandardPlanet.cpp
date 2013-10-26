@@ -25,6 +25,7 @@ void StandardPlanet::update(float deltaTime) {
     rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0));
 
     WorldObject::update(deltaTime);
+    Planet::update(deltaTime);
 }
 
 void StandardPlanet::draw() const {

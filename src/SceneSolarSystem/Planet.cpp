@@ -5,6 +5,8 @@ Planet::Planet(const std::string& name, float radius, float orbRadius)
     : radius(radius), orbRadius(orbRadius), orbSpeed(0.0f), drawOrbit(true) {
 
     this->setName(name);
+    sphere.mesh = Meshes.get("sphere");
+
     orbit.mesh = Meshes.get("square");
     orbit.program = Programs.get("orbit");
 
@@ -13,6 +15,17 @@ Planet::Planet(const std::string& name, float radius, float orbRadius)
 }
 
 Planet::~Planet(){
+}
+
+void Planet::update(float deltaTime) {
+    (void) deltaTime;
+
+    Camera* cam = static_cast<Camera*>(getGame()->getObjectByName("cam"));
+
+    if (glm::length(cam->getPosition() - getPosition()) > 4.0f*getScale().x) { // If we are far away we use the low poly sphere
+        sphere.mesh = Meshes.get("spherelow");
+    }
+    else sphere.mesh = Meshes.get("sphere");
 }
 
 void Planet::draw() const {

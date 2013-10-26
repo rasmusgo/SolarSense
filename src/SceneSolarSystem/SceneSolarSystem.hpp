@@ -13,6 +13,7 @@ class SceneSolarSystem : public GameObject {
         ~SceneSolarSystem();
 
         void update(float deltaTime);
+        void draw() const;
 
         Camera* cam;
 

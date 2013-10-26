@@ -18,6 +18,7 @@ void Sun::update(float deltaTime) {
     time += deltaTime;
 
     WorldObject::update(deltaTime);
+    Planet::update(deltaTime);
 }
 
 void Sun::draw() const {

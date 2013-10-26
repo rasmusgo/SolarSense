@@ -4,7 +4,6 @@
 #include "Camera.hpp"
 
 Earth::Earth(const std::string& name, float radius, float orbRadius) : Planet(name, radius, orbRadius), time(0.0f) {
-    sphere.mesh = Meshes.get("sphere");
     sphere.program = Programs.get("earthShader");
 }
 
@@ -19,6 +18,7 @@ void Earth::update(float deltaTime) {
     rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0));
 
     WorldObject::update(deltaTime);
+    Planet::update(deltaTime);
 }
 
 void Earth::draw() const {
