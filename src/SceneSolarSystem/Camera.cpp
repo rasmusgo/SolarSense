@@ -231,16 +231,19 @@ std::pair<mat4f,mat4f> Camera::getViewMatrix3D() {
 }
 
 mat4f Camera::billboard (vec3f position) {
-    vec3f cameraPos = -getPosition();
-    vec3f cameraUp = getRotation() * vec3f(0,1,0);
+    vec3f cameraPos = getPosition();
+    vec3f billboardLookVector = glm::normalize(cameraPos - position);
+    vec3f cameraUp = vec3f(0,1,0)* getRotation();
 
-    vec3f look = glm::normalize(cameraPos - position);
-    vec3f right = glm::cross(cameraUp, look);
-    vec3f up2 = glm::cross(look, right);
+    vec3f right = glm::cross(cameraUp, billboardLookVector);
+    vec3f up = glm::cross(right,billboardLookVector);
+
+
     mat4f transform;
+    //d = position - ((right - up) * scale);
     transform[0] = vec4f(right, 0);
-    transform[1] = vec4f(up2, 0);
-    transform[2] = vec4f(look, 0);
+    transform[1] = vec4f(up, 0);
+    transform[2] = vec4f(billboardLookVector, 0);
     // Uncomment this line to translate the position as well
     // (without it, it's just a rotation)
     //transform[3] = vec4f(position, 0);
