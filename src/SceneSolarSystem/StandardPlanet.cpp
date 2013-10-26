@@ -17,7 +17,6 @@ StandardPlanet::~StandardPlanet(){
 
 }
 
-
 void StandardPlanet::update(float deltaTime) {
     time += deltaTime;
 

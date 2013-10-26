@@ -5,7 +5,7 @@
 Sun::Sun(const std::string& name, float radius) : Planet(name, radius, 0.0f), time(0.0f) {
     this->setDrawPriority(-1);
 
-    sphere.mesh = Meshes.get("sphere");
+    sphere.mesh = Meshes.get("spherehigh");
     sphere.program = Programs.get("sun3d");
 
     transform = mat4f(1.0f);

@@ -213,8 +213,9 @@ bool SceneSolarSystem::loadResources() {
 
     //Create meshes
     Meshes.add("cube",new Mesh("data/10x10.obj"));
-    Meshes.add("sphere",new Mesh("data/bola.obj"));
-    Meshes.add("spherelow",new Mesh("data/sphere.obj"));
+    Meshes.add("spherehigh", new Mesh("data/128x128.obj"));
+    Meshes.add("sphere",new Mesh("data/64x64.obj"));
+    Meshes.add("spherelow",new Mesh("data/32x32.obj"));
     Meshes.add("square",new Mesh("data/square.obj"));
 
 
