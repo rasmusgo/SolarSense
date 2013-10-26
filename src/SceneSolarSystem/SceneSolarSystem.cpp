@@ -109,7 +109,7 @@ GLvoid* shadowMapTexture;
 
 void SceneSolarSystem::createTexture(){
     tShadowMap = new Texture(1);
-    tShadowMap->loadRawRGBA8888(shadowMapTexture, sf::VideoMode::getDesktopMode().width/64, sf::VideoMode::getDesktopMode().height/64, true);
+    tShadowMap->loadRawRGBA8888(shadowMapTexture, sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height, true);
     std::vector<GLuint> attachments;
     attachments.push_back(GL_COLOR_ATTACHMENT0);
     std::vector<Texture*> textures;
@@ -147,7 +147,15 @@ void SceneSolarSystem::renderShadowMap(){
     createShadowMapProgram->uniform("MVPmatrix")->set(lightProjectionMatrix*lightViewMatrix*glm::mat4());
 
     //Need to bind shadow map and render all objects, HMMM
-
+    /*
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    */
 
     pShadowFBO->unbind();
 
