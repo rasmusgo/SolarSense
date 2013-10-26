@@ -16,6 +16,7 @@ class SceneSolarSystem : public GameObject {
         void update(float deltaTime);
         void createTexture();
         void renderShadowMap();
+        void draw() const;
         Camera* cam;
 
 	private:
@@ -25,7 +26,7 @@ class SceneSolarSystem : public GameObject {
 
         SphereObject* stars;
         FramebufferObject* pShadowFBO;
-
+        Texture* tShadowMap;
         bool paused;
         bool stereoscopic3D;
         std::list<std::string> objectsOrder;

@@ -19,7 +19,6 @@ SceneSolarSystem::SceneSolarSystem() :
     if (!loadResources())
         VBE_ASSERT(false,"Could not load resources for SceneSolarSystem");
 
-
     //Init shadow map FBO
     createTexture();
     
@@ -109,8 +108,8 @@ SceneSolarSystem::~SceneSolarSystem() {
 GLvoid* shadowMapTexture;
 
 void SceneSolarSystem::createTexture(){
-    Texture* tShadowMap = new Texture(1);
-    tShadowMap->loadRawRGBA8888(shadowMapTexture, sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height, true);
+    tShadowMap = new Texture(1);
+    tShadowMap->loadRawRGBA8888(shadowMapTexture, sf::VideoMode::getDesktopMode().width/64, sf::VideoMode::getDesktopMode().height/64, true);
     std::vector<GLuint> attachments;
     attachments.push_back(GL_COLOR_ATTACHMENT0);
     std::vector<Texture*> textures;
@@ -119,17 +118,38 @@ void SceneSolarSystem::createTexture(){
 }             
 
 void SceneSolarSystem::renderShadowMap(){
-    glViewport( 0, 0, sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
+    glm::mat4 lightViewMatrix, lightProjectionMatrix;
+    glViewport( 0, 0, SCRWIDTH, SCRHEIGHT);
     pShadowFBO->bind();
 
-    //glEnable( GL_DEPTH_TEST )
+    // //glEnable( GL_DEPTH_TEST )
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_CULL_FACE);
     glClearColor(1.f,1.f,1.f,0.5f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    float shadowMapBias = 1e-10;
+
+
     //use the right shader
-    //ShaderProgram program = Programs.get("orbit");
+    ShaderProgram* createShadowMapProgram = Programs.get("shadowMap");
+
+
+    lightViewMatrix = glm::lookAt(glm::vec3(1.0,0.0,0.0),glm::vec3(0.0,1.0,0.0),glm::vec3(0.0,1.0,0.0));
+
+    float FOV = 90.0f; //degrees
+    float ZNEAR = 1.0f;
+    float ZFAR = 400.0f;
+
+    lightProjectionMatrix = glm::perspective(FOV,(float) SCRWIDTH/SCRHEIGHT,ZNEAR,ZFAR);
+
+    createShadowMapProgram->uniform("bias")->set( shadowMapBias );
+    createShadowMapProgram->uniform("MVPmatrix")->set(lightProjectionMatrix*lightViewMatrix*glm::mat4());
+
+    //Need to bind shadow map and render all objects, HMMM
+
+
+    pShadowFBO->unbind();
 
 }
 
@@ -259,6 +279,7 @@ bool SceneSolarSystem::loadResources() {
 }
 
 void SceneSolarSystem::update(float deltaTime) {
+   renderShadowMap();
 
 	++fpsCount;
 	debugCounter += deltaTime;
@@ -363,8 +384,8 @@ void SceneSolarSystem::setArroundClosestWorldObject() {
     cam->setArround(*currentObject);
 }
 
-/*void SceneSolarSystem::draw() const {
-    if (not stereoscopic3D) {
+void SceneSolarSystem::draw() const {
+   /* if (not stereoscopic3D) {
         //calculate perspective matrix
         getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
 
@@ -442,6 +463,6 @@ void SceneSolarSystem::setArroundClosestWorldObject() {
 
             cam->drawHUD();
         }
-    }
-}*/
+    }*/
+}
 
