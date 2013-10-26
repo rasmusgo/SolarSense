@@ -42,6 +42,8 @@ QMAKE_CXXFLAGS += -std=c++11
 SOURCES += \
     $$PWD/main.cpp \
     $$PWD/SceneSolarSystem/SceneSolarSystem.cpp \
+    $$PWD/SceneSolarSystem/FrameBuffer.hpp \
+    $$PWD/SceneSolarSystem/FrameBuffer.cpp \
     $$PWD/SceneSolarSystem/StandardPlanet.cpp \
     $$PWD/SceneSolarSystem/inputreader.cpp \
     $$PWD/SceneSolarSystem/SphereObject.cpp \
@@ -58,7 +60,6 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/SceneSolarSystem/SceneSolarSystem.hpp \
-    $$PWD/SceneSolarSystem/FrameBuffer.hpp \
     $$PWD/SceneSolarSystem/SphereObject.hpp \
     $$PWD/SceneSolarSystem/Camera.hpp \
     $$PWD/SceneSolarSystem/StandardPlanet.hpp \

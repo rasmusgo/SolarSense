@@ -21,7 +21,8 @@ SceneSolarSystem::SceneSolarSystem() :
 
 
     //Init shadow map FBO
-
+    createTexture();
+    
     //GL stuff..
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_ALPHA_TEST);
@@ -107,12 +108,30 @@ SceneSolarSystem::~SceneSolarSystem() {
 }
 GLvoid* shadowMapTexture;
 
-void createTexture(){
-
-    Texture* tex = new Texture(1);
-    tex->loadRawRGBA8888(shadowMapTexture, sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height, true);
+void SceneSolarSystem::createTexture(){
+    Texture* tShadowMap = new Texture(1);
+    tShadowMap->loadRawRGBA8888(shadowMapTexture, sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height, true);
+    std::vector<GLuint> attachments;
+    attachments.push_back(GL_COLOR_ATTACHMENT0);
+    std::vector<Texture*> textures;
+    textures.push_back(tShadowMap);
+    pShadowFBO = new FramebufferObject(attachments, textures, false);
 }             
 
+void SceneSolarSystem::renderShadowMap(){
+    glViewport( 0, 0, sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
+    pShadowFBO->bind();
+
+    //glEnable( GL_DEPTH_TEST )
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_CULL_FACE);
+    glClearColor(1.f,1.f,1.f,0.5f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //use the right shader
+    //ShaderProgram program = Programs.get("orbit");
+
+}
 
 
 bool SceneSolarSystem::loadResources() {
@@ -157,6 +176,12 @@ bool SceneSolarSystem::loadResources() {
     p = new ShaderProgram();
     p->makeProgramFromFile("data/shaders/testshader.vert","data/shaders/testshader.frag");
     Programs.add("earthtest",p);
+
+    //Shadow Map Program
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/createSM.vert","data/shaders/createSM.frag");
+    Programs.add("shadowMap",p);
+
 
 
     VBE_LOG("Shaders Loaded");

@@ -4,6 +4,7 @@
 #include "Commons.hpp"
 #include "Camera.hpp"
 #include "SphereObject.hpp"
+#include "FrameBuffer.hpp"
 
 class Game;
 class SceneSolarSystem : public GameObject {
@@ -14,6 +15,7 @@ class SceneSolarSystem : public GameObject {
 
         void update(float deltaTime);
         void createTexture();
+        void renderShadowMap();
         Camera* cam;
 
 	private:
@@ -22,6 +24,8 @@ class SceneSolarSystem : public GameObject {
 		int fpsCount;
 
         SphereObject* stars;
+        FramebufferObject* pShadowFBO;
+
         bool paused;
         bool stereoscopic3D;
         std::list<std::string> objectsOrder;
