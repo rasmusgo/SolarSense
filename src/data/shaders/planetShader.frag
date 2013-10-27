@@ -1,13 +1,11 @@
 uniform sampler2D sampler;
-/*uniform sampler2D EarthCloudGloss;
-uniform sampler2D EarthNight;
-uniform sampler2D EarthSpecularMap;
-*/
+//uniform sampler2D shadowSampler;
 varying vec2 vTexCoord;
 varying float LightIntensity; 
 
 varying float Diffuse;
 varying vec3 Specular;
+//varying vec3 vPos;
 
 // vec4 light(vec4 texColor, vec3 N, vec3 V, vec3 L)
 // {

@@ -19,8 +19,9 @@ SceneSolarSystem::SceneSolarSystem() :
     if (!loadResources())
         VBE_ASSERT(false,"Could not load resources for SceneSolarSystem");
 
-    //Init shadow map FBO
-    createTexture();
+    //Init shadow map generator
+    shadowMapGen = new ShadowMapGenerator();
+    shadowMapGen->addTo(this);
     
     //GL stuff..
     glEnable(GL_DEPTH_TEST);
@@ -105,62 +106,6 @@ SceneSolarSystem::~SceneSolarSystem() {
 
     AudioManager::clear();
 }
-GLvoid* shadowMapTexture;
-
-void SceneSolarSystem::createTexture(){
-    tShadowMap = new Texture(1);
-    tShadowMap->loadRawRGBA8888(shadowMapTexture, sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height, true);
-    std::vector<GLuint> attachments;
-    attachments.push_back(GL_COLOR_ATTACHMENT0);
-    std::vector<Texture*> textures;
-    textures.push_back(tShadowMap);
-    pShadowFBO = new FramebufferObject(attachments, textures, false);
-}             
-
-void SceneSolarSystem::renderShadowMap(){
-    glm::mat4 lightViewMatrix, lightProjectionMatrix;
-    glViewport( 0, 0, SCRWIDTH, SCRHEIGHT);
-    pShadowFBO->bind();
-
-    // //glEnable( GL_DEPTH_TEST )
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_CULL_FACE);
-    glClearColor(1.f,1.f,1.f,0.5f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    float shadowMapBias = 1e-10;
-
-
-    //use the right shader
-    ShaderProgram* createShadowMapProgram = Programs.get("shadowMap");
-
-
-    lightViewMatrix = glm::lookAt(glm::vec3(1.0,0.0,0.0),glm::vec3(0.0,1.0,0.0),glm::vec3(0.0,1.0,0.0));
-
-    float FOV = 90.0f; //degrees
-    float ZNEAR = 1.0f;
-    float ZFAR = 400.0f;
-
-    lightProjectionMatrix = glm::perspective(FOV,(float) SCRWIDTH/SCRHEIGHT,ZNEAR,ZFAR);
-
-    createShadowMapProgram->uniform("bias")->set( shadowMapBias );
-    createShadowMapProgram->uniform("MVPmatrix")->set(lightProjectionMatrix*lightViewMatrix*glm::mat4());
-
-    //Need to bind shadow map and render all objects, HMMM
-    /*
-    *
-    *
-    *
-    *
-    *
-    *
-    *
-    */
-
-    pShadowFBO->unbind();
-
-}
-
 
 bool SceneSolarSystem::loadResources() {
 
@@ -287,8 +232,6 @@ bool SceneSolarSystem::loadResources() {
 }
 
 void SceneSolarSystem::update(float deltaTime) {
-   renderShadowMap();
-
 	++fpsCount;
 	debugCounter += deltaTime;
 	if (debugCounter > 1) {

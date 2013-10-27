@@ -1,3 +1,4 @@
+//uniform mat4 MMatrix;
 uniform mat4 MVPMatrix;
 uniform mat4 MVMatrix;
 uniform mat4 NormalMatrix;
@@ -16,9 +17,11 @@ varying vec2 TexCoord;
 // const float diffuseContribution = 1.0 - specularContribution; 
 
 varying vec2 vTexCoord;
+//varying vec3 vPos;
 
 void main() 
 { 
+ //vPos = vec3(MMatrix * vec4(a_position,1.0));
  vec3 ecPosition = vec3(MVMatrix * vec4(a_position,1.0)); 
  //vec3 tnorm = normalize(vec3(NormalMatrix * vec4(a_normal, 0.0)));
  vec3 tnorm = normalize(vec3(NormalMatrix * vec4(normalize(a_position), 0.0)));

@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "SphereObject.hpp"
 #include "FrameBuffer.hpp"
+#include "ShadowMapGenerator.hpp"
 
 class Game;
 class SceneSolarSystem : public GameObject {
@@ -14,10 +15,10 @@ class SceneSolarSystem : public GameObject {
         ~SceneSolarSystem();
 
         void update(float deltaTime);
-        void createTexture();
-        void renderShadowMap();
         void draw() const;
         Camera* cam;
+
+        ShadowMapGenerator* shadowMapGen;
 
 	private:
 		bool loadResources();
@@ -25,8 +26,6 @@ class SceneSolarSystem : public GameObject {
 		int fpsCount;
 
         SphereObject* stars;
-        FramebufferObject* pShadowFBO;
-        Texture* tShadowMap;
         bool paused;
         bool stereoscopic3D;
         std::list<std::string> objectsOrder;

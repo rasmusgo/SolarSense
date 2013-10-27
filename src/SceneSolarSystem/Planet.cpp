@@ -2,11 +2,14 @@
 #include "Camera.hpp"
 
 Planet::Planet(const std::string& name, float radius, float orbRadius)
-    : radius(radius), orbRadius(orbRadius), orbSpeed(0.0f), drawOrbit(true) {
+    : ShadowCaster(), radius(radius), orbRadius(orbRadius), orbSpeed(0.0f), drawOrbit(true) {
 
     this->setName(name);
     orbit.mesh = Meshes.get("square");
     orbit.program = Programs.get("orbit");
+
+    shadow.mesh = Meshes.get("sphere");
+    shadow.program = shadowProgram;
 
     scale = vec3f(radius);
     position = vec3f(orbRadius, 0, 0);
@@ -42,4 +45,11 @@ void Planet::draw() const {
             glEnable(GL_CULL_FACE);
         }
     }
+}
+
+void Planet::castShadow(const mat4f &MVP, const float& shadowBias) {
+
+    shadow.program->uniform("bias")->set(shadowBias);
+    shadow.program->uniform("MVPmatrix")->set(MVP*fullTransform);
+    shadow.draw();
 }

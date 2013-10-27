@@ -1,7 +1,7 @@
 #ifndef __FRAMEBUFFER_H_
 #define __FRAMEBUFFER_H_
 
-#include <vector>
+#include "Commons.hpp"
 #define GL_DEPTH_BUFFER 0x8223
 
 class FramebufferObject {
@@ -21,7 +21,7 @@ class FramebufferObject {
 
 		void createFramebufferObject(){
 			//create a framebuffer object
-			glGenFramebuffersEXT(1, &fboId);
+            glGenFramebuffersEXT(1, &fboId);
 			glBindFramebufferEXT(GL_FRAMEBUFFER, fboId);
 
 			//attach the texture to FBO color attachment point
@@ -76,8 +76,8 @@ class FramebufferObject {
 		}
 
 		void bind()
-		{
-			glBindFramebufferEXT(GL_FRAMEBUFFER, fboId);
+        {
+            glBindFramebufferEXT(GL_FRAMEBUFFER, fboId);
 
 			// multiple color buffers must be activated explicitly
 			std::vector<GLuint> drawBuffers;
@@ -86,7 +86,7 @@ class FramebufferObject {
 					drawBuffers.push_back(attachments[i]);
 				}
 			}
-			glDrawBuffers(drawBuffers.size(), drawBuffers.data());
+            glDrawBuffers(drawBuffers.size(), drawBuffers.data());
 		}
 
 		void unbind()
@@ -94,7 +94,7 @@ class FramebufferObject {
 			glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 		}
 
-		GLuint getID() { return fboId; };
+        GLuint getID() { return fboId; }
 
 
 };

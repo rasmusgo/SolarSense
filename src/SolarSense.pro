@@ -42,7 +42,6 @@ QMAKE_CXXFLAGS += -std=c++11
 SOURCES += \
     $$PWD/main.cpp \
     $$PWD/SceneSolarSystem/SceneSolarSystem.cpp \
-    $$PWD/SceneSolarSystem/FrameBuffer.hpp \
     $$PWD/SceneSolarSystem/FrameBuffer.cpp \
     $$PWD/SceneSolarSystem/StandardPlanet.cpp \
     $$PWD/SceneSolarSystem/inputreader.cpp \
@@ -55,11 +54,14 @@ SOURCES += \
     $$PWD/input/InteractionListener.cpp \
     $$PWD/input/InteractionManager.cpp \
     $$PWD/input/SensorManager.cpp \
-    SceneSolarSystem/WorldObject.cpp
+    SceneSolarSystem/WorldObject.cpp \
+    SceneSolarSystem/ShadowCaster.cpp \
+    SceneSolarSystem/ShadowMapGenerator.cpp
 
 
 HEADERS += \
     $$PWD/SceneSolarSystem/SceneSolarSystem.hpp \
+    $$PWD/SceneSolarSystem/FrameBuffer.hpp \
     $$PWD/SceneSolarSystem/SphereObject.hpp \
     $$PWD/SceneSolarSystem/Camera.hpp \
     $$PWD/SceneSolarSystem/StandardPlanet.hpp \
@@ -72,7 +74,9 @@ HEADERS += \
     $$PWD/SceneSolarSystem/inputreader.h \
     $$PWD/input/SensorManager.hpp \
     Commons.hpp \
-    SceneSolarSystem/WorldObject.hpp
+    SceneSolarSystem/WorldObject.hpp \
+    SceneSolarSystem/ShadowCaster.hpp \
+    SceneSolarSystem/ShadowMapGenerator.hpp
 
 OTHER_FILES += \
     $$PWD/data/shaders/sample.vert \
@@ -90,4 +94,6 @@ OTHER_FILES += \
     $$PWD/data/shaders/hand.frag \
     $$PWD/data/shaders/hand.vert \
     $$PWD/data/shaders/sun3d.vert \
-    $$PWD/data/shaders/sun3d.frag
+    $$PWD/data/shaders/sun3d.frag \
+    $$PWD/data/shaders/createSM.vert \
+    $$PWD/data/shaders/createSM.frag
