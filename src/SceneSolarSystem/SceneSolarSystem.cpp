@@ -6,6 +6,7 @@
 #include "SunHalo.hpp"
 #include "StandardPlanet.hpp"
 #include "input/SensorManager.hpp"
+#include "Rock.hpp"
 
 #include "inputreader.h"
 
@@ -87,6 +88,11 @@ SceneSolarSystem::SceneSolarSystem() :
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
 
+    Rock* rock = new Rock("rock", 1.5f, 40.0f, "objectShader", "cage");
+    rock->orbSpeed = 8.0f/fa;
+    rock->rotSpeed = 7.0f;
+    rock->addTo(sun);
+
     SunHalo* sunhalo = new SunHalo("sunHalo", 10.0f);
     sunhalo->addTo(sun);
 
@@ -147,6 +153,10 @@ bool SceneSolarSystem::loadResources() {
     p->makeProgramFromFile("data/shaders/testshader.vert","data/shaders/testshader.frag");
     Programs.add("earthtest",p);
 
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/objectShader.vert","data/shaders/objectShader.frag");
+    Programs.add("objectShader",p);
+
 
     VBE_LOG("Shaders Loaded");
 
@@ -206,6 +216,12 @@ bool SceneSolarSystem::loadResources() {
     tex = new Texture(1);
     if(!tex->loadFromFile("data/jupitermap.jpg",true)) return false;
     Textures.add("jupiter", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/Rock-Texture-Surface.jpg",true)) return false;
+    Textures.add("rock", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/rustmetal.jpg",true)) return false;
+    Textures.add("cage", tex);
 
 
     VBE_LOG("Textures Loaded");
@@ -217,6 +233,8 @@ bool SceneSolarSystem::loadResources() {
     Meshes.add("sphere",new Mesh("data/64x64.obj"));
     Meshes.add("spherelow",new Mesh("data/32x32.obj"));
     Meshes.add("square",new Mesh("data/square.obj"));
+    Meshes.add("rock", new Mesh("data/cube.obj"));
+    Meshes.add("cage", new Mesh("data/cage.obj"));
 
 
     VBE_LOG("Meshes Loaded");
@@ -283,8 +301,15 @@ void SceneSolarSystem::update(float deltaTime) {
 
 
     //Update logic
+    std::pair<WorldObject*, bool> col = closestWorldObject();
+
+    if (not cam->interpolating && col.second) {
+        setCameraArround(col.first);
+    }
     if (Input::isKeyPressed(sf::Keyboard::P)) paused = !paused;
-    if (Input::isKeyPressed(sf::Keyboard::Space)) setArroundClosestWorldObject();
+    if (Input::isKeyPressed(sf::Keyboard::Space)) {
+        setCameraArround(col.first);
+    }
     if (paused) deltaTime = 0.0f;
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
         if (++currentObject != objectsOrder.end())
@@ -307,26 +332,39 @@ void SceneSolarSystem::update(float deltaTime) {
     Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 }
 
-void SceneSolarSystem::setArroundClosestWorldObject() {
-
-    if (objectsOrder.begin() == objectsOrder.end()) return; // No objects on list
+std::pair<WorldObject*,bool> SceneSolarSystem::closestWorldObject() {
+    std::vector<WorldObject*> wObjs;
+    getAllObjectsOfType<WorldObject>(wObjs);
 
     std::list<std::string>::iterator it = objectsOrder.begin();
-    currentObject = it;
     vec3f camPos = cam->getPosition();
-    float minDist = glm::length(((WorldObject*)getGame()->getObjectByName(*currentObject))->getPosition() - camPos);
-    ++it;
+    float minDist = 99999999999999;
 
-    for (; it != objectsOrder.end(); ++it) {
-        WorldObject* wo = (WorldObject*)(getGame()->getObjectByName(*it));
+    int closest = 0;
+    bool colliding = false;
+
+    for (int i = 0; i < wObjs.size(); ++i) {
+        WorldObject* wo = wObjs[i];
         float dist = glm::length(wo->getPosition() - camPos);
         if (!(wo->id == cam->id) and dist < minDist) {
             minDist = dist;
-            currentObject = it;
+            closest = i;
+            colliding = minDist <= 1.2f*wo->getScale().x;
         }
     }
 
-    cam->setArround(*currentObject);
+    return std::pair<WorldObject*,bool>(wObjs[closest], colliding);
+}
+
+void SceneSolarSystem::setCameraArround(WorldObject* o) {
+    for (std::list<std::string>::iterator it = objectsOrder.begin(); it != objectsOrder.end(); ++it) {
+        if ((*it) == o->getName()) {
+            currentObject = it;
+            break;
+        }
+    }
+
+    cam->setArround(o);
 }
 
 void SceneSolarSystem::draw() const {

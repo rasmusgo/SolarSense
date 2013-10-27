@@ -53,7 +53,8 @@ SOURCES += \
     $$PWD/input/InteractionListener.cpp \
     $$PWD/input/InteractionManager.cpp \
     $$PWD/input/SensorManager.cpp \
-    SceneSolarSystem/WorldObject.cpp
+    SceneSolarSystem/WorldObject.cpp \
+    SceneSolarSystem/Rock.cpp
 
 
 HEADERS += \
@@ -70,7 +71,8 @@ HEADERS += \
     $$PWD/SceneSolarSystem/inputreader.h \
     $$PWD/input/SensorManager.hpp \
     Commons.hpp \
-    SceneSolarSystem/WorldObject.hpp
+    SceneSolarSystem/WorldObject.hpp \
+    SceneSolarSystem/Rock.hpp
 
 OTHER_FILES += \
     $$PWD/data/shaders/sample.vert \
@@ -88,4 +90,6 @@ OTHER_FILES += \
     $$PWD/data/shaders/hand.frag \
     $$PWD/data/shaders/hand.vert \
     $$PWD/data/shaders/sun3d.vert \
-    $$PWD/data/shaders/sun3d.frag
+    $$PWD/data/shaders/sun3d.frag \
+    data/shaders/objectShader.vert \
+    data/shaders/objectShader.frag

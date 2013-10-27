@@ -28,7 +28,8 @@ class SceneSolarSystem : public GameObject {
         std::list<std::string> objectsOrder;
         std::list<std::string>::iterator currentObject;
 
-        void setArroundClosestWorldObject();
+        std::pair<WorldObject*,bool> closestWorldObject();
+        void setCameraArround(WorldObject* o);
 };
 
 #endif // SCENESOLARSYSTEM_HPP
