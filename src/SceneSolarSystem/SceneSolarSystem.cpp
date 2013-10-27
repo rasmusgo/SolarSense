@@ -285,6 +285,9 @@ void SceneSolarSystem::update(float deltaTime) {
 
     //Update logic
     if (Input::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+    if (Input::isKeyPressed(sf::Keyboard::H)){
+        cam->setArround((WorldObject*)(getGame()->getObjectByName("earth")));
+    }
     if (Input::isKeyPressed(sf::Keyboard::Space)) setArroundClosestWorldObject();
     if (paused) deltaTime = 0.0f;
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
