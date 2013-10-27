@@ -12,10 +12,8 @@ ShadowMapGenerator::ShadowMapGenerator() {
 
 void ShadowMapGenerator::createTexture(){
     tShadowMap = new Texture(7);
-    shadowMapTexture = new int[SCRWIDTH*SCRHEIGHT];
-    tShadowMap->loadRawRGBA8888(shadowMapTexture, SCRWIDTH, SCRHEIGHT, true);
+    tShadowMap->loadRawDepthTexture(shadowMapTexture, SCRWIDTH, SCRHEIGHT);
     std::vector<GLuint> attachments;
-    attachments.push_back(GL_COLOR_ATTACHMENT0);
     std::vector<Texture*> textures;
     textures.push_back(tShadowMap);
     pShadowFBO = new FramebufferObject(attachments, textures, true);

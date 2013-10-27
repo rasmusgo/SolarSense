@@ -2,7 +2,7 @@
 #define __FRAMEBUFFER_H_
 
 #include "Commons.hpp"
-#define GL_DEPTH_BUFFER 0x8223
+//#define GL_DEPTH_BUFFER 0x8223
 
 class FramebufferObject {
 	protected:
@@ -20,14 +20,16 @@ class FramebufferObject {
 		std::vector<GLuint> attachments;
 
 		void createFramebufferObject(){
-			//create a framebuffer object
-            glGenFramebuffersEXT(1, &fboId);
-			glBindFramebufferEXT(GL_FRAMEBUFFER, fboId);
+            if (!depthBuffer || texturesIds.size() > 1) {
+                //create a framebuffer object
+                glGenFramebuffersEXT(1, &fboId);
+                glBindFramebufferEXT(GL_FRAMEBUFFER, fboId);
 
-			//attach the texture to FBO color attachment point
-			for(unsigned int i = 0; i < textureIds.size(); i++){
-				glFramebufferTexture2DEXT(GL_FRAMEBUFFER, attachments[i], GL_TEXTURE_2D, textureIds[i], 0);
-			}
+                //attach the texture to FBO color attachment point
+                for(unsigned int i = 1; i < textureIds.size(); i++){
+                    glFramebufferTexture2DEXT(GL_FRAMEBUFFER, attachments[i], GL_TEXTURE_2D, textureIds[i], 0);
+                }
+            }
 
 			if(depthBuffer){
 				glGenRenderbuffersEXT(1, &rboId);
