@@ -13,7 +13,7 @@
 SceneSolarSystem::SceneSolarSystem() :
     debugCounter(0.0), fpsCount(0), paused(false), stereoscopic3D(false) {
     this->setName("SCENE");
-    this->setDrawPriority(9001); // want to draw 3d on the last place
+    this->setDrawPriority(99999999); // want to draw 3d on the last place
 
     readInput();
 
@@ -323,9 +323,8 @@ void SceneSolarSystem::update(float deltaTime) {
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
     if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
     if (Input::isKeyPressed(sf::Keyboard::Num3)) {
-        if (stereoscopic3D)
-            glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
         stereoscopic3D = !stereoscopic3D;
+        cam->setStereoscopic(stereoscopic3D);
     }
     if (Input::isKeyPressed(sf::Keyboard::R)) SensorManager::resetTracking();
 
@@ -367,72 +366,21 @@ void SceneSolarSystem::setCameraArround(WorldObject* o) {
     cam->setArround(o);
 }
 
-void SceneSolarSystem::draw() const {
-    if (not stereoscopic3D) {
-        cam->drawHUD();
+void SceneSolarSystem::draw() const{
+    cam->drawHUD();
+    if (stereoscopic3D) {
+        if (cam->currEye == 0) {
+            int& aux = const_cast<int&>(cam->currEye);
+            aux++;
+            cam->setEye(1);
+
+            getGame()->justDraw();
+            getGame()->getWindow().display();
+        }
     }
     else {
-        //calculate perspective matrix (Parallel)
-        //getState().projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
-
-        //Move matrix to position (according to player/camera)
-        //getState().view = mat4f(1.0);
-//        std::pair<mat4f,mat4f> eyes = cam->getViewMatrix3D();
-
-//        float ratio  = float(SCRWIDTH) / float(SCRHEIGHT);
-//        float radians = DEG_TO_RAD * FOV / 2.0;
-//        float wd2     = ZNEAR * glm::tan(radians);
-//        //float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
-//        float ndfl    = ZNEAR / 375.0;
-
-//        float left, right, top, bottom;
-
-//        glViewport(float(SCRWIDTH)/2.0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Right eye
-//        {
-//            //Off Axis projection
-//            left  = - ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
-//            right =   ratio * wd2 - 0.5 * cam->eyeDistance3D * ndfl;
-//            top    =   wd2;
-//            bottom = - wd2;
-//            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
-
-//            getState().view = eyes.first;
-
-//            //Drawable objects
-//            glDisable(GL_CULL_FACE);
-//            stars->draw();
-//            glEnable(GL_CULL_FACE);
-
-//            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
-//                (*it)->draw();
-
-//            cam->drawHUD();
-//        }
-//        glViewport(0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Left eye
-//        {
-//            //Off Axis projection
-//            left  = - ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
-//            right =   ratio * wd2 + 0.5 * cam->eyeDistance3D * ndfl;
-//            top    =   wd2;
-//            bottom = - wd2;
-//            getState().projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
-
-//            getState().view = eyes.second;
-
-//            //Drawable objects
-//            glDisable(GL_CULL_FACE);
-//            stars->draw();
-//            glEnable(GL_CULL_FACE);
-
-
-//            //Render the shadow map
-//            //m_defferedRendering->startRenderToShadowMap();
-//            for(std::list<GameObject*>::const_iterator it = drawList.begin();it != drawList.end(); ++it)
-//                (*it)->draw();
-//            //m_defferedRendering->stopRenderToShadowMap();
-
-//            cam->drawHUD();
-//        }
+        getGame()->getWindow().display();
     }
+
 }
 

@@ -39,6 +39,11 @@ class Camera : public WorldObject {
 
         mat4f billboard (vec3f position);
 
+        void setStereoscopic(bool s3d);
+        void setEye(int i);
+
+        int currEye;
+
     private:        
         const float INTERPOLATION_TIME = 3.0f;
 
@@ -56,6 +61,10 @@ class Camera : public WorldObject {
         bool wasTracking;
         float handTime;
         Model hudHand;
+        float focus;
+
+        bool stereoscopic3D;
+        std::pair<mat4f,mat4f> eyes;
 };
 
 #endif // CAMERA_HPP

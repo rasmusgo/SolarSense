@@ -21,6 +21,7 @@ class SceneSolarSystem : public GameObject {
 		bool loadResources();
 		float debugCounter;
 		int fpsCount;
+        int currEye;
 
         SphereObject* stars;
         bool paused;

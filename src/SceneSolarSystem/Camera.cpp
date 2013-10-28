@@ -2,7 +2,7 @@
 #include "../input/SensorManager.hpp"
 
 Camera::Camera(const vec3f& pos, const mat4f& projection) :
-    projection(projection) {
+    projection(projection), stereoscopic3D(false) {
 
     this->setName("cam");
     this->setUpdatePriority(2);
@@ -115,6 +115,13 @@ void Camera::update(float deltaTime) {
     transform = glm::translate(glm::mat4_cast(rotation), -position);
 
     view = transform;
+
+    if (stereoscopic3D) {
+        eyes = getViewMatrix3D();
+
+        setEye(0);
+        currEye = 0;
+    }
 }
 
 void Camera::updateAcceleration(float deltaTime) {
@@ -250,3 +257,54 @@ mat4f Camera::billboard (vec3f position) {
     return transform;
 }
 
+void Camera::setStereoscopic(bool s3d) {
+    if (s3d) {
+        stereoscopic3D = s3d;
+    }
+    else {
+        glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
+
+        this->projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
+    }
+}
+
+void Camera::setEye(int i) {
+    float ratio  = float(SCRWIDTH) / float(SCRHEIGHT);
+    float radians = DEG_TO_RAD * FOV / 2.0;
+    float wd2     = ZNEAR * glm::tan(radians);
+    //float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
+    if (mode == Arround) {
+        focus = glm::length(getPosition() - arrObject->getPosition());
+    }
+    else focus = 375.0f;
+    float ndfl    = ZNEAR / 375.0;
+
+    float left, right, top, bottom;
+
+    if (i == 0) {
+        glViewport(float(SCRWIDTH)/2.0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Right eye
+        {
+            //Off Axis projection
+            left  = - ratio * wd2 - 0.5 * eyeDistance3D * ndfl;
+            right =   ratio * wd2 - 0.5 * eyeDistance3D * ndfl;
+            top    =   wd2;
+            bottom = - wd2;
+            projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
+
+            view = eyes.first;
+        }
+    }
+    else {
+        glViewport(0,0,float(SCRWIDTH)/2.0,float(SCRHEIGHT)); //Left eye
+        {
+            //Off Axis projection
+            left  = - ratio * wd2 + 0.5 * eyeDistance3D * ndfl;
+            right =   ratio * wd2 + 0.5 * eyeDistance3D * ndfl;
+            top    =   wd2;
+            bottom = - wd2;
+            projection = glm::frustum(left,right,bottom,top,ZNEAR,ZFAR);
+
+            view = eyes.second;
+        }
+    }
+}
