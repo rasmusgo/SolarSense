@@ -74,8 +74,8 @@ void Camera::update(float deltaTime) {
 
                 displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
                 lastArrDist += displ;
-                if (lastArrDist < objScale*1.5f) { //Too close! to the object!
-                    lastArrDist = objScale*1.5f;
+                if (lastArrDist < objScale*1.1f) { //Too close! to the object!
+                    lastArrDist = objScale*1.1f;
                 }
                 else if (lastArrDist > 250.0) { //Where the fuck are you going!?
                     lastArrDist = 250.0;
