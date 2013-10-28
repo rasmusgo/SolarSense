@@ -36,6 +36,13 @@ class SensorManager {
        static void resetTracking();
 
        /**
+         * Checks there is a sensor connected to the pc.
+         *
+         * @return True if a sensor is connected, false if not.
+         */
+       static bool sensorConnected() {return running;}
+
+       /**
          * Checks if there is currently a hand being tracked.
          *
          * @return True if a hand is tracked, false if not.

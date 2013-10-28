@@ -37,7 +37,7 @@ void Camera::drawHUD() {
     if (not wasTracking)
         handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
 
-    if (!SensorManager::isTracking()) {
+    if (SensorManager::sensorConnected() && !SensorManager::isTracking()) {
 
         hudHand.program->uniform("time")->set(glm::mod(GLOBALCLOCK.getElapsedTime().asSeconds(), 20.0f));
         hudHand.program->uniform("lastTime")->set(handTime);
