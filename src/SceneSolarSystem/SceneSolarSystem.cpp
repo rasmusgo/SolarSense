@@ -374,7 +374,7 @@ void SceneSolarSystem::draw() const{
             aux++;
             cam->setEye(1);
 
-            getGame()->justDraw();
+            getGame()->drawScene();
             getGame()->getWindow().display();
         }
     }
