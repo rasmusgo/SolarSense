@@ -42,7 +42,7 @@ SceneSolarSystem::SceneSolarSystem() :
 
     //add gameObjects
     stars = new SphereObject();
-    stars->radius = 1000.0f;
+    stars->radius = 9999.0f;
     stars->setDrawPriority(-10);
     stars->addTo(this);
 
@@ -52,57 +52,57 @@ SceneSolarSystem::SceneSolarSystem() :
     objectsOrder.push_back("sun");
 
     float fa = 80.0f;
-    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f ,"planetShader", "mercury");
+    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 5.79f ,"planetShader", "mercury");
     mercury->orbSpeed = 6.0f/fa;
     mercury->rotSpeed = 6.0f;
     mercury->addTo(sun);
     objectsOrder.push_back("mercury");
 
-    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f,"planetShader","venus");
+    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 10.82f,"planetShader","venus");
     venus->orbSpeed = 4.0f/fa;
     venus->rotSpeed = 4.0f;
     venus->addTo(sun);
     objectsOrder.push_back("venus");
 
-    Earth* earth = new Earth("earth", 1.0f, 30.0f);
+    Earth* earth = new Earth("earth", 1.0f, 14.96f);
     earth->orbSpeed = 3.0f/fa;
     earth->rotSpeed = 3.0f;
     earth->addTo(sun);
     objectsOrder.push_back("earth");
 
-    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShader", "moon");
+    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 0.384f, "planetShader", "moon");
     moon->orbSpeed = 3.0f/fa;
     //moon->rotSpeed = 3.0f/8.0f;
     moon->addTo(earth);
     objectsOrder.push_back("moon");
 
-    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f, "planetShader", "mars");
+    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 22.79f, "planetShader", "mars");
     mars->orbSpeed = 2.0f/fa;
     mars->rotSpeed = 2.0f;
     mars->addTo(sun);
     objectsOrder.push_back("mars");
 
-    StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter");
+    StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 77.83f, "planetShader", "jupiter");
     jupiter->orbSpeed = 1.5f/fa;
     jupiter->rotSpeed = 1.5f;
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
 
-    StandardPlanet* saturn = new StandardPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn");
-    saturn->orbSpeed = 0.5f/fa;
+    StandardPlanet* saturn = new StandardPlanet("saturn", 4.0f, 1427.f, "planetShader", "saturn");
+    saturn->orbSpeed = 1.5f/fa;
     saturn->rotSpeed = 1.5f;
     saturn->addTo(sun);
     objectsOrder.push_back("saturn");
 
-    StandardPlanet* uranus = new StandardPlanet("uranus", 2.5f, 150.f, "planetShader", "uranus");
-    uranus->orbSpeed = 1.3f/fa;
-    uranus->rotSpeed = 1.f;
+    StandardPlanet* uranus = new StandardPlanet("uranus", 4.0f, 2871.f, "planetShader", "uranus");
+    uranus->orbSpeed = 1.5f/fa;
+    uranus->rotSpeed = 1.5f;
     uranus->addTo(sun);
     objectsOrder.push_back("uranus");
 
-    StandardPlanet* neptune = new StandardPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune");
-    neptune->orbSpeed = 2.f/fa;
-    neptune->rotSpeed = 0.5f;
+    StandardPlanet* neptune = new StandardPlanet("neptune", 4.0f, 4497.1f, "planetShader", "neptune");
+    neptune->orbSpeed = 1.5f/fa;
+    neptune->rotSpeed = 1.5f;
     neptune->addTo(sun);
     objectsOrder.push_back("neptune");
 

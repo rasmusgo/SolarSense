@@ -1,6 +1,6 @@
 include(VBE/VBE.pro)
 
-#DEFINES += __DEBUG __LOG
+DEFINES += __DEBUG __LOG
 
 TEMPLATE = app
 LD_LIBRARY_PATH += libs:
@@ -36,6 +36,7 @@ linux-g++:contains(QMAKE_TARGET.arch, i686):{
                #$$PWD/GrabDetector/Include
 }
 
+INCLUDEPATH += VBE/includes
 
 
 QMAKE_CXXFLAGS += -std=c++11
