@@ -13,7 +13,7 @@ namespace Utils {
     }
 
     template <typename T>
-    inline T lerp(T& from, T& to, float t) {
+    inline T lerp(T from, T to, float t) {
         return to*t + from*(1.0f-t) ;
     }
 }

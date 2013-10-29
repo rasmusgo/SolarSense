@@ -119,6 +119,8 @@ void Camera::update(float deltaTime) {
     if (stereoscopic3D) {
         eyes = getViewMatrix3D();
 
+        focusSpeed = 0.01f*deltaTime;
+
         setEye(0);
         currEye = 0;
     }
@@ -274,10 +276,10 @@ void Camera::setEye(int i) {
     float wd2     = ZNEAR * glm::tan(radians);
     //float ndfl    = ZNEAR / ((ZFAR - ZNEAR)*0.5);
     if (mode == Arround) {
-        focus = glm::length(getPosition() - arrObject->getPosition());
+        focus = Utils::lerp(focus, glm::length(getPosition() - arrObject->getPosition()), focusSpeed);
     }
-    else focus = 375.0f;
-    float ndfl    = ZNEAR / 375.0;
+    else focus = focus = Utils::lerp(focus, 375.0f, focusSpeed);
+    float ndfl = ZNEAR / focus;
 
     float left, right, top, bottom;
 

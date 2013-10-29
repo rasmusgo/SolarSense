@@ -62,6 +62,7 @@ class Camera : public WorldObject {
         float handTime;
         Model hudHand;
         float focus;
+        float focusSpeed;
 
         bool stereoscopic3D;
         std::pair<mat4f,mat4f> eyes;
