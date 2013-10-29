@@ -56,7 +56,8 @@ SOURCES += \
     $$PWD/input/SensorManager.cpp \
     SceneSolarSystem/WorldObject.cpp \
     SceneSolarSystem/Rock.cpp \
-    SceneSolarSystem/RingPlanet.cpp
+    SceneSolarSystem/RingPlanet.cpp \
+    SceneSolarSystem/Orbit.cpp
 
 
 HEADERS += \
@@ -75,7 +76,8 @@ HEADERS += \
     Commons.hpp \
     SceneSolarSystem/WorldObject.hpp \
     SceneSolarSystem/Rock.hpp \
-    SceneSolarSystem/RingPlanet.hpp
+    SceneSolarSystem/RingPlanet.hpp \
+    SceneSolarSystem/Orbit.hpp
 
 OTHER_FILES += \
     $$PWD/data/shaders/sample.vert \

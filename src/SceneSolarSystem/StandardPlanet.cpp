@@ -47,6 +47,4 @@ void StandardPlanet::draw() const {
     sphere.program->uniform("NormalMatrix")->set(normalMatrix);
 
     sphere.draw();
-
-    Planet::draw();
 }

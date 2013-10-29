@@ -88,6 +88,4 @@ void Earth::draw() const {
     sphere.program->uniform("viewMatrix")->set(view);
 
     sphere.draw();
-
-    Planet::draw();
 }

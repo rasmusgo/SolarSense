@@ -7,6 +7,8 @@ SunHalo::SunHalo(const std::string& name, float size) : time(0.0f) {
     this->scale = vec3f(size);
     model.mesh = Meshes.get("square");
     model.program = Programs.get("sun");
+
+    this->setDrawPriority(100); // We want to draw this the last object before the orbits
 }
 
 SunHalo::~SunHalo(){
@@ -39,6 +41,8 @@ void SunHalo::draw() const {
 
 
    glDisable(GL_CULL_FACE);
+   glDepthMask(GL_FALSE);
    model.draw();
+   glDepthMask(GL_TRUE);
    glEnable(GL_CULL_FACE);
 }

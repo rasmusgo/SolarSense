@@ -3,6 +3,9 @@
 
 #include "Commons.hpp"
 #include "WorldObject.hpp"
+#include "Orbit.hpp"
+
+// Must be set son of a WorldObject
 
 class Planet : public WorldObject {
     public:
@@ -10,16 +13,20 @@ class Planet : public WorldObject {
         ~Planet();
 
         virtual void update(float deltaTime) = 0;
-        virtual void draw() const;
+        virtual void draw() const = 0;
 
         float radius;
         float orbRadius;
         float orbSpeed;
         float rotSpeed;
         bool drawOrbit;
+
+        const GameObject* getArroundParent() const;
     protected:
         Model sphere;
-        Model orbit;
+
+    private:
+        Orbit* orbit;
 };
 
 #endif // PLANET_HPP
