@@ -56,12 +56,13 @@ void Earth::draw() const {
     mat4f view = cam->view;
     mat4f model = glm::scale(fullTransform, getScale());
     mat4f t = projection*view*model;
+    mat4f normalMatrix( glm::transpose(glm::inverse(model)));
    // mat3f m_3x3_inv_transp = glm::transpose(glm::inverse(glm::mat3f(model)));
 
     vec3f lightPos = vec3f(0.0f);// - position;
     float shininess = 20.0f;
     vec3f emission = vec3f(0.1f);
-    vec3f specular = vec3f(0.5f);
+    vec3f specular = vec3f(0.3f, 0.15, 0.15);
     vec3f lightAmbient = vec3f(1.0f);
     vec3f lightDiffuse(1.0f);
     vec3f lightSpecular(1.0f);
@@ -92,11 +93,12 @@ void Earth::draw() const {
 
     tex = Textures.get("earthNormal");
     //tex->bind();
-    //sphere.program->uniform("samplerNormal")->set((int)tex->getSlot());
+    sphere.program->uniform("samplerNormal")->set((int)tex->getSlot());
     
     sphere.program->uniform("modelViewProjectionMatrix")->set(t);
     sphere.program->uniform("modelMatrix")->set(model);
     sphere.program->uniform("viewMatrix")->set(view);
+    sphere.program->uniform("normalMatrix")->set(normalMatrix);
 
     sphere.draw();
 

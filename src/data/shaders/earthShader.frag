@@ -16,6 +16,7 @@ varying vec3 vNormal;
 varying vec3 vCam;
 varying vec3 vLight;
 varying mat3 localSurface2World;
+varying vec3 vPos;
 
 vec4 light(vec4 texColor, vec3 N, vec3 V, vec3 L)
 {
@@ -61,34 +62,33 @@ vec3 perturb_normal( vec3 N, vec3 V, vec2 texcoord )
     mat3 TBN = cotangent_frame(N, -V, texcoord);
     return normalize(TBN * map);
 }*/
+mat3 tbn(vec2 texCoord, vec3 meshNormal, vec3 pos){
+// compute derivations of the texture coordinate
+vec2 tc_dx = dFdx(texCoord);
+vec2 tc_dy = dFdy(texCoord);
+vec3 p_dx  = dFdx(pos);
+vec3 p_dy  = dFdy(pos);
+// compute initial tangent and bi-tangent
+vec3 t = normalize( tc_dy.y * p_dx - tc_dx.y * p_dy );
+vec3 b = normalize( tc_dy.x * p_dx - tc_dx.x * p_dy ); // sign inversion
+// get new tangent from a given mesh normal
+vec3 n = normalize(meshNormal);
+vec3 x = cross(n, t);
+t = cross(x, n);
+t = normalize(t);
+// get updated bi-tangent
+x = cross(b, n);
+b = cross(n, x);
+b = normalize(b);
+return mat3(t, b, n);
+}
 
 void main() {
-/*
-    vec3 N = normalize(texture2D(samplerNormal, vTexCoord).xyz * 2.0);
-  
-    // Tangent  
-    vec3 t = normalize(cross(N, vec3(1,0,0)));
-  
-    // Binormal  
-    vec3 b = normalize(cross(N, t));
- 
-    // Rotation matrix to rotate detail normal by 
-    mat3 rotMatrix = mat3(
-        t.x, t.y, t.z,  
-        b.x, b.y, b.z, 
-        N.x, N.y, N.z 
-    ); 
- 
-    // Rotate detail normal to be on the terrain surface.  
-    // The detail normal comes from a detail normal map. 
-    vec3 detailNormal = normalize(rotMatrix * vNormal);*/
-
     vec3 detailNormal = normalize(texture2D(samplerNormal, vTexCoord).xyz * 2.0 - 1.0);
     //vec3 detailNormal = normalize( vNormal + N );
-    vec3 normal = normalize(localSurface2World * detailNormal);
+    vec3 tanLight = vLight * tbn(vTexCoord, vNormal, vPos);
 
-
-    float lightIntensity = max(0.1, min(dot(vLight, normal) + 0.1, 1.0));
+    float lightIntensity = max(0.1, min(dot(tanLight, detailNormal) + 0.1, 1.0));
 
     vec4 lightColor = texture2D(samplerNight,vTexCoord);
     if (lightIntensity > 0.4) lightColor = vec4(0.0);
@@ -103,7 +103,24 @@ void main() {
     else color = texColor*lightIntensity+lightColor;
 
     gl_FragColor = vec4(color.xyz, 1.0);
-    if(lightIntensity == 0.1){
+    /*if(lightIntensity == 0.1){
         gl_FragColor = vec4(detailNormal, 1.0);
-    }
+    }*/
 }
+/*// compute derivations of the texture coordinate
+vec2 tc_dx = dFdx(tc_i);
+vec2 tc_dy = dFdy(tc_i);
+// compute initial tangent and bi-tangent
+vec3 t = normalize( tc_dy.y * p_dx - tc_dx.y * p_dy );
+vec3 b = normalize( tc_dy.x * p_dx - tc_dx.x * p_dy ); // sign inversion
+// get new tangent from a given mesh normal
+vec3 n = normalize(n_obj_i);
+vec3 x = cross(n, t);
+t = cross(x, n);
+t = normalize(t);
+// get updated bi-tangent
+x = cross(b, n);
+b = cross(n, x);
+b = normalize(b);
+mat3 tbn = mat3(t, b, n);
+*/
