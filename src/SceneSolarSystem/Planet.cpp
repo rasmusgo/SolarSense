@@ -58,9 +58,9 @@ void Planet::draw() const {
             orbit.program->uniform("radius")->set(orbRadius);
 
             glDisable(GL_CULL_FACE);
-            glDepthMask(GL_FALSE);
+            //glDepthMask(GL_FALSE);
             orbit.draw();
-            glDepthMask(GL_TRUE);
+            //glDepthMask(GL_TRUE);
             glEnable(GL_CULL_FACE);
         }
     }

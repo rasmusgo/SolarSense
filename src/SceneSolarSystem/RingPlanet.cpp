@@ -33,6 +33,9 @@ void RingPlanet::draw() const {
     ring.program->uniform("modelViewProjectionMatrix")->set(viewProjection*ringTransform);
     ring.program->uniform("modelMatrix")->set(ringTransform);
     ring.program->uniform("minCoord")->set(distRingStart/distRingEnd);
+    ring.program->uniform("orbRadius")->set(orbRadius);
+    ring.program->uniform("radius")->set(radius);
+    ring.program->uniform("planetCenter")->set(getPosition());
 
     Texture* ringTexture = Textures.get(ringtexture);
     ringTexture->bind();
