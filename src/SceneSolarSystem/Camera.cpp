@@ -261,14 +261,13 @@ mat4f Camera::billboard (vec3f position) {
 }
 
 void Camera::setStereoscopic(bool s3d) {
-    if (s3d) {
-        stereoscopic3D = s3d;
-    }
-    else {
+    if (!s3d) {
         glViewport(0,0,float(SCRWIDTH),float(SCRHEIGHT)); //back to normal
 
         this->projection = glm::perspective(FOV,float(SCRWIDTH)/float(SCRHEIGHT),ZNEAR,ZFAR);
     }
+
+    stereoscopic3D = s3d;
 }
 
 void Camera::setEye(int i) {
