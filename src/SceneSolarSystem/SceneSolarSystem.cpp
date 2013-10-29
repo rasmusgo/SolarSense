@@ -42,7 +42,7 @@ SceneSolarSystem::SceneSolarSystem() :
 
     //add gameObjects
     stars = new SphereObject();
-    stars->radius = 500.0f;
+    stars->radius = 1000.0f;
     stars->setDrawPriority(-10);
     stars->addTo(this);
 
@@ -87,6 +87,24 @@ SceneSolarSystem::SceneSolarSystem() :
     jupiter->rotSpeed = 1.5f;
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
+
+    StandardPlanet* saturn = new StandardPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn");
+    saturn->orbSpeed = 0.5f/fa;
+    saturn->rotSpeed = 1.5f;
+    saturn->addTo(sun);
+    objectsOrder.push_back("saturn");
+
+    StandardPlanet* uranus = new StandardPlanet("uranus", 2.5f, 150.f, "planetShader", "uranus");
+    uranus->orbSpeed = 1.3f/fa;
+    uranus->rotSpeed = 1.f;
+    uranus->addTo(sun);
+    objectsOrder.push_back("uranus");
+
+    StandardPlanet* neptune = new StandardPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune");
+    neptune->orbSpeed = 2.f/fa;
+    neptune->rotSpeed = 0.5f;
+    neptune->addTo(sun);
+    objectsOrder.push_back("neptune");
 
     Rock* rock = new Rock("rock", 1.5f, 40.0f, "objectShader", "cage");
     rock->orbSpeed = 8.0f/fa;
@@ -217,6 +235,15 @@ bool SceneSolarSystem::loadResources() {
     if(!tex->loadFromFile("data/jupitermap.jpg",true)) return false;
     Textures.add("jupiter", tex);
     tex = new Texture(1);
+    if(!tex->loadFromFile("data/saturnmap.jpg",true)) return false;
+    Textures.add("saturn", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/uranusmap.jpg",true)) return false;
+    Textures.add("uranus", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/neptunemap.jpg",true)) return false;
+    Textures.add("neptune", tex);
+    tex = new Texture(1);
     if(!tex->loadFromFile("data/Rock-Texture-Surface.jpg",true)) return false;
     Textures.add("rock", tex);
     tex = new Texture(1);
@@ -326,7 +353,7 @@ void SceneSolarSystem::update(float deltaTime) {
         stereoscopic3D = !stereoscopic3D;
         cam->setStereoscopic(stereoscopic3D);
     }
-    if (Input::isKeyPressed(sf::Keyboard::R)) SensorManager::resetTracking();
+    if (Input::isKeyPressed(sf::Keyboard::R) && SensorManager::sensorConnected()) SensorManager::resetTracking();
 
     Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 }
