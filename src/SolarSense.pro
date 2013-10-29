@@ -55,7 +55,8 @@ SOURCES += \
     $$PWD/input/InteractionManager.cpp \
     $$PWD/input/SensorManager.cpp \
     SceneSolarSystem/WorldObject.cpp \
-    SceneSolarSystem/Rock.cpp
+    SceneSolarSystem/Rock.cpp \
+    SceneSolarSystem/RingPlanet.cpp
 
 
 HEADERS += \
@@ -73,7 +74,8 @@ HEADERS += \
     $$PWD/input/SensorManager.hpp \
     Commons.hpp \
     SceneSolarSystem/WorldObject.hpp \
-    SceneSolarSystem/Rock.hpp
+    SceneSolarSystem/Rock.hpp \
+    SceneSolarSystem/RingPlanet.hpp
 
 OTHER_FILES += \
     $$PWD/data/shaders/sample.vert \
@@ -93,4 +95,6 @@ OTHER_FILES += \
     $$PWD/data/shaders/sun3d.vert \
     $$PWD/data/shaders/sun3d.frag \
     data/shaders/objectShader.vert \
-    data/shaders/objectShader.frag
+    data/shaders/objectShader.frag \
+    data/shaders/ring.vert \
+    data/shaders/ring.frag

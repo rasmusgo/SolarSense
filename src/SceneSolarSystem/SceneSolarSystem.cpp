@@ -5,6 +5,7 @@
 #include "Earth.hpp"
 #include "SunHalo.hpp"
 #include "StandardPlanet.hpp"
+#include "RingPlanet.hpp"
 #include "input/SensorManager.hpp"
 #include "Rock.hpp"
 
@@ -88,28 +89,28 @@ SceneSolarSystem::SceneSolarSystem() :
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
 
-    StandardPlanet* saturn = new StandardPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn");
+    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 5.f);
     saturn->orbSpeed = 0.5f/fa;
     saturn->rotSpeed = 1.5f;
     saturn->addTo(sun);
     objectsOrder.push_back("saturn");
 
-    StandardPlanet* uranus = new StandardPlanet("uranus", 2.5f, 150.f, "planetShader", "uranus");
+    RingPlanet* uranus = new RingPlanet("uranus", 2.1f, 150.f, "planetShader", "uranus", "uranusring", "uranusringalpha", 2.f, 3.f);
     uranus->orbSpeed = 1.3f/fa;
     uranus->rotSpeed = 1.f;
     uranus->addTo(sun);
     objectsOrder.push_back("uranus");
 
     StandardPlanet* neptune = new StandardPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune");
-    neptune->orbSpeed = 2.f/fa;
+    neptune->orbSpeed = 1.6f/fa;
     neptune->rotSpeed = 0.5f;
     neptune->addTo(sun);
     objectsOrder.push_back("neptune");
 
-    Rock* rock = new Rock("rock", 1.5f, 40.0f, "objectShader", "cage");
-    rock->orbSpeed = 8.0f/fa;
-    rock->rotSpeed = 7.0f;
-    rock->addTo(sun);
+//    Rock* rock = new Rock("rock", 1.5f, 40.0f, "objectShader", "cage");
+//    rock->orbSpeed = 8.0f/fa;
+//    rock->rotSpeed = 7.0f;
+//    rock->addTo(sun);
 
     SunHalo* sunhalo = new SunHalo("sunHalo", 10.0f);
     sunhalo->addTo(sun);
@@ -170,6 +171,11 @@ bool SceneSolarSystem::loadResources() {
     p = new ShaderProgram();
     p->makeProgramFromFile("data/shaders/testshader.vert","data/shaders/testshader.frag");
     Programs.add("earthtest",p);
+
+    p = new ShaderProgram();
+    p->makeProgramFromFile("data/shaders/ring.vert","data/shaders/ring.frag");
+    Programs.add("ringprogram",p);
+
 
     p = new ShaderProgram();
     p->makeProgramFromFile("data/shaders/objectShader.vert","data/shaders/objectShader.frag");
@@ -243,6 +249,18 @@ bool SceneSolarSystem::loadResources() {
     tex = new Texture(1);
     if(!tex->loadFromFile("data/neptunemap.jpg",true)) return false;
     Textures.add("neptune", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/saturnringcolor.jpg",true)) return false;
+    Textures.add("saturnring", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/saturnringalpha.gif",true)) return false;
+    Textures.add("saturnringalpha", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/uranusringcolor.jpg",true)) return false;
+    Textures.add("uranusring", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/uranusringalpha.gif",true)) return false;
+    Textures.add("uranusringalpha", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/Rock-Texture-Surface.jpg",true)) return false;
     Textures.add("rock", tex);

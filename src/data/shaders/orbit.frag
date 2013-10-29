@@ -31,7 +31,7 @@ void main() {
     aux += intensity(vTexCoord + vec2(-delta.x, 0.0));
     aux += intensity(vTexCoord + vec2(0.0, delta.y));
     aux += intensity(vTexCoord + vec2(0.0, -delta.y));
-    aux /= 6;
+    aux /= 6.0;
 
     if (aux < 0.01) discard;
 

@@ -11,12 +11,13 @@ public:
     ~StandardPlanet();
 
     void update(float deltaTime);
-    void draw() const;
+    virtual void draw() const;
+protected:
+    float time;
 private:
     const std::string shaderprogram;
     const std::string texturemapname;
     const std::string bumpmap;
-    float time;
 };
 
 #endif // STANDARDPLANET_HPP
