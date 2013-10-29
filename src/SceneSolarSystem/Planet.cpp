@@ -40,7 +40,7 @@ void Planet::draw() const {
 
         float rad = orbRadius + radius;
         float orb = orbRadius/rad;
-        float distToCamera = glm::length(getPosition() - cam->getPosition());
+        //float distToCamera = glm::length(getPosition() - cam->getPosition());
         float width = radius/5.0f/rad;
 
         const WorldObject* wp = dynamic_cast<const WorldObject*>(p);
@@ -52,7 +52,10 @@ void Planet::draw() const {
             orbit.program->uniform("width")->set(width);
             orbit.program->uniform("orbit")->set(orb);
             orbit.program->uniform("color")->set(vec3f(1.0, 1.0, 1.0));
+            orbit.program->uniform("modelMatrix")->set(orbTransform);
             orbit.program->uniform("modelViewProjectionMatrix")->set(viewProjection*orbTransform);
+            orbit.program->uniform("planetPos")->set(getPosition());
+            orbit.program->uniform("radius")->set(orbRadius);
 
             glDisable(GL_CULL_FACE);
             glDepthMask(GL_FALSE);

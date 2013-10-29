@@ -23,6 +23,7 @@ Camera::Camera(const vec3f& pos, const mat4f& projection) :
 
     hudHand.mesh = Meshes.get("square");
     hudHand.program = Programs.get("hand");
+    focus = 375.0f;
 
     wasTracking = false;
 }
