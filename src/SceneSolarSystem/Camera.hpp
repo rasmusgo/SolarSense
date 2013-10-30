@@ -51,6 +51,7 @@ class Camera : public WorldObject {
 
         vec3f fromPos;
         float interpolatingTimer;
+        quat initialRotationInterpolationQuat;
         WorldObject* arrObject;
         float lastArrDist;
         float maxAcc;

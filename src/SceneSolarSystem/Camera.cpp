@@ -103,12 +103,21 @@ void Camera::update(float deltaTime) {
 
         if (interpolatingTimer < INTERPOLATION_TIME) {
             position = Utils::lerp(fromPos, wantedPos, interpolatingTimer/INTERPOLATION_TIME);
+       
+            vec3f target = arrObject->getPosition();
+            mat4f rot = glm::lookAt(getPosition(),
+                        target,
+                        vec3f(0, 1, 0)
+                        );
+            rotation = glm::slerp(initialRotationInterpolationQuat,glm::quat(rot),  interpolatingTimer/INTERPOLATION_TIME);
         }
         else {
             interpolating = false;
             SensorManager::resetInitialHandPos();
             lastArrDist = glm::length(position - arrObject->getPosition());
         }
+
+            
     }
 
 
@@ -220,8 +229,9 @@ void Camera::setArround(const std::string& objectName) {
 void Camera::setArround(WorldObject* obj) {
     arrObject = obj;
     mode = Arround;
-
     fromPos = position;
+
+    initialRotationInterpolationQuat = rotation;
 
     interpolating = true;
     interpolatingTimer = 0.0f;
