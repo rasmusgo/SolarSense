@@ -86,7 +86,7 @@ void main() {
     //if (waterColor.r < 0.5)
      //   color = min(light(texColor, vNormal, vCam, vLight, specular), 0.7)*lightIntensity+lightColor;
     //else color = texColor*lightIntensity+lightColor;
-    color = light(texColor, detailNormal, vCam*TBN, tanLight, specularC )*lightIntensity+lightColor;
+    color = light(texColor, detailNormal, vCam*TBN, tanLight, specularC )+lightColor; //*lightIntensity
     //if (waterColor.r < 0.9)
      //   color = min(light(texColor, vNormal, vCam, vLight, lightSpecular * levelW ), 0.5)*lightIntensity+lightColor;
     //else color = texColor*lightIntensity+lightColor;
