@@ -5,6 +5,8 @@
 
 Earth::Earth(const std::string& name, float radius, float orbRadius) : Planet(name, radius, orbRadius), time(0.0f) {
     sphere.program = Programs.get("earthShader");
+    mat4f rot = glm::mat4(1.0);
+    rotation = glm::rotate(glm::quat(rot), -27.5, vec3f(1,0,0));
 }
 
 Earth::~Earth(){
@@ -15,7 +17,8 @@ void Earth::update(float deltaTime) {
     time += deltaTime;
 
     position = vec3f(orbRadius*cos(time*orbSpeed), 0.0f, orbRadius*sin(time*orbSpeed));
-    rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0));
+
+    rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0)); //*axisRotation;
 
     WorldObject::update(deltaTime);
     Planet::update(deltaTime);
@@ -62,7 +65,7 @@ void Earth::draw() const {
     float shininess = 20.0f;
     vec3f emission = vec3f(0.1f);
     vec3f specular = vec3f(0.5f);
-    vec3f lightAmbient = vec3f(0.0f);
+    vec3f lightAmbient = vec3f(0.2f);
     vec3f lightDiffuse(1.0f);
     vec3f lightSpecular(1.0f);
 

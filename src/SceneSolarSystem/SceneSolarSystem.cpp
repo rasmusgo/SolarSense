@@ -85,7 +85,8 @@ SceneSolarSystem::SceneSolarSystem() :
     mars->addTo(sun);
     objectsOrder.push_back("mars");
 
-    StandardPlanet* jupiter = new RingPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter", "rock", "jupiterringalpha", 2.f, 5.f);
+    //StandardPlanet* jupiter = new RingPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter", "rock", "jupiterringalpha", 2.f, 5.f);
+    StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter");
     jupiter->orbSpeed = 1.5f/fa;
     jupiter->rotSpeed = 1.5f;
     jupiter->addTo(sun);
@@ -217,7 +218,7 @@ bool SceneSolarSystem::loadResources() {
     Textures.add("earthNormal", tex);*/
     //Lores
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/Earth4k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/earth4k.jpg",true)) return false;
     Textures.add("earth", tex);
     tex = new Texture(5);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;

@@ -12,6 +12,8 @@ class Earth : public Planet {
         void draw() const;
     private:
         float time;
+        //vec3f rotationAxis;
+        mat4f axisRotation;
 };
 
 #endif // EARTH_HPP
