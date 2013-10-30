@@ -73,7 +73,7 @@ SceneSolarSystem::SceneSolarSystem() :
     earth->addTo(sun);
     objectsOrder.push_back("earth");
 
-    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShader", "moon");
+    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShaderBump", "moon", "moonbump");
     moon->orbSpeed = 10.0f/fa;
     moon->rotSpeed = -2.0*earth->rotSpeed;
     moon->addTo(earth);
@@ -200,7 +200,7 @@ bool SceneSolarSystem::loadResources() {
 
     // Earth Lilk style
     //Hires
-    tex = new Texture(1);
+    /*tex = new Texture(1);
     if(!tex->loadFromFile("data/earth8k.jpg",true)) return false;
     Textures.add("earth", tex);
     tex = new Texture(5);
@@ -214,10 +214,10 @@ bool SceneSolarSystem::loadResources() {
     Textures.add("earthWater", tex);
     tex = new Texture(4);
     if(!tex->loadFromFile("data/EarthNormal.png",true)) return false;
-    Textures.add("earthNormal", tex);
+    Textures.add("earthNormal", tex);*/
     //Lores
-    /*tex = new Texture(1);
-    if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/earth8k.jpg",true)) return false;
     Textures.add("earth", tex);
     tex = new Texture(5);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
@@ -230,7 +230,7 @@ bool SceneSolarSystem::loadResources() {
     Textures.add("earthWater", tex);
     tex = new Texture(4);
     if(!tex->loadFromFile("data/EarthNormal.png",true)) return false;
-    Textures.add("earthNormal", tex);*/
+    Textures.add("earthNormal", tex);
 
 
     //Earth Chris style
@@ -247,10 +247,10 @@ bool SceneSolarSystem::loadResources() {
     if(!tex->loadFromFile("data/stars4K.png",true)) return false;
     Textures.add("stars4K", tex);
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/moonmap4k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/moon-4k.png",true)) return false;
     Textures.add("moon", tex);
     tex = new Texture(2);
-    if(!tex->loadFromFile("data/moonbump4k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/moon_normal.jpg",true)) return false;
     Textures.add("moonbump", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
@@ -386,6 +386,9 @@ void SceneSolarSystem::update(float deltaTime) {
 
     if (Input::isKeyPressed(sf::Keyboard::H)){
         cam->setArround((WorldObject*)(getGame()->getObjectByName("earth")));
+    }
+     if (Input::isKeyPressed(sf::Keyboard::M)){
+        cam->setArround((WorldObject*)(getGame()->getObjectByName("moon")));
     }
     if (paused) deltaTime = 0.0f;
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {

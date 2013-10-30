@@ -57,7 +57,6 @@ void Earth::draw() const {
     mat4f model = glm::scale(fullTransform, getScale());
     mat4f t = projection*view*model;
     mat4f normalMatrix( glm::transpose(glm::inverse(model)));
-   // mat3f m_3x3_inv_transp = glm::transpose(glm::inverse(glm::mat3f(model)));
 
     vec3f lightPos = vec3f(0.0f);// - position;
     float shininess = 20.0f;
@@ -74,9 +73,6 @@ void Earth::draw() const {
     sphere.program->uniform("lightAmbient")->set(lightAmbient);
     sphere.program->uniform("lightDiffuse")->set(lightDiffuse);
     //sphere.program->uniform("lightSpecular")->set(lightSpecular);
-
-   // sphere.program->uniform("m_3x3_inv_transp")->set(m_3x3_inv_transp);
-
 
     Texture* tex;
     tex = Textures.get("earth");

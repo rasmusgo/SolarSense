@@ -12,12 +12,15 @@ public:
 
     void update(float deltaTime);
     virtual void draw() const;
+
+    void drawBump() const;
 protected:
     float time;
 private:
     const std::string shaderprogram;
     const std::string texturemapname;
     const std::string bumpmap;
+    bool hasBump;
 };
 
 #endif // STANDARDPLANET_HPP
