@@ -11,6 +11,8 @@
 
 #include "inputreader.h"
 
+extern bool isWindow;
+
 SceneSolarSystem::SceneSolarSystem() :
     debugCounter(0.0), fpsCount(0), paused(false), stereoscopic3D(false) {
     this->setName("SCENE");
@@ -196,16 +198,41 @@ bool SceneSolarSystem::loadResources() {
     if(!tex->loadFromFile("data/hand_white.png",true)) return false;
     Textures.add("hand", tex);
 
-    // Earth Ferran style
+    // Earth Lilk style
+    //Hires
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
+    if(!tex->loadFromFile("data/earth8k.jpg",true)) return false;
     Textures.add("earth", tex);
+    tex = new Texture(5);
+    if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
+    Textures.add("earthWaterTex", tex);
     tex = new Texture(2);
-    if(!tex->loadFromFile("data/lightsmap.jpg",true)) return false;
+    if(!tex->loadFromFile("data/EarthNight.png",true)) return false;
     Textures.add("earthNight", tex);
     tex = new Texture(3);
-    if(!tex->loadFromFile("data/earthwatermap.png",true)) return false;
+    if(!tex->loadFromFile("data/EarthSpec.png",true)) return false;
     Textures.add("earthWater", tex);
+    tex = new Texture(4);
+    if(!tex->loadFromFile("data/EarthNormal.png",true)) return false;
+    Textures.add("earthNormal", tex);
+    //Lores
+    /*tex = new Texture(1);
+    if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
+    Textures.add("earth", tex);
+    tex = new Texture(5);
+    if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
+    Textures.add("earthWaterTex", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/earth_nighttime.png",true)) return false;
+    Textures.add("earthNight", tex);
+    tex = new Texture(3);
+    if(!tex->loadFromFile("data/earth_specular.png",true)) return false;
+    Textures.add("earthWater", tex);
+    tex = new Texture(4);
+    if(!tex->loadFromFile("data/EarthNormal.png",true)) return false;
+    Textures.add("earthNormal", tex);*/
+
+
     //Earth Chris style
 //    if(!TextureManager::load("earth_daytime","data/earth_daytime.png",2))
 //        return false;
@@ -352,8 +379,13 @@ void SceneSolarSystem::update(float deltaTime) {
         setCameraArround(col.first);
     }
     if (Input::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+
     if (Input::isKeyPressed(sf::Keyboard::Space)) {
         setCameraArround(col.first);
+    }
+
+    if (Input::isKeyPressed(sf::Keyboard::H)){
+        cam->setArround((WorldObject*)(getGame()->getObjectByName("earth")));
     }
     if (paused) deltaTime = 0.0f;
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
@@ -373,7 +405,7 @@ void SceneSolarSystem::update(float deltaTime) {
     }
     if (Input::isKeyPressed(sf::Keyboard::R) && SensorManager::sensorConnected()) SensorManager::resetTracking();
 
-    Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
+    if(!isWindow) Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 }
 
 std::pair<WorldObject*,bool> SceneSolarSystem::closestWorldObject() {

@@ -1,6 +1,8 @@
 #include "SceneSolarSystem/SceneSolarSystem.hpp"
 
-int main() {
+bool isWindow = false;
+
+int main(int argc, char* argv[]) {
 
     // Game and window definitions
 
@@ -11,6 +13,17 @@ int main() {
     ZFAR = 2000.0f;
     SCRWIDTH = sf::VideoMode::getDesktopMode().width;
     SCRHEIGHT = sf::VideoMode::getDesktopMode().height;
+
+
+    if(argc > 1 && argv[1][0] == 'w'){
+        isWindow = true;
+         SCRWIDTH = sf::VideoMode::getDesktopMode().width/2;
+        SCRHEIGHT = sf::VideoMode::getDesktopMode().height/2;
+    } else {
+        SCRWIDTH = sf::VideoMode::getDesktopMode().width;
+        SCRHEIGHT = sf::VideoMode::getDesktopMode().height;
+    }
+
 
     // Init
     Game game;

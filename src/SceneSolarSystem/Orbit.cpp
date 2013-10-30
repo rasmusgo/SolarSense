@@ -27,12 +27,13 @@ void Orbit::draw() const {
 
     float rad = p->orbRadius + p->radius;
     float orb = p->orbRadius/rad;
-    //float distToCamera = glm::length(getPosition() - cam->getPosition());
     float width = p->radius*2.0/5.0f/rad;
 
     const WorldObject* wpp = dynamic_cast<const WorldObject*>(pp);
     const WorldObject* wp = dynamic_cast<const WorldObject*>(p);
     if (wpp && wp) {
+        float distToCamera = glm::length(wp->getPosition() - cam->getPosition());
+
         mat4f aux = glm::translate(mat4f(1.0f), wpp->getPosition());
         aux = aux * glm::mat4_cast(wpp->getRotation());
         mat4f orbTransform = glm::scale(aux, vec3f(rad));
@@ -44,6 +45,9 @@ void Orbit::draw() const {
         orbit.program->uniform("modelViewProjectionMatrix")->set(viewProjection*orbTransform);
         orbit.program->uniform("planetPos")->set(wp->getPosition());
         orbit.program->uniform("parentPos")->set(wpp->getPosition());
+        float fullFade = 5.0f;
+        float fadeWidth = 7.0f;
+        orbit.program->uniform("fadeFactor")->set(glm::min(1.0f,(distToCamera/p->radius -fullFade)/fadeWidth));
         orbit.program->uniform("radius")->set(p->orbRadius);
 
         glDisable(GL_CULL_FACE);
