@@ -61,7 +61,7 @@ SceneSolarSystem::SceneSolarSystem() :
     mercury->addTo(sun);
     objectsOrder.push_back("mercury");
 
-    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f,"planetShader","venus");
+    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f,"planetShaderBump","venus", "venusNormal");
     venus->orbSpeed = 4.0f/fa;
     venus->rotSpeed = 4.0f;
     venus->addTo(sun);
@@ -79,19 +79,19 @@ SceneSolarSystem::SceneSolarSystem() :
     moon->addTo(earth);
     objectsOrder.push_back("moon");
 
-    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f, "planetShader", "mars");
+    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f, "planetShaderBump", "mars", "marsNormal");
     mars->orbSpeed = 2.0f/fa;
     mars->rotSpeed = 2.0f;
     mars->addTo(sun);
     objectsOrder.push_back("mars");
 
-    StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter");
+    StandardPlanet* jupiter = new RingPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter", "rock", "jupiterringalpha", 2.f, 5.f);
     jupiter->orbSpeed = 1.5f/fa;
     jupiter->rotSpeed = 1.5f;
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
 
-    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 5.f);
+    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 3.f);
     saturn->orbSpeed = 0.5f/fa;
     saturn->rotSpeed = 1.5f;
     saturn->addTo(sun);
@@ -103,7 +103,7 @@ SceneSolarSystem::SceneSolarSystem() :
     uranus->addTo(sun);
     objectsOrder.push_back("uranus");
 
-    StandardPlanet* neptune = new StandardPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune");
+    StandardPlanet* neptune = new RingPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune", "rock", "neptuneringalpha", 2.f, 4.f);
     neptune->orbSpeed = 1.6f/fa;
     neptune->rotSpeed = 0.5f;
     neptune->addTo(sun);
@@ -217,19 +217,19 @@ bool SceneSolarSystem::loadResources() {
     Textures.add("earthNormal", tex);*/
     //Lores
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/earth8k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/Earth4k.jpg",true)) return false;
     Textures.add("earth", tex);
     tex = new Texture(5);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
     Textures.add("earthWaterTex", tex);
     tex = new Texture(2);
-    if(!tex->loadFromFile("data/earth_nighttime.png",true)) return false;
+    if(!tex->loadFromFile("data/EarthNight4k.png",true)) return false;
     Textures.add("earthNight", tex);
     tex = new Texture(3);
-    if(!tex->loadFromFile("data/earth_specular.png",true)) return false;
+    if(!tex->loadFromFile("data/EarthSpec4k.png",true)) return false;
     Textures.add("earthWater", tex);
     tex = new Texture(4);
-    if(!tex->loadFromFile("data/EarthNormal.png",true)) return false;
+    if(!tex->loadFromFile("data/EarthNormal4k.png",true)) return false;
     Textures.add("earthNormal", tex);
 
 
@@ -256,16 +256,23 @@ bool SceneSolarSystem::loadResources() {
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
     Textures.add("earthmap", tex);
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/marsmap1k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/Mars2k.jpg",true)) return false;
     Textures.add("mars", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/MarsNormal.png",true)) return false;
+    Textures.add("marsNormal", tex);
+
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/venusmap.jpg",true)) return false;
+    if(!tex->loadFromFile("data/venus2k.jpg",true)) return false;
     Textures.add("venus", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/VenusNormal2k.png",true)) return false;
+    Textures.add("venusNormal", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/mercurymap.jpg",true)) return false;
     Textures.add("mercury", tex);
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/jupitermap.jpg",true)) return false;
+    if(!tex->loadFromFile("data/Jupiter.png",true)) return false;
     Textures.add("jupiter", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/saturnmap.jpg",true)) return false;
@@ -282,12 +289,18 @@ bool SceneSolarSystem::loadResources() {
     tex = new Texture(2);
     if(!tex->loadFromFile("data/saturnringalpha.gif",true)) return false;
     Textures.add("saturnringalpha", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/JupiterRings.png",true)) return false;
+    Textures.add("jupiterringalpha", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/uranusringcolor.jpg",true)) return false;
     Textures.add("uranusring", tex);
     tex = new Texture(2);
     if(!tex->loadFromFile("data/uranusringalpha.gif",true)) return false;
     Textures.add("uranusringalpha", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/neptuneringalpha.png",true)) return false;
+    Textures.add("neptuneringalpha", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/Rock-Texture-Surface.jpg",true)) return false;
     Textures.add("rock", tex);
