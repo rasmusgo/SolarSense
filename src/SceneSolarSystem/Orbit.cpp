@@ -28,7 +28,7 @@ void Orbit::draw() const {
     float rad = p->orbRadius + p->radius;
     float orb = p->orbRadius/rad;
     //float distToCamera = glm::length(getPosition() - cam->getPosition());
-    float width = p->radius/5.0f/rad;
+    float width = p->radius*2.0/5.0f/rad;
 
     const WorldObject* wpp = dynamic_cast<const WorldObject*>(pp);
     const WorldObject* wp = dynamic_cast<const WorldObject*>(p);
