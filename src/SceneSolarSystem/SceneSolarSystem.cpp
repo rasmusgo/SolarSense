@@ -200,7 +200,7 @@ bool SceneSolarSystem::loadResources() {
 
     // Earth Lilk style
     //Hires
-    /*tex = new Texture(1);
+    tex = new Texture(1);
     if(!tex->loadFromFile("data/earth8k.jpg",true)) return false;
     Textures.add("earth", tex);
     tex = new Texture(5);
@@ -214,9 +214,9 @@ bool SceneSolarSystem::loadResources() {
     Textures.add("earthWater", tex);
     tex = new Texture(4);
     if(!tex->loadFromFile("data/EarthNormal.png",true)) return false;
-    Textures.add("earthNormal", tex);*/
+    Textures.add("earthNormal", tex);
     //Lores
-    tex = new Texture(1);
+    /*tex = new Texture(1);
     if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
     Textures.add("earth", tex);
     tex = new Texture(5);
@@ -230,7 +230,7 @@ bool SceneSolarSystem::loadResources() {
     Textures.add("earthWater", tex);
     tex = new Texture(4);
     if(!tex->loadFromFile("data/EarthNormal.png",true)) return false;
-    Textures.add("earthNormal", tex);
+    Textures.add("earthNormal", tex);*/
 
 
     //Earth Chris style
