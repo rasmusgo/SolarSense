@@ -42,7 +42,8 @@ void Orbit::draw() const {
         orbit.program->uniform("color")->set(vec3f(1.0, 1.0, 1.0));
         orbit.program->uniform("modelMatrix")->set(orbTransform);
         orbit.program->uniform("modelViewProjectionMatrix")->set(viewProjection*orbTransform);
-        orbit.program->uniform("planetPos")->set(p->getPosition());
+        orbit.program->uniform("planetPos")->set(wp->getPosition());
+        orbit.program->uniform("parentPos")->set(wpp->getPosition());
         orbit.program->uniform("radius")->set(p->orbRadius);
 
         glDisable(GL_CULL_FACE);

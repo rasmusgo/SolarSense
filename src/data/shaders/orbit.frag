@@ -5,6 +5,7 @@ uniform float width;
 uniform float orbit;
 uniform vec3 color;
 uniform vec3 planetPos;
+uniform vec3 parentPos;
 uniform float radius;
 
 float intensity (vec2 tex) {
@@ -19,19 +20,26 @@ float intensity (vec2 tex) {
 }
 
 void main() {
-    if (cross(normalize(planetPos), normalize(vPos)).y < 0.0) discard;
+    if (cross(normalize(planetPos - parentPos), normalize(vPos - parentPos)).y < 0.0) discard;
     float dist = length(vPos - planetPos);
     if (dist > radius) discard;
 
-    vec2 delta = dFdx(vTexCoord) + dFdy(vTexCoord);
+    vec2 deltaX = dFdx(vTexCoord);
+    vec2 deltaY = dFdy(vTexCoord);
 
     float aux = 0.0;
-    aux += intensity(vTexCoord)*2.0;
-    aux += intensity(vTexCoord + vec2(delta.x, 0.0));
-    aux += intensity(vTexCoord + vec2(-delta.x, 0.0));
-    aux += intensity(vTexCoord + vec2(0.0, delta.y));
-    aux += intensity(vTexCoord + vec2(0.0, -delta.y));
-    aux /= 6.0;
+    aux += intensity(vTexCoord);
+    aux += intensity(vTexCoord + deltaX);
+    aux += intensity(vTexCoord - deltaX);
+    aux += intensity(vTexCoord + deltaY);
+    aux += intensity(vTexCoord - deltaY);
+    aux /= 5.0;
+    /*aux += intensity(vTexCoord + deltaX + deltaY);
+    aux += intensity(vTexCoord - deltaX + deltaY);
+    aux += intensity(vTexCoord + deltaX - deltaY);
+    aux += intensity(vTexCoord - deltaX - deltaY);
+    aux /= 9.0;*/
+    aux *= aux;
 
     if (aux < 0.01) discard;
 

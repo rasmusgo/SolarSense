@@ -72,8 +72,8 @@ SceneSolarSystem::SceneSolarSystem() :
     objectsOrder.push_back("earth");
 
     StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShader", "moon");
-    moon->orbSpeed = -3.0f/fa;
-    //moon->rotSpeed = 3.0f/8.0f;
+    moon->orbSpeed = 10.0f/fa;
+    moon->rotSpeed = -2.0*earth->rotSpeed;
     moon->addTo(earth);
     objectsOrder.push_back("moon");
 
