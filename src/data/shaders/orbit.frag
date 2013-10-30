@@ -6,6 +6,7 @@ uniform float orbit;
 uniform vec3 color;
 uniform vec3 planetPos;
 uniform vec3 parentPos;
+uniform float fadeFactor;
 uniform float radius;
 
 float intensity (vec2 tex) {
@@ -26,7 +27,6 @@ void main() {
 
     vec2 deltaX = dFdx(vTexCoord);
     vec2 deltaY = dFdy(vTexCoord);
-
     float aux = 0.0;
     aux += intensity(vTexCoord);
     aux += intensity(vTexCoord + deltaX);
@@ -41,9 +41,11 @@ void main() {
     aux /= 9.0;*/
     aux *= aux;
 
-    if (aux < 0.01) discard;
-
     aux *= 1.0 - (dist - radius/2.0)/(radius/2.0);
+    aux *= fadeFactor;
+
+
+    if (aux < 0.01) discard;
 
     gl_FragColor = vec4(color, aux);
 }
