@@ -164,13 +164,16 @@ bool SceneSolarSystem::loadResources() {
 
     // Earth Ferran style
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
+    if(!tex->loadFromFile("data/earth8k.jpg",true)) return false;
     Textures.add("earth", tex);
+    tex = new Texture(5);
+    if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
+    Textures.add("earthWaterTex", tex);
     tex = new Texture(2);
-    if(!tex->loadFromFile("data/lightsmap.jpg",true)) return false;
+    if(!tex->loadFromFile("data/EarthNight.png",true)) return false;
     Textures.add("earthNight", tex);
     tex = new Texture(3);
-    if(!tex->loadFromFile("data/earthwatermap.png",true)) return false;
+    if(!tex->loadFromFile("data/earth_specular.png",true)) return false;
     Textures.add("earthWater", tex);
     tex = new Texture(4);
     if(!tex->loadFromFile("data/EarthNormal.png",true)) return false;

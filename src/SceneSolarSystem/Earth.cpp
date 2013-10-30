@@ -63,7 +63,7 @@ void Earth::draw() const {
     float shininess = 20.0f;
     vec3f emission = vec3f(0.1f);
     vec3f specular = vec3f(0.5f);
-    vec3f lightAmbient = vec3f(1.0f);
+    vec3f lightAmbient = vec3f(0.0f);
     vec3f lightDiffuse(1.0f);
     vec3f lightSpecular(1.0f);
 
@@ -73,7 +73,7 @@ void Earth::draw() const {
     sphere.program->uniform("specular")->set(specular);
     sphere.program->uniform("lightAmbient")->set(lightAmbient);
     sphere.program->uniform("lightDiffuse")->set(lightDiffuse);
-    sphere.program->uniform("lightSpecular")->set(lightSpecular);
+    //sphere.program->uniform("lightSpecular")->set(lightSpecular);
 
    // sphere.program->uniform("m_3x3_inv_transp")->set(m_3x3_inv_transp);
 
@@ -91,8 +91,13 @@ void Earth::draw() const {
     tex->bind();
     sphere.program->uniform("samplerWater")->set((int)tex->getSlot());
 
+    tex = Textures.get("earthWaterTex");
+    tex->bind();
+    sphere.program->uniform("samplerWaterTex")->set((int)tex->getSlot());
+
+
     tex = Textures.get("earthNormal");
-    //tex->bind();
+    tex->bind();
     sphere.program->uniform("samplerNormal")->set((int)tex->getSlot());
     
     sphere.program->uniform("modelViewProjectionMatrix")->set(t);
