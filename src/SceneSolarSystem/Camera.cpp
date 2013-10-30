@@ -75,8 +75,8 @@ void Camera::update(float deltaTime) {
 
                 displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
                 lastArrDist += displ;
-                if (lastArrDist < objScale*1.1f) { //Too close! to the object!
-                    lastArrDist = objScale*1.1f;
+                if (lastArrDist < objScale*1.3f) { //Too close! to the object!
+                    lastArrDist = objScale*1.3f;
                 }
                 else if (lastArrDist > 250.0) { //Where the fuck are you going!?
                     lastArrDist = 250.0;
@@ -227,6 +227,7 @@ void Camera::setArround(const std::string& objectName) {
 }
 
 void Camera::setArround(WorldObject* obj) {
+    if (arrObject == obj) return;
     arrObject = obj;
     mode = Arround;
     fromPos = position;

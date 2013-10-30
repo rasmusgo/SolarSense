@@ -218,7 +218,7 @@ bool SceneSolarSystem::loadResources() {
     Textures.add("earthNormal", tex);*/
     //Lores
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/earth4k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/Earth4k.jpg",true)) return false;
     Textures.add("earth", tex);
     tex = new Texture(5);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
@@ -318,9 +318,10 @@ bool SceneSolarSystem::loadResources() {
 
     //Create meshes
     Meshes.add("cube",new Mesh("data/10x10.obj"));
-    Meshes.add("spherehigh", new Mesh("data/128x128.obj"));
-    Meshes.add("sphere",new Mesh("data/64x64.obj"));
-    Meshes.add("spherelow",new Mesh("data/32x32.obj"));
+    Meshes.add("spherehigh", new Mesh("data/128.obj"));
+    Meshes.add("sphere",new Mesh("data/32.obj"));
+    Meshes.add("spherelow",new Mesh("data/32.obj"));
+    Meshes.add("spheresuperlow", new Mesh("data/16.obj"));
     Meshes.add("square",new Mesh("data/square.obj"));
     Meshes.add("rock", new Mesh("data/cube.obj"));
     Meshes.add("cage", new Mesh("data/cage.obj"));
