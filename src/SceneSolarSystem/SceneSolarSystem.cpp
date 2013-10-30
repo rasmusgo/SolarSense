@@ -55,7 +55,7 @@ SceneSolarSystem::SceneSolarSystem() :
     objectsOrder.push_back("sun");
 
     float fa = 80.0f;
-    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f ,"planetShader", "mercury");
+    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f ,"planetShaderBump", "mercury", "mercuryNormal");
     mercury->orbSpeed = 6.0f/fa;
     mercury->rotSpeed = 6.0f;
     mercury->addTo(sun);
@@ -271,6 +271,9 @@ bool SceneSolarSystem::loadResources() {
     tex = new Texture(1);
     if(!tex->loadFromFile("data/mercurymap.jpg",true)) return false;
     Textures.add("mercury", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/mercurynormal.jpg",true)) return false;
+    Textures.add("mercuryNormal", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/Jupiter.png",true)) return false;
     Textures.add("jupiter", tex);
