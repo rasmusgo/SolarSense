@@ -95,19 +95,20 @@ SceneSolarSystem::SceneSolarSystem() :
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
 
-    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 5.f);
+    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 5.f, glm::rotate(quat(), 27.f, vec3f(0,0,1)));
     saturn->orbSpeed = 0.5f/fa;
     saturn->rotSpeed = 1.5f;
     saturn->addTo(sun);
     objectsOrder.push_back("saturn");
 
-    RingPlanet* uranus = new RingPlanet("uranus", 2.1f, 150.f, "planetShader", "uranus", "uranusring", "uranusringalpha", 2.f, 3.f);
+    RingPlanet* uranus = new RingPlanet("uranus", 2.1f, 150.f, "planetShader", "uranus", "uranusring", "uranusringalpha", 2.f, 3.f, glm::rotate(quat(), 87.0f, vec3f(0,0,1)));
     uranus->orbSpeed = 1.3f/fa;
     uranus->rotSpeed = 1.f;
     uranus->addTo(sun);
     objectsOrder.push_back("uranus");
 
-    StandardPlanet* neptune = new RingPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune", "rock", "neptuneringalpha", 2.f, 4.f);
+    //RingPlanet* neptune = new RingPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune", "rock", "neptuneringalpha", 2.f, 4.f,  glm::rotate(quat(), -55.0f, vec3f(0,0,1)));
+    StandardPlanet* neptune = new StandardPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune");
     neptune->orbSpeed = 1.6f/fa;
     neptune->rotSpeed = 0.5f;
     neptune->addTo(sun);
