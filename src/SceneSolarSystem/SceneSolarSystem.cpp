@@ -410,13 +410,23 @@ void SceneSolarSystem::update(float deltaTime) {
     }
     if (paused) deltaTime = 0.0f;
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
-        if (++currentObject != objectsOrder.end())
-            cam->setArround((*currentObject));
-        else --currentObject;
+        if (cam->mode == Camera::Arround) {
+            if (++currentObject != objectsOrder.end())
+                cam->setArround((*currentObject));
+            else --currentObject;
+        }
+        else {
+            setCameraArround(closestWorldObject().first);
+        }
     }
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
-        if (currentObject != objectsOrder.begin())
-            cam->setArround((*--currentObject));
+        if (cam->mode == Camera::Arround) {
+            if (currentObject != objectsOrder.begin())
+                cam->setArround((*--currentObject));
+        }
+        else {
+            setCameraArround(closestWorldObject().first);
+        }
     }
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
     if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
@@ -440,7 +450,7 @@ std::pair<WorldObject*,bool> SceneSolarSystem::closestWorldObject() {
     int closest = 0;
     bool colliding = false;
 
-    for (int i = 0; i < wObjs.size(); ++i) {
+    for (unsigned int i = 0; i < wObjs.size(); ++i) {
         WorldObject* wo = wObjs[i];
         float dist = glm::length(wo->getPosition() - camPos);
         if (!(wo->id == cam->id) and dist < minDist) {
