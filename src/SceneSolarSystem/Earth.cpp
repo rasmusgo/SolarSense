@@ -6,7 +6,7 @@
 Earth::Earth(const std::string& name, float radius, float orbRadius) : Planet(name, radius, orbRadius), time(0.0f) {
     sphere.program = Programs.get("earthShader");
     mat4f rot = glm::mat4(1.0);
-    rotation = glm::rotate(glm::quat(rot), -27.5, vec3f(1,0,0));
+    //rotation = glm::rotate(glm::quat(rot), -27.5, vec3f(1,0,0));
 }
 
 Earth::~Earth(){

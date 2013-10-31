@@ -36,7 +36,7 @@ linux-g++:contains(QMAKE_TARGET.arch, i686):{
                #$$PWD/GrabDetector/Include
 }
 
-INCLUDEPATH += VBE/includes
+INCLUDEPATH += $$PWD/VBE/includes
 
 
 QMAKE_CXXFLAGS += -std=c++11

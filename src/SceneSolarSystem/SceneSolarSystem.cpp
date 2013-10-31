@@ -36,6 +36,9 @@ SceneSolarSystem::SceneSolarSystem() :
     glCullFace(GL_BACK);
     glShadeModel(GL_SMOOTH);
 
+    // PrimeSense
+    SensorManager::startSensor();
+
 	//Center mouse
     Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 
@@ -92,7 +95,7 @@ SceneSolarSystem::SceneSolarSystem() :
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
 
-    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 3.f);
+    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 5.f);
     saturn->orbSpeed = 0.5f/fa;
     saturn->rotSpeed = 1.5f;
     saturn->addTo(sun);
@@ -388,6 +391,8 @@ void SceneSolarSystem::update(float deltaTime) {
     }
     m_cmd_q.unlock();
 
+    // Update sensor
+    SensorManager::update(deltaTime);
 
     //Update logic
     std::pair<WorldObject*, bool> col = closestWorldObject();

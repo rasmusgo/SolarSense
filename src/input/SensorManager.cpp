@@ -3,8 +3,8 @@
 
 const float SensorManager::MOVEMENT_THRESHOLD = 100.f;
 const float SensorManager::TIME_THRESHOLD = 0.5f;
-const float SensorManager::GESTURE_VELOCITY_THRESHOLD = 60.f;
-const float SensorManager::GESTURE_DISTANCE_THRESHOLD = 25.f;
+const float SensorManager::GESTURE_VELOCITY_THRESHOLD = 50.f;
+const float SensorManager::GESTURE_DISTANCE_THRESHOLD = 30.f;
 
 
 bool SensorManager::running(false);
@@ -90,7 +90,7 @@ void SensorManager::startSensor() {
 //    GrabEventListener* grabListener = new GrabEventListener();
 //    grabDetector->AddListener(grabListener);
 
-
+    printf("SensorManager running\n");
     running = true;
 }
 
