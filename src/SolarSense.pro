@@ -90,6 +90,8 @@ OTHER_FILES += \
     $$PWD/data/shaders/earthShader.frag \
     $$PWD/data/shaders/planetShader.vert \
     $$PWD/data/shaders/planetShader.frag \
+    $$PWD/data/shaders/planetShaderBump.vert \
+    $$PWD/data/shaders/planetShaderBump.frag \
     $$PWD/data/shaders/sun.vert \
     $$PWD/data/shaders/sun.frag \
     $$PWD/data/shaders/hand.frag \
