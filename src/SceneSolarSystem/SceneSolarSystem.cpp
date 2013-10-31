@@ -218,7 +218,7 @@ bool SceneSolarSystem::loadResources() {
     Textures.add("earthNormal", tex);*/
     //Lores
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/Earth4k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/earth4k.jpg",true)) return false;
     Textures.add("earth", tex);
     tex = new Texture(5);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
