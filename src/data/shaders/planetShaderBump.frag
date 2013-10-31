@@ -57,7 +57,7 @@ void main() {
     mat3 TBN = tbn(vTexCoord, vNormal, vPos);
     vec3 tanLight = vLight * TBN;
 
-    float lightIntensity = max(0.1, min(dot(tanLight, detailNormal) + 0.1, 1.0));
+    //float lightIntensity = max(0.1, min(dot(tanLight, detailNormal) + 0.1, 1.0));
 
     vec4 texColor = texture2D(sampler,vTexCoord);
 

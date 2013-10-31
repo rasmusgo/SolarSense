@@ -62,10 +62,11 @@ void Earth::draw() const {
     mat4f normalMatrix( glm::transpose(glm::inverse(model)));
 
     vec3f lightPos = vec3f(0.0f);// - position;
-    float shininess = 20.0f;
+    float shininess = 25.0f;
     vec3f emission = vec3f(0.1f);
-    vec3f specular = vec3f(0.5f);
-    vec3f lightAmbient = vec3f(0.2f);
+    //vec3f specular = vec3f(0.5f);
+    vec3f specular = vec3f(1.0f, 0.9255f, 0.698f)*0.6f;
+    vec3f lightAmbient = vec3f(0.0f);
     vec3f lightDiffuse(1.0f);
     vec3f lightSpecular(1.0f);
 

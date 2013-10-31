@@ -24,14 +24,18 @@ void Planet::update(float deltaTime) {
 
     Camera* cam = static_cast<Camera*>(getGame()->getObjectByName("cam"));
 
-/*    float dist = glm::length(cam->getPosition() - getPosition());
-    if (dist > 10.0*getScale().x) { // If we are far away we use the low poly sphere
+    float dist = glm::length(cam->getPosition() - getPosition());
+    float s = getScale().x;
+    if (dist > 15.0*s) {
+        sphere.mesh = Meshes.get("spheresuperlow");
+    }
+    else if (dist > 10.0*s) { // If we are far away we use the low poly sphere
         sphere.mesh = Meshes.get("spherelow");
     }
-    else if (dist > 4.0*getScale().x) {
+    else if (dist > 4.0*s) {
         sphere.mesh = Meshes.get("sphere");
     }
-    else sphere.mesh = Meshes.get("spherehigh"); */
+    else sphere.mesh = Meshes.get("spherehigh");
 }
 
 const GameObject* Planet::getArroundParent() const {

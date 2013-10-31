@@ -321,9 +321,10 @@ bool SceneSolarSystem::loadResources() {
 
     //Create meshes
     Meshes.add("cube",new Mesh("data/10x10.obj"));
-    Meshes.add("spherehigh", new Mesh("data/128x128.obj"));
-    Meshes.add("sphere",new Mesh("data/64x64.obj"));
-    Meshes.add("spherelow",new Mesh("data/32x32.obj"));
+    Meshes.add("spherehigh", new Mesh("data/128.obj"));
+    Meshes.add("sphere",new Mesh("data/32.obj"));
+    Meshes.add("spherelow",new Mesh("data/32.obj"));
+    Meshes.add("spheresuperlow", new Mesh("data/16.obj"));
     Meshes.add("square",new Mesh("data/square.obj"));
     Meshes.add("rock", new Mesh("data/cube.obj"));
     Meshes.add("cage", new Mesh("data/cage.obj"));
@@ -414,13 +415,23 @@ void SceneSolarSystem::update(float deltaTime) {
     }
     if (paused) deltaTime = 0.0f;
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
-        if (++currentObject != objectsOrder.end())
-            cam->setArround((*currentObject));
-        else --currentObject;
+        if (cam->mode == Camera::Arround) {
+            if (++currentObject != objectsOrder.end())
+                cam->setArround((*currentObject));
+            else --currentObject;
+        }
+        else {
+            setCameraArround(closestWorldObject().first);
+        }
     }
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
-        if (currentObject != objectsOrder.begin())
-            cam->setArround((*--currentObject));
+        if (cam->mode == Camera::Arround) {
+            if (currentObject != objectsOrder.begin())
+                cam->setArround((*--currentObject));
+        }
+        else {
+            setCameraArround(closestWorldObject().first);
+        }
     }
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
     if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
@@ -444,7 +455,7 @@ std::pair<WorldObject*,bool> SceneSolarSystem::closestWorldObject() {
     int closest = 0;
     bool colliding = false;
 
-    for (int i = 0; i < wObjs.size(); ++i) {
+    for (unsigned int i = 0; i < wObjs.size(); ++i) {
         WorldObject* wo = wObjs[i];
         float dist = glm::length(wo->getPosition() - camPos);
         if (!(wo->id == cam->id) and dist < minDist) {

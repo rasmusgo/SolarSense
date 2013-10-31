@@ -61,7 +61,7 @@ void main() {
     mat3 TBN = tbn(vTexCoord, vNormal, vPos);
     vec3 tanLight = vLight * TBN;
 
-    float lightIntensity = max(0.1, min(dot(tanLight, detailNormal) + 0.1, 1.0));
+    float lightIntensity = max(0.1, min(dot(vLight, vNormal) + 0.1, 1.0));
 
     vec4 lightColor = texture2D(samplerNight,vTexCoord);
     if (lightIntensity > 0.4) lightColor = vec4(0.0);
@@ -86,7 +86,7 @@ void main() {
     //if (waterColor.r < 0.5)
      //   color = min(light(texColor, vNormal, vCam, vLight, specular), 0.7)*lightIntensity+lightColor;
     //else color = texColor*lightIntensity+lightColor;
-    color = light(texColor, detailNormal, vCam*TBN, tanLight, specularC )*lightIntensity+lightColor;
+    color = light(texColor, detailNormal, vCam*TBN, tanLight, specularC )+lightColor; //*lightIntensity
     //if (waterColor.r < 0.9)
      //   color = min(light(texColor, vNormal, vCam, vLight, lightSpecular * levelW ), 0.5)*lightIntensity+lightColor;
     //else color = texColor*lightIntensity+lightColor;
