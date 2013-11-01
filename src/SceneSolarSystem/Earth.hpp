@@ -2,6 +2,7 @@
 #define EARTH_HPP
 
 #include "Planet.hpp"
+#include "Atmosphere.hpp"
 
 class Earth : public Planet {
     public:
@@ -10,8 +11,12 @@ class Earth : public Planet {
 
         void update(float deltaTime);
         void draw() const;
+
+        Model atmo;
     private:
         float time;
+        float innerRadius;
+        float outerRadius;
 };
 
 #endif // EARTH_HPP
