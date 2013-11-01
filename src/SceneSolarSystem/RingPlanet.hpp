@@ -6,9 +6,9 @@
 class RingPlanet : public StandardPlanet {
 public:
     RingPlanet(const std::string& name, float radius, float orbRadius, const std::string& shaderprogram,
-               const std::string& texture, const std::string& ringtexture, const std::string& ringalphatexture, float distRingStart, float distRingEnd);
+               const std::string& texture, const std::string& ringtexture, const std::string& ringalphatexture, float distRingStart, float distRingEnd, quat ringRotation);
     RingPlanet(const std::string& name, float radius, float orbRadius, const std::string& shaderprogram, const std::string& bumpmap,
-               const std::string& texture, const std::string& ringtexture, const std::string& ringalphatexture, float distRingStart, float distRingEnd);
+               const std::string& texture, const std::string& ringtexture, const std::string& ringalphatexture, float distRingStart, float distRingEnd, quat ringRotation);
 
     ~RingPlanet();
 
@@ -18,6 +18,7 @@ private:
     const std::string ringalphatexture;
     float distRingStart;
     float distRingEnd;
+    quat ringRotation;
     Model ring;
 };
 

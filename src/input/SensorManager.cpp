@@ -3,8 +3,8 @@
 
 const float SensorManager::MOVEMENT_THRESHOLD = 100.f;
 const float SensorManager::TIME_THRESHOLD = 0.5f;
-const float SensorManager::GESTURE_VELOCITY_THRESHOLD = 60.f;
-const float SensorManager::GESTURE_DISTANCE_THRESHOLD = 25.f;
+const float SensorManager::GESTURE_VELOCITY_THRESHOLD = 50.f;
+const float SensorManager::GESTURE_DISTANCE_THRESHOLD = 30.f;
 
 
 bool SensorManager::running(false);
@@ -90,7 +90,7 @@ void SensorManager::startSensor() {
 //    GrabEventListener* grabListener = new GrabEventListener();
 //    grabDetector->AddListener(grabListener);
 
-
+    printf("SensorManager running\n");
     running = true;
 }
 
@@ -126,7 +126,8 @@ void SensorManager::update(float deltaTime) {
                     startTracking(gestures[i].getCurrentPosition());
                     detectTime = deltaTime;
                 } else
-                    stopTracking(gestures[i].getCurrentPosition());
+                    // if(deltaTime > 1)
+                    // stopTracking(gestures[i].getCurrentPosition());
                 break;
             case nite::GESTURE_HAND_RAISE:
                 break;
@@ -144,6 +145,7 @@ void SensorManager::update(float deltaTime) {
 
         // Update time
         detectTime += deltaTime;
+        // std::cout << detectTime << std::endl;
 
         // Check if the hand was lost.
         if (hand.isLost())
@@ -214,7 +216,7 @@ void SensorManager::updateHandData(nite::Point3f handPos) {
 
 int SensorManager::checkGesture() {
     // Do not recognize gestures when the tracking has just begun.
-    if (detectTime >= TIME_THRESHOLD) {
+    if (detectTime > TIME_THRESHOLD) {
         if (!gestureInProgress) {
             gestureStartPosition = lastHandPos;
             gestureDistance = vec3f(0);

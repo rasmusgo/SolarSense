@@ -10,6 +10,8 @@ Earth::Earth(const std::string& name, float radius, float orbRadius) : Planet(na
     atmo.program = Programs.get("atmosphereShader");
     this->innerRadius = radius;
     this->outerRadius = radius *1.05f;
+    mat4f rot = glm::mat4(1.0);
+    //rotation = glm::rotate(glm::quat(rot), -27.5, vec3f(1,0,0));
 }
 
 Earth::~Earth(){
@@ -20,7 +22,8 @@ void Earth::update(float deltaTime) {
     time += deltaTime;
 
     position = vec3f(orbRadius*cos(time*orbSpeed), 0.0f, orbRadius*sin(time*orbSpeed));
-    rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0));
+
+    rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0)); //*axisRotation;
 
     // atmo->setPosition(position);
 
@@ -64,12 +67,16 @@ void Earth::draw() const {
     mat4f model = glm::scale(fullTransform, getScale());
     mat4f t = projection*view*model;
     mat4f normalMatrix( glm::transpose(glm::inverse(model)));
-   // mat3f m_3x3_inv_transp = glm::transpose(glm::inverse(glm::mat3f(model)));
 
     vec3f lightPos = glm::normalize(vec3f(0.0f)-getPosition());// - position;
     float shininess = 20.0f;
+
+//     vec3f lightPos = vec3f(0.0f);// - position;
+//     float shininess = 25.0f;
+// >>>>>>> cca6ae2e09879e044340e32981084012f45f652f
     vec3f emission = vec3f(0.1f);
-    vec3f specular = vec3f(0.5f);
+    //vec3f specular = vec3f(0.5f);
+    vec3f specular = vec3f(1.0f, 0.9255f, 0.698f)*0.6f;
     vec3f lightAmbient = vec3f(0.0f);
     vec3f lightDiffuse(1.0f);
     vec3f lightSpecular(1.0f);
@@ -81,9 +88,6 @@ void Earth::draw() const {
     sphere.program->uniform("lightAmbient")->set(lightAmbient);
     sphere.program->uniform("lightDiffuse")->set(lightDiffuse);
     //sphere.program->uniform("lightSpecular")->set(lightSpecular);
-
-   // sphere.program->uniform("m_3x3_inv_transp")->set(m_3x3_inv_transp);
-
 
     Texture* tex;
     tex = Textures.get("earth");

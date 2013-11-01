@@ -36,6 +36,9 @@ SceneSolarSystem::SceneSolarSystem() :
     glCullFace(GL_BACK);
     glShadeModel(GL_SMOOTH);
 
+    // PrimeSense
+    SensorManager::startSensor();
+
 	//Center mouse
     Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 
@@ -55,13 +58,13 @@ SceneSolarSystem::SceneSolarSystem() :
     objectsOrder.push_back("sun");
 
     float fa = 80.0f;
-    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f ,"planetShader", "mercury");
+    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f ,"planetShaderBump", "mercury", "mercuryNormal");
     mercury->orbSpeed = 6.0f/fa;
     mercury->rotSpeed = 6.0f;
     mercury->addTo(sun);
     objectsOrder.push_back("mercury");
 
-    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f,"planetShader","venus");
+    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f,"planetShaderBump","venus", "venusNormal");
     venus->orbSpeed = 4.0f/fa;
     venus->rotSpeed = 4.0f;
     venus->addTo(sun);
@@ -73,36 +76,38 @@ SceneSolarSystem::SceneSolarSystem() :
     earth->addTo(sun);
     objectsOrder.push_back("earth");
 
-    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShader", "moon");
+    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShaderBump", "moon", "moonbump");
     moon->orbSpeed = 10.0f/fa;
     moon->rotSpeed = -2.0*earth->rotSpeed;
     moon->addTo(earth);
     objectsOrder.push_back("moon");
 
-    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f, "planetShader", "mars");
+    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f, "planetShaderBump", "mars", "marsNormal");
     mars->orbSpeed = 2.0f/fa;
     mars->rotSpeed = 2.0f;
     mars->addTo(sun);
     objectsOrder.push_back("mars");
 
+    //StandardPlanet* jupiter = new RingPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter", "rock", "jupiterringalpha", 2.f, 5.f);
     StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter");
     jupiter->orbSpeed = 1.5f/fa;
     jupiter->rotSpeed = 1.5f;
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
 
-    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 5.f);
+    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 5.f, glm::rotate(quat(), 27.f, vec3f(0,0,1)));
     saturn->orbSpeed = 0.5f/fa;
     saturn->rotSpeed = 1.5f;
     saturn->addTo(sun);
     objectsOrder.push_back("saturn");
 
-    RingPlanet* uranus = new RingPlanet("uranus", 2.1f, 150.f, "planetShader", "uranus", "uranusring", "uranusringalpha", 2.f, 3.f);
+    RingPlanet* uranus = new RingPlanet("uranus", 2.1f, 150.f, "planetShader", "uranus", "uranusring", "uranusringalpha", 2.f, 3.f, glm::rotate(quat(), 87.0f, vec3f(0,0,1)));
     uranus->orbSpeed = 1.3f/fa;
     uranus->rotSpeed = 1.f;
     uranus->addTo(sun);
     objectsOrder.push_back("uranus");
 
+    //RingPlanet* neptune = new RingPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune", "rock", "neptuneringalpha", 2.f, 4.f,  glm::rotate(quat(), -55.0f, vec3f(0,0,1)));
     StandardPlanet* neptune = new StandardPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune");
     neptune->orbSpeed = 1.6f/fa;
     neptune->rotSpeed = 0.5f;
@@ -221,16 +226,20 @@ bool SceneSolarSystem::loadResources() {
     Textures.add("earthNormal", tex);*/
     //Lores
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
+// <<<<<<< HEAD
+//     if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
+// =======
+    if(!tex->loadFromFile("data/earth4k.jpg",true)) return false;
+// >>>>>>> cca6ae2e09879e044340e32981084012f45f652f
     Textures.add("earth", tex);
     tex = new Texture(5);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
     Textures.add("earthWaterTex", tex);
     tex = new Texture(2);
-    if(!tex->loadFromFile("data/earth_nighttime.png",true)) return false;
+    if(!tex->loadFromFile("data/EarthNight4k.png",true)) return false;
     Textures.add("earthNight", tex);
     tex = new Texture(3);
-    if(!tex->loadFromFile("data/earth_specular.png",true)) return false;
+    if(!tex->loadFromFile("data/EarthSpec4k.png",true)) return false;
     Textures.add("earthWater", tex);
     tex = new Texture(4);
     if(!tex->loadFromFile("data/EarthNormal4k.png",true)) return false;
@@ -251,25 +260,35 @@ bool SceneSolarSystem::loadResources() {
     if(!tex->loadFromFile("data/stars4K.png",true)) return false;
     Textures.add("stars4K", tex);
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/moonmap4k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/moon-4k.png",true)) return false;
     Textures.add("moon", tex);
     tex = new Texture(2);
-    if(!tex->loadFromFile("data/moonbump4k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/moon_normal.jpg",true)) return false;
     Textures.add("moonbump", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
     Textures.add("earthmap", tex);
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/marsmap1k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/Mars2k.jpg",true)) return false;
     Textures.add("mars", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/MarsNormal.png",true)) return false;
+    Textures.add("marsNormal", tex);
+
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/venusmap.jpg",true)) return false;
+    if(!tex->loadFromFile("data/venus2k.jpg",true)) return false;
     Textures.add("venus", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/VenusNormal2k.png",true)) return false;
+    Textures.add("venusNormal", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/mercurymap.jpg",true)) return false;
     Textures.add("mercury", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/mercurynormal.jpg",true)) return false;
+    Textures.add("mercuryNormal", tex);
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/jupitermap.jpg",true)) return false;
+    if(!tex->loadFromFile("data/Jupiter.png",true)) return false;
     Textures.add("jupiter", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/saturnmap.jpg",true)) return false;
@@ -286,12 +305,18 @@ bool SceneSolarSystem::loadResources() {
     tex = new Texture(2);
     if(!tex->loadFromFile("data/saturnringalpha.gif",true)) return false;
     Textures.add("saturnringalpha", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/JupiterRings.png",true)) return false;
+    Textures.add("jupiterringalpha", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/uranusringcolor.jpg",true)) return false;
     Textures.add("uranusring", tex);
     tex = new Texture(2);
     if(!tex->loadFromFile("data/uranusringalpha.gif",true)) return false;
     Textures.add("uranusringalpha", tex);
+    tex = new Texture(2);
+    if(!tex->loadFromFile("data/neptuneringalpha.png",true)) return false;
+    Textures.add("neptuneringalpha", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/Rock-Texture-Surface.jpg",true)) return false;
     Textures.add("rock", tex);
@@ -305,9 +330,10 @@ bool SceneSolarSystem::loadResources() {
 
     //Create meshes
     Meshes.add("cube",new Mesh("data/10x10.obj"));
-    Meshes.add("spherehigh", new Mesh("data/128x128.obj"));
-    Meshes.add("sphere",new Mesh("data/64x64.obj"));
-    Meshes.add("spherelow",new Mesh("data/32x32.obj"));
+    Meshes.add("spherehigh", new Mesh("data/128.obj"));
+    Meshes.add("sphere",new Mesh("data/32.obj"));
+    Meshes.add("spherelow",new Mesh("data/32.obj"));
+    Meshes.add("spheresuperlow", new Mesh("data/16.obj"));
     Meshes.add("square",new Mesh("data/square.obj"));
     Meshes.add("rock", new Mesh("data/cube.obj"));
     Meshes.add("cage", new Mesh("data/cage.obj"));
@@ -375,6 +401,8 @@ void SceneSolarSystem::update(float deltaTime) {
     }
     m_cmd_q.unlock();
 
+    // Update sensor
+    SensorManager::update(deltaTime);
 
     //Update logic
     std::pair<WorldObject*, bool> col = closestWorldObject();
@@ -391,17 +419,31 @@ void SceneSolarSystem::update(float deltaTime) {
     if (Input::isKeyPressed(sf::Keyboard::H)){
         cam->setArround((WorldObject*)(getGame()->getObjectByName("earth")));
     }
+     if (Input::isKeyPressed(sf::Keyboard::M)){
+        cam->setArround((WorldObject*)(getGame()->getObjectByName("moon")));
+    }
     if (paused) deltaTime = 0.0f;
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
-        if (++currentObject != objectsOrder.end())
-            cam->setArround((*currentObject));
-        else --currentObject;
+        if (cam->mode == Camera::Arround) {
+            if (++currentObject != objectsOrder.end())
+                cam->setArround((*currentObject));
+            else --currentObject;
+        }
+        else {
+            setCameraArround(closestWorldObject().first);
+        }
     }
     if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
-        if (currentObject != objectsOrder.begin())
-            cam->setArround((*--currentObject));
+        if (cam->mode == Camera::Arround) {
+            if (currentObject != objectsOrder.begin())
+                cam->setArround((*--currentObject));
+        }
+        else {
+            setCameraArround(closestWorldObject().first);
+        }
     }
-    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
+    //if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
+    if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
     if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
     if (Input::isKeyPressed(sf::Keyboard::Num3)) {
         stereoscopic3D = !stereoscopic3D;
@@ -423,7 +465,7 @@ std::pair<WorldObject*,bool> SceneSolarSystem::closestWorldObject() {
     int closest = 0;
     bool colliding = false;
 
-    for (int i = 0; i < wObjs.size(); ++i) {
+    for (unsigned int i = 0; i < wObjs.size(); ++i) {
         WorldObject* wo = wObjs[i];
         float dist = glm::length(wo->getPosition() - camPos);
         if (!(wo->id == cam->id) and dist < minDist) {

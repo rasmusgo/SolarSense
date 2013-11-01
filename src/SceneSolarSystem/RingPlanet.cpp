@@ -3,16 +3,18 @@
 #include "Camera.hpp"
 
 RingPlanet::RingPlanet(const std::string& name, float radius, float orbRadius, const std::string& shaderprogram,
-                       const std::string& texture, const std::string& ringtexture, const std::string& ringalphatexture, float distRingStart, float distRingEnd)
-    : StandardPlanet(name, radius, orbRadius, shaderprogram, texture), ringtexture(ringtexture), ringalphatexture(ringalphatexture), distRingStart(radius+distRingStart), distRingEnd(radius+distRingEnd) {
+                       const std::string& texture, const std::string& ringtexture, const std::string& ringalphatexture, float distRingStart, float distRingEnd, quat ringRotation)
+    : StandardPlanet(name, radius, orbRadius, shaderprogram, texture), ringtexture(ringtexture), ringalphatexture(ringalphatexture), distRingStart(radius+distRingStart), distRingEnd(radius+distRingEnd),
+      ringRotation(ringRotation) {
     sphere.mesh = Meshes.get("sphere");
     sphere.program = Programs.get(shaderprogram);
     ring.mesh = Meshes.get("square");
     ring.program = Programs.get("ringprogram");
 }
 RingPlanet::RingPlanet(const std::string& name, float radius, float orbRadius, const std::string& shaderprogram, const std::string& bumpmap,
-                       const std::string& texture, const std::string& ringtexture, const std::string& ringalphatexture,  float distRingStart, float distRingEnd)
-     : StandardPlanet(name, radius, orbRadius, shaderprogram, texture, bumpmap), ringtexture(ringtexture), ringalphatexture(ringalphatexture), distRingStart(radius+distRingStart), distRingEnd(radius+distRingEnd) {
+                       const std::string& texture, const std::string& ringtexture, const std::string& ringalphatexture,  float distRingStart, float distRingEnd, quat ringRotation)
+     : StandardPlanet(name, radius, orbRadius, shaderprogram, texture, bumpmap), ringtexture(ringtexture), ringalphatexture(ringalphatexture), distRingStart(radius+distRingStart),
+       distRingEnd(radius+distRingEnd), ringRotation(ringRotation) {
     sphere.mesh = Meshes.get("sphere");
     sphere.program = Programs.get(shaderprogram);
     ring.mesh = Meshes.get("square");
@@ -28,7 +30,8 @@ void RingPlanet::draw() const {
 
     Camera* cam = static_cast<Camera*>(getGame()->getObjectByName("cam"));
     mat4f viewProjection = cam->projection*cam->view;
-    mat4f ringTransform = glm::scale(glm::rotate(fullTransform, time, glm::normalize(vec3f(0.5,0.5,0))), vec3f(distRingEnd));
+    quat invRotation = glm::inverse(getRotation());
+    mat4f ringTransform = glm::scale(fullTransform * glm::mat4_cast(ringRotation * invRotation), vec3f(distRingEnd));
 
     ring.program->uniform("modelViewProjectionMatrix")->set(viewProjection*ringTransform);
     ring.program->uniform("modelMatrix")->set(ringTransform);

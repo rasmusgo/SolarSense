@@ -17,6 +17,8 @@ class Earth : public Planet {
         float time;
         float innerRadius;
         float outerRadius;
+        //vec3f rotationAxis;
+        mat4f axisRotation;
 };
 
 #endif // EARTH_HPP

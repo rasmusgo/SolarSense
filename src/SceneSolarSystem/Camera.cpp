@@ -75,8 +75,8 @@ void Camera::update(float deltaTime) {
 
                 displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
                 lastArrDist += displ;
-                if (lastArrDist < objScale*1.1f) { //Too close! to the object!
-                    lastArrDist = objScale*1.1f;
+                if (lastArrDist < objScale*1.3f) { //Too close! to the object!
+                    lastArrDist = objScale*1.3f;
                 }
                 else if (lastArrDist > 250.0) { //Where the fuck are you going!?
                     lastArrDist = 250.0;
@@ -164,12 +164,13 @@ void Camera::updateAcceleration(float deltaTime) {
             float speedFactor = 1.f;
 
             vec3f handMovement = SensorManager::getHandMovement();
-            if (mode == Free)
+            if (mode == Free) {
                 handMovement.x = -handMovement.x;
-            else {
+            } else {
                 float distToObj = glm::length(position - arrObject->getPosition()) / glm::min(arrObject->getScale().x, 20.0f);
                 speedFactor = glm::min((distToObj - 0.5)/ 5.f, 0.8)  + 0.2f; // 0.5 is the minimum value for distToObject, 5 is the maximum value for distToObj
             }
+            handMovement.x = -handMovement.x;
 
             handMovement.z *= speedFactor;
             handMovement *= maxVel*speedFactor;
@@ -227,6 +228,8 @@ void Camera::setArround(const std::string& objectName) {
 }
 
 void Camera::setArround(WorldObject* obj) {
+    if (obj == arrObject) return;
+
     arrObject = obj;
     mode = Arround;
     fromPos = position;
