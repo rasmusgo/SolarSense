@@ -1,6 +1,6 @@
 include(VBE/VBE.pro)
 
-DEFINES += __DEBUG __LOG
+#DEFINES += __DEBUG __LOG
 
 TEMPLATE = app
 LD_LIBRARY_PATH += libs:
