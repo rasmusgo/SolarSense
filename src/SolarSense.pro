@@ -49,6 +49,7 @@ SOURCES += \
     $$PWD/SceneSolarSystem/Camera.cpp \
     $$PWD/SceneSolarSystem/Sun.cpp \
     $$PWD/SceneSolarSystem/Earth.cpp \
+    $$PWD/SceneSolarSystem/Atmosphere.cpp \
     $$PWD/SceneSolarSystem/SunHalo.cpp \
     $$PWD/SceneSolarSystem/Planet.cpp \
     $$PWD/input/InteractionListener.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     $$PWD/SceneSolarSystem/Camera.hpp \
     $$PWD/SceneSolarSystem/StandardPlanet.hpp \
     $$PWD/SceneSolarSystem/Sun.hpp \
+    $$PWD/SceneSolarSystem/Atmosphere.hpp \
     $$PWD/SceneSolarSystem/Planet.hpp \
     $$PWD/SceneSolarSystem/Earth.hpp \
     $$PWD/SceneSolarSystem/SunHalo.hpp \

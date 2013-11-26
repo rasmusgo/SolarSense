@@ -5,6 +5,7 @@
 #include "Earth.hpp"
 #include "SunHalo.hpp"
 #include "StandardPlanet.hpp"
+#include "Atmosphere.hpp"
 #include "RingPlanet.hpp"
 #include "input/SensorManager.hpp"
 #include "Rock.hpp"
@@ -48,11 +49,11 @@ SceneSolarSystem::SceneSolarSystem() :
 
     //add gameObjects
     stars = new SphereObject();
-    stars->radius = 1000.0f;
+    stars->radius = 30000.0f;
     stars->setDrawPriority(-10);
     stars->addTo(this);
 
-    Sun* sun = new Sun("sun", 4.7f);
+    Sun* sun = new Sun("sun", 109.0f);
     sun->rotSpeed = 1.0f;
     sun->addTo(this);
     objectsOrder.push_back("sun");
@@ -70,13 +71,19 @@ SceneSolarSystem::SceneSolarSystem() :
     venus->addTo(sun);
     objectsOrder.push_back("venus");
 
-    Earth* earth = new Earth("earth", 1.0f, 30.0f);
+    Earth* earth = new Earth("earth", 1.f, 23000.0f);
     earth->orbSpeed = 3.0f/fa;
     earth->rotSpeed = 3.0f;
     earth->addTo(sun);
     objectsOrder.push_back("earth");
 
-    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShaderBump", "moon", "moonbump");
+    Atmosphere* atmo = new Atmosphere("atmo", 1.f, 23000.0f);
+    atmo->orbSpeed = 3.0f/fa;
+    atmo->rotSpeed = 3.0f;
+    atmo->addTo(sun);
+    objectsOrder.push_back("atmo");
+
+    StandardPlanet* moon = new StandardPlanet("moon", 0.27f, 62.0f, "planetShaderBump", "moon", "moonbump");
     moon->orbSpeed = 10.0f/fa;
     moon->rotSpeed = -2.0*earth->rotSpeed;
     moon->addTo(earth);
@@ -331,9 +338,9 @@ bool SceneSolarSystem::loadResources() {
     //Create meshes
     Meshes.add("cube",new Mesh("data/10x10.obj"));
     Meshes.add("spherehigh", new Mesh("data/128.obj"));
-    Meshes.add("sphere",new Mesh("data/32.obj"));
-    Meshes.add("spherelow",new Mesh("data/32.obj"));
-    Meshes.add("spheresuperlow", new Mesh("data/16.obj"));
+    Meshes.add("sphere",new Mesh("data/128.obj"));
+    Meshes.add("spherelow",new Mesh("data/128.obj"));
+    Meshes.add("spheresuperlow", new Mesh("data/128.obj"));
     Meshes.add("square",new Mesh("data/square.obj"));
     Meshes.add("rock", new Mesh("data/cube.obj"));
     Meshes.add("cage", new Mesh("data/cage.obj"));
