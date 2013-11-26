@@ -18,8 +18,8 @@ uniform float fKm4PI;			// Km * 4 * PI
 uniform float fScale;			// 1 / (fOuterRadius - fInnerRadius)
 uniform float fScaleDepth;		// The scale depth (i.e. the altitude at which the atmosphere's average density is found)
 uniform float fScaleOverScaleDepth;	// fScale / fScaleDepth
-const int nSamples = 4; 
-const float fSamples = 4.0; 
+const int nSamples = 16; 
+const float fSamples = 16.0; 
 
 // uniform int nSamples;
 // uniform float fSamples;
@@ -40,7 +40,7 @@ void main(void)
 {
 	
 	// Get the ray from the camera to the vertex and its length (which is the far point of the ray passing through the atmosphere)
-	vec3 v3Pos = vec3(modelMatrix*vec4(a_position,0.0));
+	vec3 v3Pos = a_position; //vec3(modelMatrix*vec4(a_position,0.0));
 	vec3 v3Ray = v3Pos-v3CameraPos;
 	float fFar = length(v3Ray);
 	v3Ray /= fFar;

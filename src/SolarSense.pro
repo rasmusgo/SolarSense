@@ -3,7 +3,7 @@ include(VBE/VBE.pro)
 DEFINES += __DEBUG __LOG
 
 TEMPLATE = app
-LD_LIBRARY_PATH += libs:
+LD_LIBRARY_PATH += libs
 CONFIG -= qt
 
 linux-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch

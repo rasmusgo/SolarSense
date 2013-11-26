@@ -71,19 +71,20 @@ SceneSolarSystem::SceneSolarSystem() :
     venus->addTo(sun);
     objectsOrder.push_back("venus");
 
-    Earth* earth = new Earth("earth", 1.f, 2300.0f);
+    Earth* earth = new Earth("earth", 1.f, 10000.0f);
     earth->orbSpeed = 3.0f/fa;
     earth->rotSpeed = 3.0f;
     earth->addTo(sun);
     objectsOrder.push_back("earth");
 
-   // Atmosphere* atmo = new Atmosphere("atmo", 1.f, 2300.0f);
-    //atmo->orbSpeed = 3.0f/fa;
-    //atmo->rotSpeed = 3.0f;
-    //atmo->addTo(sun);
-    //objectsOrder.push_back("atmo");
+    /*Atmosphere* atmo = new Atmosphere("atmo", 1.f, 2300.0f);
+    atmo->orbSpeed = 3.0f/fa;
+    atmo->rotSpeed = 3.0f;
+    atmo->addTo(sun);
+    objectsOrder.push_back("atmo");*/
     Atmosphere* atmo = new Atmosphere("atmo", 1.f, 0);
     atmo->addTo(earth);
+    atmo->rotSpeed = 3.0f;
     objectsOrder.push_back("atmo");
 
 

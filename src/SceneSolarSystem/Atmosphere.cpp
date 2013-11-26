@@ -19,7 +19,7 @@ Atmosphere::Atmosphere(const std::string& name, float radius, float orbRadius) :
 
 Atmosphere::~Atmosphere(){
 
-}
+} 
 
 
 void Atmosphere::update(float deltaTime) {
@@ -34,24 +34,32 @@ void Atmosphere::update(float deltaTime) {
     Planet::update(deltaTime);
 }
 
+
+    vec3f mulm4(const mat4f& m, const vec3f& v){
+        return (vec3f) ( m * vec4f(v, 0));
+    }
+
+
 void Atmosphere::draw() const {
     Camera* cam = static_cast<Camera*>(getGame()->getObjectByName("cam"));
     mat4f projection = cam->projection;
     mat4f view = cam->view;
     mat4f model = glm::scale(fullTransform, getScale());
-
-    vec3f cameraPos = cam->getPosition();//vec3f(model*vec4f(cam->getPosition(),1.0));// 
+    mat4f viewModel = glm::inverse(view*model);
+    vec4f camPos = viewModel[3];
+    mat4f iModel = ( (glm::inverse(model)));
+    vec3f cameraPos = vec3f(camPos); //(vec3f) (iModel*(vec4f(cam->getPosition(), 0)));//****  //vec3f(model*vec4f(cam->getPosition(),1.0));// 
     float Kr = 0.0025f;
     float Km = 0.0010f;
-    float ESun = 10.f;
+    float ESun = 20.f;
     float fScale = 1.f/(outerRadius-innerRadius);
     float fScaleDepth = 0.25f; //Must be 25%
-    float fCameraHeight = glm::length(cameraPos)*2.f;
+    float fCameraHeight = glm::length(cameraPos);
     float g = -0.9900; // Mie aerosol scattering constant
     float g2 = g*g;
     vec3f wavelength = vec3f(0.650, 0.570, 0.475);
     vec3f v3InvWavelength = vec3f(1.0f / powf(wavelength.x, 4.0f), 1.0f / powf(wavelength.y, 4.0f), 1.0f / powf(wavelength.z, 4.0f));
-    vec3f lightPos = vec3f(0.0f);//-vec3f(vec4f(cam->getPosition(),1.0f)*model); //vec3f(model*vec4f(vec3f(0.0),1.0));//
+    vec3f lightPos = -glm::normalize(mulm4(iModel, getPosition())); //vec3f(0.0f);//*******  //-vec3f(vec4f(cam->getPosition(),1.0f)*model); //vec3f(model*vec4f(vec3f(0.0),1.0));//
     // vec3f lightPos = vec3f(0.f);
     atmo.program->uniform("v3CameraPos")->set(cameraPos);       // The camera's current position
     atmo.program->uniform("v3LightPos")->set(lightPos);        // The direction vector to the light source
@@ -61,7 +69,7 @@ void Atmosphere::draw() const {
     atmo.program->uniform("fOuterRadius")->set(outerRadius);                   // The outer (atmosphere) radius
     atmo.program->uniform("fOuterRadius2")->set(outerRadius*outerRadius);      // fOuterRadius^2
     atmo.program->uniform("fInnerRadius")->set(innerRadius);                   // The inner (planetary) radius
-    // atmo.program->uniform("fInnerRadius2")->set(innerRadius*innerRadius);      // fInnerRadius^2
+    // atmo.program->uniform("fInnerRadius2")->set(innerRavec3f(0.0f);//*******  //dius*innerRadius);      // fInnerRadius^2
     atmo.program->uniform("fKrESun")->set(Kr*ESun);                            // Kr * ESun
     atmo.program->uniform("fKmESun")->set(Km*ESun);                            // Kr * ESun
     atmo.program->uniform("fKr4PI")->set(Kr*4.f*PI);                           // Kr * 4 * PI
@@ -75,10 +83,11 @@ void Atmosphere::draw() const {
     atmo.program->uniform("projectionMatrix")->set(projection);
 
     glCullFace(GL_FRONT);
-    glFrontFace(GL_CW);
-
-   atmo.draw();
+    //glFrontFace(GL_CW);
+   // glDisable(GL_CULL_FACE);
+    atmo.draw();
+   // glEnable(GL_CULL_FACE);
     
-    glFrontFace(GL_CCW);
+    //glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
 }
