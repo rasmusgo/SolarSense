@@ -1,1 +1,3 @@
-﻿  PrimeSenseManager.vcxproj -> D:\Workspace\Visual Studio\PrimeSenseManager\Debug\PrimeSenseManager.exe
+﻿  main.cpp
+c:\users\leo\documents\github\solarsense\primesensemanager\primesensemanager\main.cpp(135): warning C4715: "Init": Nicht alle Steuerelementpfade geben einen Wert zurück.
+  PrimeSenseManager.vcxproj -> C:\Users\Leo\Documents\GitHub\SolarSense\PrimeSenseManager\Debug\PrimeSenseManager.exe
