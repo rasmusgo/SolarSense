@@ -9,12 +9,11 @@ class Earth : public Planet {
         Earth(const std::string& name, float radius, float orbRadius);
         ~Earth();
 
-        void update(float deltaTime);
+        void update(float deltaTime, float time);
         void draw() const;
 
         Model atmo;
     private:
-        float time;
         float innerRadius;
         float outerRadius;
         //vec3f rotationAxis;

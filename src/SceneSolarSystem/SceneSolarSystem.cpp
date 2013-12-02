@@ -6,7 +6,7 @@
 #include "SunHalo.hpp"
 #include "StandardPlanet.hpp"
 #include "RingPlanet.hpp"
-#include "input/SensorManager.hpp"
+//#include "input/SensorManager.hpp"
 #include "Rock.hpp"
 
 #include "inputreader.h"
@@ -37,7 +37,7 @@ SceneSolarSystem::SceneSolarSystem() :
     glShadeModel(GL_SMOOTH);
 
     // PrimeSense
-    SensorManager::startSensor();
+    //SensorManager::startSensor();
 
 	//Center mouse
     Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
@@ -344,7 +344,8 @@ bool SceneSolarSystem::loadResources() {
 	return true;
 }
 
-void SceneSolarSystem::update(float deltaTime) {
+void SceneSolarSystem::update(float deltaTime, float time) {
+    (void) time;
 
 	++fpsCount;
 	debugCounter += deltaTime;
@@ -402,7 +403,7 @@ void SceneSolarSystem::update(float deltaTime) {
     m_cmd_q.unlock();
 
     // Update sensor
-    SensorManager::update(deltaTime);
+    //SensorManager::update(deltaTime);
 
     //Update logic
     std::pair<WorldObject*, bool> col = closestWorldObject();
@@ -423,7 +424,7 @@ void SceneSolarSystem::update(float deltaTime) {
         cam->setArround((WorldObject*)(getGame()->getObjectByName("moon")));
     }
     if (paused) deltaTime = 0.0f;
-    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT)) {
+    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) /*|| SensorManager::checkGesture() == SensorManager::SWIPE_RIGHT*/)) {
         if (cam->mode == Camera::Arround) {
             if (++currentObject != objectsOrder.end())
                 cam->setArround((*currentObject));
@@ -433,7 +434,7 @@ void SceneSolarSystem::update(float deltaTime) {
             setCameraArround(closestWorldObject().first);
         }
     }
-    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Left) || SensorManager::checkGesture() == SensorManager::SWIPE_LEFT)) {
+    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Left) /*|| SensorManager::checkGesture() == SensorManager::SWIPE_LEFT*/)) {
         if (cam->mode == Camera::Arround) {
             if (currentObject != objectsOrder.begin())
                 cam->setArround((*--currentObject));
@@ -449,7 +450,7 @@ void SceneSolarSystem::update(float deltaTime) {
         stereoscopic3D = !stereoscopic3D;
         cam->setStereoscopic(stereoscopic3D);
     }
-    if (Input::isKeyPressed(sf::Keyboard::R) && SensorManager::sensorConnected()) SensorManager::resetTracking();
+    //if (Input::isKeyPressed(sf::Keyboard::R) && SensorManager::sensorConnected()) SensorManager::resetTracking();
 
     if(!isWindow) Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 }

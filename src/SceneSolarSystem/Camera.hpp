@@ -15,7 +15,7 @@ class Camera : public WorldObject {
         ~Camera();
 
         void draw();
-        void update(float deltaTime);
+        void update(float deltaTime, float time);
         void drawHUD();
 
         mat4f projection;

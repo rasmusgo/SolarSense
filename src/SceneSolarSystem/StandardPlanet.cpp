@@ -19,14 +19,13 @@ StandardPlanet::~StandardPlanet(){
 
 }
 
-void StandardPlanet::update(float deltaTime) {
-    time += deltaTime;
+void StandardPlanet::update(float deltaTime, float time) {
 
     position = vec3f(orbRadius*cos(time*orbSpeed), 0.0f, orbRadius*sin(time*orbSpeed));
-    rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0));
+    rotation = glm::rotate(quat(), time*rotSpeed, vec3f(0,1,0));
 
-    WorldObject::update(deltaTime);
-    Planet::update(deltaTime);
+    WorldObject::update(deltaTime, time);
+    Planet::update(deltaTime, time);
 }
 
 void StandardPlanet::draw() const {

@@ -7,8 +7,9 @@ WorldObject::WorldObject() : position(0.0f), scale(1.0f) {
 WorldObject::~WorldObject() {
 }
 
-void WorldObject::update(float deltaTime) {
+void WorldObject::update(float deltaTime, float time) {
     (void) deltaTime;
+    (void) time;
 
     transform = glm::translate(mat4f(1.0f), position);
     transform = transform * glm::mat4_cast(rotation);

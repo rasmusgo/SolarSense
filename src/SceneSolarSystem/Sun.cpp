@@ -14,11 +14,11 @@ Sun::Sun(const std::string& name, float radius) : Planet(name, radius, 0.0f), ti
 Sun::~Sun() {
 }
 
-void Sun::update(float deltaTime) {
-    time += deltaTime;
+void Sun::update(float deltaTime, float time) {
+    this->time = time;
 
-    WorldObject::update(deltaTime);
-    Planet::update(deltaTime);
+    WorldObject::update(deltaTime, time);
+    Planet::update(deltaTime, time);
 }
 
 void Sun::draw() const {

@@ -8,7 +8,7 @@ class SphereObject : public GameObject {
         SphereObject();
         virtual ~SphereObject();
 
-        void update(float deltaTime);
+        void update(float deltaTime, float time);
         void updateMatrix();
         void draw() const;
 

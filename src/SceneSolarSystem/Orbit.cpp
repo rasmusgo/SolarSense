@@ -12,8 +12,9 @@ Orbit::Orbit() {
 Orbit::~Orbit() {
 }
 
-void Orbit::update(float deltaTime) {
+void Orbit::update(float deltaTime, float time) {
     (void) deltaTime;
+    (void) time;
 }
 
 void Orbit::draw() const {

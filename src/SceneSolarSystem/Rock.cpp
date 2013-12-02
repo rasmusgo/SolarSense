@@ -9,13 +9,12 @@ Rock::Rock(const std::string &name, float radius, float orbRadius, const std::st
 
 Rock::~Rock() {}
 
-void Rock::update(float deltaTime) {
-    time += deltaTime;
+void Rock::update(float deltaTime, float time) {
 
     position = vec3f(orbRadius*cos(time*orbSpeed), orbRadius*sin(time*orbSpeed), 0.0f);
-    rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0));
+    rotation = glm::rotate(quat(), time*rotSpeed, vec3f(0,1,0));
 
-    WorldObject::update(deltaTime);
+    WorldObject::update(deltaTime, time);
 }
 
 void Rock::draw() const {

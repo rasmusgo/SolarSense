@@ -9,7 +9,7 @@ class SunHalo : public WorldObject {
         SunHalo(const std::string& name, float size);
         ~SunHalo();
 
-        void update(float deltaTime);
+        void update(float deltaTime, float time);
         void draw() const;
 
         Model model;

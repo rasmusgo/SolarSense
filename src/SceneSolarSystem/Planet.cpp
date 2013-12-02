@@ -19,8 +19,9 @@ Planet::Planet(const std::string& name, float radius, float orbRadius)
 Planet::~Planet(){
 }
 
-void Planet::update(float deltaTime) {
+void Planet::update(float deltaTime, float time) {
     (void) deltaTime;
+    (void) time;
 
     Camera* cam = static_cast<Camera*>(getGame()->getObjectByName("cam"));
 

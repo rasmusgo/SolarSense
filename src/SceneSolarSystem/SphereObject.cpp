@@ -11,8 +11,9 @@ SphereObject::SphereObject() {
 SphereObject::~SphereObject() {
 }
 
-void SphereObject::update(float deltaTime) {
+void SphereObject::update(float deltaTime, float time) {
     (void) deltaTime;
+    (void) time;
 }
 
 void SphereObject::draw() const {

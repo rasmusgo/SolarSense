@@ -9,7 +9,7 @@ public:
 
     ~Rock();
 
-    void update(float deltaTime);
+    void update(float deltaTime, float time);
     void draw() const;
 private:
     const std::string shaderprogram;

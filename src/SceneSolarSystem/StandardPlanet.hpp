@@ -10,12 +10,10 @@ public:
 
     ~StandardPlanet();
 
-    void update(float deltaTime);
+    void update(float deltaTime, float time);
     virtual void draw() const;
 
     void drawBump() const;
-protected:
-    float time;
 private:
     const std::string shaderprogram;
     const std::string texturemapname;

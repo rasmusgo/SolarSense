@@ -9,7 +9,7 @@ public:
 
     virtual ~WorldObject();
 
-    virtual void update(float deltaTime);
+    virtual void update(float deltaTime, float time);
     virtual void draw() const;
 
     const vec3f getPosition() const;

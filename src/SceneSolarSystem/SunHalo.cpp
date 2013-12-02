@@ -16,8 +16,8 @@ SunHalo::~SunHalo(){
 }
 
 
-void SunHalo::update(float deltaTime) {
-    time += deltaTime;
+void SunHalo::update(float deltaTime, float time) {
+    this->time = time;
     transform = glm::rotate(mat4f(1.0f),90.f,vec3f(1,0,0));
     transform = glm::scale(transform, vec3f(getScale()));
 }

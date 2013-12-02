@@ -9,7 +9,7 @@ class Sun : public Planet {
         Sun(const std::string& name, float radius);
         ~Sun();
 
-        void update(float deltaTime);
+        void update(float deltaTime, float time);
         void draw() const;
 
     private:

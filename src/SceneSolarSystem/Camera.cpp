@@ -1,5 +1,5 @@
 #include "Camera.hpp"
-#include "../input/SensorManager.hpp"
+//#include "../input/SensorManager.hpp"
 
 Camera::Camera(const vec3f& pos, const mat4f& projection) :
     projection(projection), stereoscopic3D(false) {
@@ -38,7 +38,7 @@ void Camera::drawHUD() {
     if (not wasTracking)
         handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
 
-    if (SensorManager::sensorConnected() && !SensorManager::isTracking()) {
+    /*if (SensorManager::sensorConnected() && !SensorManager::isTracking()) {
 
         hudHand.program->uniform("time")->set(glm::mod(GLOBALCLOCK.getElapsedTime().asSeconds(), 20.0f));
         hudHand.program->uniform("lastTime")->set(handTime);
@@ -53,12 +53,12 @@ void Camera::drawHUD() {
         hudHand.draw();
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-    }
+    }*/
 
-    wasTracking = SensorManager::isTracking();
+    //wasTracking = SensorManager::isTracking();
 }
 
-void Camera::update(float deltaTime) {
+void Camera::update(float deltaTime, float time) {
     deltaTime = cameraClock.restart().asSeconds();
 
     updateAcceleration(deltaTime);
@@ -113,7 +113,7 @@ void Camera::update(float deltaTime) {
         }
         else {
             interpolating = false;
-            SensorManager::resetInitialHandPos();
+            //SensorManager::resetInitialHandPos();
             lastArrDist = glm::length(position - arrObject->getPosition());
         }
 
@@ -159,7 +159,7 @@ void Camera::updateAcceleration(float deltaTime) {
             acc.x = -maxAcc;
         }
 
-        // Check SensorManager
+        /*// Check SensorManager
         if (SensorManager::isTracking() && SensorManager::significantMovement()) {
             float speedFactor = 1.f;
 
@@ -176,7 +176,7 @@ void Camera::updateAcceleration(float deltaTime) {
             handMovement *= maxVel*speedFactor;
 
             vel = handMovement;
-        }
+        }*/
 
         if (Input::isMouseDown(sf::Mouse::Left)) {
             vec2i dis = Input::getMouseDisplacement();
