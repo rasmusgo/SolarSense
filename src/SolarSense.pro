@@ -72,7 +72,7 @@ SOURCES += \
     $$PWD/SceneSolarSystem/Planet.cpp \
     $$PWD/input/InteractionListener.cpp \
     $$PWD/input/InteractionManager.cpp \
-    #$$PWD/input/SensorManager.cpp \
+    $$PWD/input/SensorManager.cpp \
     SceneSolarSystem/WorldObject.cpp \
     SceneSolarSystem/Rock.cpp \
     SceneSolarSystem/RingPlanet.cpp \
@@ -92,7 +92,7 @@ HEADERS += \
     $$PWD/input/InteractionListener.hpp \
     $$PWD/input/InteractionManager.hpp \
     $$PWD/SceneSolarSystem/inputreader.h \
-    #$$PWD/input/SensorManager.hpp \
+    $$PWD/input/SensorManager.hpp \
     Commons.hpp \
     SceneSolarSystem/WorldObject.hpp \
     SceneSolarSystem/Rock.hpp \

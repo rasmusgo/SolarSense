@@ -28,6 +28,6 @@ void main (void)
     gl_FragColor = fRayleighPhase * c0 + fMiePhase * c1;
     gl_FragColor.a = gl_FragColor.b;
 	// simple "HDR" clamping
-	float fExposure = 0.1;
+	float fExposure = 0.010;
 	gl_FragColor = (1.0 - exp(-fExposure * gl_FragColor));
 }
