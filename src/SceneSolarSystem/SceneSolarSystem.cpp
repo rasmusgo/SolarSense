@@ -452,7 +452,7 @@ void SceneSolarSystem::update(float deltaTime, float time) {
     }
     //if (Input::isKeyPressed(sf::Keyboard::R) && SensorManager::sensorConnected()) SensorManager::resetTracking();
 
-    if(!isWindow) Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
+    //if(!isWindow) Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
 }
 
 std::pair<WorldObject*,bool> SceneSolarSystem::closestWorldObject() {
@@ -503,7 +503,7 @@ void SceneSolarSystem::draw() const{
         }
     }
     else {
-        getGame()->getWindow().display();
+        //getGame()->getWindow().display();
     }
 
 }

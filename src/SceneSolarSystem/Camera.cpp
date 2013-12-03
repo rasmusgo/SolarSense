@@ -59,72 +59,101 @@ void Camera::drawHUD() {
 }
 
 void Camera::update(float deltaTime, float time) {
-    deltaTime = cameraClock.restart().asSeconds();
+    if (getGame()->isSlave) {
+        sf::TcpSocket* socket = getGame()->getConnection();
 
-    updateAcceleration(deltaTime);
+        sf::Packet pk;
+        socket->receive(pk);
 
-    if (not interpolating) {
-        mat4f m(1.0);
-        float displ, objScale;
-        switch (mode) {
-            case Arround:
-                rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
-                rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
-
-                objScale = arrObject->getScale().x;
-
-                displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
-                lastArrDist += displ;
-                if (lastArrDist < objScale*1.3f) { //Too close! to the object!
-                    lastArrDist = objScale*1.3f;
-                }
-                else if (lastArrDist > 250.0) { //Where the fuck are you going!?
-                    lastArrDist = 250.0;
-                }
-                position = arrObject->getPosition() + (vec3f(0,0,lastArrDist) * rotation);
-                //lastArrDist = glm::length(position - arrObject->getPosition());
-                break;
-
-            case Free:
-                displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
-                position += (vec3f(0,0,displ) * rotation);
-
-                rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
-                rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
-        }
+        pk >> position.x >> position.y >> position.z;
+        pk >> rotation.x >> rotation.y >> rotation.z >> rotation.w;
     }
-    else { //Interpolating
-        rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
-        rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
+    else {
+        deltaTime = cameraClock.restart().asSeconds();
 
-        interpolatingTimer += deltaTime;
+        updateAcceleration(deltaTime);
 
-        vec3f wantedPos = arrObject->getPosition() + vec3f(0,0, arrObject->getScale().x*3.0f) * rotation;
+        if (not interpolating) {
+            mat4f m(1.0);
+            float displ, objScale;
+            switch (mode) {
+                case Arround:
+                    rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
+                    rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
 
-        if (interpolatingTimer < INTERPOLATION_TIME) {
-            position = Utils::lerp(fromPos, wantedPos, interpolatingTimer/INTERPOLATION_TIME);
-       
-            vec3f target = arrObject->getPosition();
-            mat4f rot = glm::lookAt(getPosition(),
-                        target,
-                        vec3f(0, 1, 0)
-                        );
-            rotation = glm::slerp(initialRotationInterpolationQuat,glm::quat(rot),  interpolatingTimer/INTERPOLATION_TIME);
+                    objScale = arrObject->getScale().x;
+
+                    displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
+                    lastArrDist += displ;
+                    if (lastArrDist < objScale*1.3f) { //Too close! to the object!
+                        lastArrDist = objScale*1.3f;
+                    }
+                    else if (lastArrDist > 250.0) { //Where the fuck are you going!?
+                        lastArrDist = 250.0;
+                    }
+                    position = arrObject->getPosition() + (vec3f(0,0,lastArrDist) * rotation);
+                    //lastArrDist = glm::length(position - arrObject->getPosition());
+                    break;
+
+                case Free:
+                    displ = (vel*deltaTime + 0.5f*acc*deltaTime*deltaTime).z;
+                    position += (vec3f(0,0,displ) * rotation);
+
+                    rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
+                    rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
+            }
         }
-        else {
-            interpolating = false;
-            //SensorManager::resetInitialHandPos();
-            lastArrDist = glm::length(position - arrObject->getPosition());
+        else { //Interpolating
+            rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
+            rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
+
+            interpolatingTimer += deltaTime;
+
+            vec3f wantedPos = arrObject->getPosition() + vec3f(0,0, arrObject->getScale().x*3.0f) * rotation;
+
+            if (interpolatingTimer < INTERPOLATION_TIME) {
+                position = Utils::lerp(fromPos, wantedPos, interpolatingTimer/INTERPOLATION_TIME);
+
+                vec3f target = arrObject->getPosition();
+                mat4f rot = glm::lookAt(getPosition(),
+                            target,
+                            vec3f(0, 1, 0)
+                            );
+                rotation = glm::slerp(initialRotationInterpolationQuat,glm::quat(rot),  interpolatingTimer/INTERPOLATION_TIME);
+            }
+            else {
+                interpolating = false;
+                //SensorManager::resetInitialHandPos();
+                lastArrDist = glm::length(position - arrObject->getPosition());
+            }
+
+
         }
 
-            
+
+        // Main sending
+        sf::TcpSocket* socket = getGame()->getConnection();
+
+        sf::Packet pk;
+        pk << position.x << position.y << position.z;
+        pk << rotation.x << rotation.y << rotation.z << rotation.w;
+
+        socket->send(pk);
     }
 
 
     // Update transform matrix
     transform = glm::translate(glm::mat4_cast(rotation), -position);
-
     view = transform;
+
+    std::pair<mat4f,mat4f> eyes = getViewMatrix3D();
+
+    if (getGame()->isSlave) view = eyes.first;
+    else view = eyes.second;
+
+    focusSpeed = 0.01f*deltaTime;
+
+    /*view = transform;
 
     if (stereoscopic3D) {
         eyes = getViewMatrix3D();
@@ -133,7 +162,7 @@ void Camera::update(float deltaTime, float time) {
 
         setEye(0);
         currEye = 0;
-    }
+    }*/
 }
 
 void Camera::updateAcceleration(float deltaTime) {

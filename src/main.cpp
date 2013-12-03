@@ -11,22 +11,24 @@ int main(int argc, char* argv[]) {
     FOV = 60.0f; //degrees
     ZNEAR = 0.01f;
     ZFAR = 2000.0f;
-    SCRWIDTH = sf::VideoMode::getDesktopMode().width;
-    SCRHEIGHT = sf::VideoMode::getDesktopMode().height;
+    SCRWIDTH = sf::VideoMode::getDesktopMode().width/2;
+    SCRHEIGHT = sf::VideoMode::getDesktopMode().height/2;
 
+    bool slaveMode = false;
 
-    if(argc > 1 && argv[1][0] == 'w'){
-        isWindow = true;
-         SCRWIDTH = sf::VideoMode::getDesktopMode().width/2;
-        SCRHEIGHT = sf::VideoMode::getDesktopMode().height/2;
-    } else {
-        SCRWIDTH = sf::VideoMode::getDesktopMode().width;
-        SCRHEIGHT = sf::VideoMode::getDesktopMode().height;
+    if(argc > 1){
+        if(argv[1][0] == 'w') {
+            isWindow = true;
+            SCRWIDTH = sf::VideoMode::getDesktopMode().width/2;
+            SCRHEIGHT = sf::VideoMode::getDesktopMode().height/2;
+        }
+        else if (argv[1][0] == 's')
+            slaveMode = true;
     }
 
 
     // Init
-    Game game;
+    Game game(slaveMode);
     game.setRoot(new SceneSolarSystem());
     game.run();
 
