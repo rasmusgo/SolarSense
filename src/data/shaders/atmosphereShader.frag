@@ -14,7 +14,7 @@ float getMiePhase(float fCos, float fCos2, float g, float g2)
 // Calculates the Rayleigh phase function
 float getRayleighPhase(float fCos2)
 {
-	return 0.75 * (1.00+fCos2);
+	return 0.75*(1.0+fCos2);
 }
  
 void main (void)
@@ -27,4 +27,7 @@ void main (void)
 
     gl_FragColor = fRayleighPhase * c0 + fMiePhase * c1;
     gl_FragColor.a = gl_FragColor.b;
+	// simple "HDR" clamping
+	float fExposure = 0.1;
+	gl_FragColor = (1.0 - exp(-fExposure * gl_FragColor));
 }

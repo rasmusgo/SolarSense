@@ -53,7 +53,7 @@ SceneSolarSystem::SceneSolarSystem() :
     stars->setDrawPriority(-10);
     stars->addTo(this);
 
-    Sun* sun = new Sun("sun", 109.0f);
+    Sun* sun = new Sun("sun", 4.7f);
     sun->rotSpeed = 1.0f;
     sun->addTo(this);
     objectsOrder.push_back("sun");
@@ -71,7 +71,7 @@ SceneSolarSystem::SceneSolarSystem() :
     venus->addTo(sun);
     objectsOrder.push_back("venus");
 
-    Earth* earth = new Earth("earth", 1.f, 10000.0f);
+    Earth* earth = new Earth("earth", 1.0f, 1000.0f);
     earth->orbSpeed = 3.0f/fa;
     earth->rotSpeed = 3.0f;
     earth->addTo(sun);
@@ -82,7 +82,7 @@ SceneSolarSystem::SceneSolarSystem() :
     atmo->rotSpeed = 3.0f;
     atmo->addTo(sun);
     objectsOrder.push_back("atmo");*/
-    Atmosphere* atmo = new Atmosphere("atmo", 1.f, 0);
+    Atmosphere* atmo = new Atmosphere("atmo", 1.0f, 0);
     atmo->addTo(earth);
     atmo->rotSpeed = 3.0f;
     objectsOrder.push_back("atmo");
@@ -343,9 +343,9 @@ bool SceneSolarSystem::loadResources() {
     //Create meshes
     Meshes.add("cube",new Mesh("data/10x10.obj"));
     Meshes.add("spherehigh", new Mesh("data/128.obj"));
-    Meshes.add("sphere",new Mesh("data/128.obj"));
-    Meshes.add("spherelow",new Mesh("data/128.obj"));
-    Meshes.add("spheresuperlow", new Mesh("data/128.obj"));
+    Meshes.add("sphere",new Mesh("data/64.obj"));
+    Meshes.add("spherelow",new Mesh("data/32.obj"));
+    Meshes.add("spheresuperlow", new Mesh("data/16.obj"));
     Meshes.add("square",new Mesh("data/square.obj"));
     Meshes.add("rock", new Mesh("data/cube.obj"));
     Meshes.add("cage", new Mesh("data/cage.obj"));

@@ -14,7 +14,7 @@ Atmosphere::Atmosphere(const std::string& name, float radius, float orbRadius) :
     atmo.mesh = Meshes.get("spherehigh");
     atmo.program = Programs.get("atmosphereShader");
 
-    this->setDrawPriority(100); // We want to draw this the last object before the orbits
+    this->setDrawPriority(1000); // We want to draw this the last object before the orbits
 }
 
 Atmosphere::~Atmosphere(){
@@ -49,17 +49,17 @@ void Atmosphere::draw() const {
     vec4f camPos = viewModel[3];
     mat4f iModel = ( (glm::inverse(model)));
     vec3f cameraPos = vec3f(camPos); //(vec3f) (iModel*(vec4f(cam->getPosition(), 0)));//****  //vec3f(model*vec4f(cam->getPosition(),1.0));// 
-    float Kr = 0.0025f;
-    float Km = 0.0010f;
-    float ESun = 20.f;
+    float Kr = 0.00020f;
+    float Km = 0.00015f;
+    float ESun = 12.f;
     float fScale = 1.f/(outerRadius-innerRadius);
-    float fScaleDepth = 0.25f; //Must be 25%
-    float fCameraHeight = glm::length(cameraPos);
-    float g = -0.9900; // Mie aerosol scattering constant
+    float fScaleDepth = 0.25; //Must be 25%
+    float fCameraHeight = glm::length(cameraPos-getLocalPosition());
+    float g = -0.9810f; // Mie aerosol scattering constant
     float g2 = g*g;
-    vec3f wavelength = vec3f(0.650, 0.570, 0.475);
+    vec3f wavelength = vec3f(0.650f, 0.570f, 0.475f);
     vec3f v3InvWavelength = vec3f(1.0f / powf(wavelength.x, 4.0f), 1.0f / powf(wavelength.y, 4.0f), 1.0f / powf(wavelength.z, 4.0f));
-    vec3f lightPos = -glm::normalize(mulm4(iModel, getPosition())); //vec3f(0.0f);//*******  //-vec3f(vec4f(cam->getPosition(),1.0f)*model); //vec3f(model*vec4f(vec3f(0.0),1.0));//
+    vec3f lightPos = glm::normalize(mulm4(iModel, -getPosition())); //vec3f(0.0f);//*******  //-vec3f(vec4f(cam->getPosition(),1.0f)*model); //vec3f(model*vec4f(vec3f(0.0),1.0));//
     // vec3f lightPos = vec3f(0.f);
     atmo.program->uniform("v3CameraPos")->set(cameraPos);       // The camera's current position
     atmo.program->uniform("v3LightPos")->set(lightPos);        // The direction vector to the light source
@@ -81,13 +81,9 @@ void Atmosphere::draw() const {
     atmo.program->uniform("modelMatrix")->set(model);
     atmo.program->uniform("viewMatrix")->set(view);
     atmo.program->uniform("projectionMatrix")->set(projection);
-
+    glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
-    //glFrontFace(GL_CW);
-   // glDisable(GL_CULL_FACE);
-    atmo.draw();
-   // glEnable(GL_CULL_FACE);
-    
-    //glFrontFace(GL_CCW);
+    atmo.draw();    
     glCullFace(GL_BACK);
+    glDisable(GL_CULL_FACE);
 }
