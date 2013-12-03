@@ -14,7 +14,18 @@ float getMiePhase(float fCos, float fCos2, float g, float g2)
 // Calculates the Rayleigh phase function
 float getRayleighPhase(float fCos2)
 {
-	return 0.75*(1.0+fCos2);
+	return 0.75+ 0.75*fCos2;// 0.75*(1.0+fCos2);
+}
+vec3 Uncharted2Tonemap(vec3 x)
+{
+float A = 0.15;
+float B = 0.50;
+float C = 0.10;
+float D = 0.20;
+float E = 0.02;
+float F = 0.30;
+
+return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
 }
  
 void main (void)
@@ -25,9 +36,13 @@ void main (void)
     float fRayleighPhase = getRayleighPhase(fCos2);
     float fMiePhase = getMiePhase(fCos, fCos2, g, g2);        
 
-    gl_FragColor = fRayleighPhase * c0 + fMiePhase * c1;
-    gl_FragColor.a = gl_FragColor.b;
+    vec4 col = fRayleighPhase * c0 + fMiePhase * c1;
+    vec3 res = Uncharted2Tonemap(col.xyz)/Uncharted2Tonemap(vec3(1.0f, 1.0f, 0.8f));
+    gl_FragColor = vec4(res, 0);
+    gl_FragColor.a = col.b;
+   // gl_FragColor.a = gl_FragColor.b;
 	// simple "HDR" clamping
-	float fExposure = 0.010;
+	float fExposure = 0.30;
 	gl_FragColor = (1.0 - exp(-fExposure * gl_FragColor));
+
 }
