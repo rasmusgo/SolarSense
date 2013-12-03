@@ -1,6 +1,6 @@
 SolarSense
 ==========
 
-Graphics and Visualization project for DH2413
+Graphics and Visualization project for DH2413 (WIP)
 
-Code structure and basic classes taken from Towerthousand's WIP game engine at https://github.com/Towerthousand/VBE with his aproval
+http://www.kth.se/en/csc/aktuellt/csc-nyheter/csc-projekt-pa-gamex-massan-2013-1.429175

@@ -8,35 +8,53 @@ CONFIG -= qt
 
 linux-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
 
-linux-g++:contains(QMAKE_TARGET.arch, i686):{
-    message( "Building for 32 bit")
-    LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL -lOpenNI2 -lNiTE2 \
-        -L$$PWD/OpenNIx86/ \
-        -L$$PWD/NiTEx86/ \
-        -L$$PWD/GrabDetector/
-        #GrabDetector/GrabDetector.lib\
-        #GrabDetector/GrabDetector.dll
-    INCLUDEPATH += $$PWD/ \
-               $$PWD/OpenNIx86/Include \
-               $$PWD/OpenNIx86/Include/Linux-x86 \
-               $$PWD/NiTEx86/Include
-               #$$PWD/GrabDetector/Include
-} else {
-    message( "Building for 64 bit")
-    LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGL -lOpenNI2 -lNiTE2 \
-        -L$$PWD/OpenNI/ \
-        -L$$PWD/NiTE/ \
-        -L$$PWD/GrabDetector/
-        #GrabDetector/GrabDetector.lib\
-        #GrabDetector/GrabDetector.dll
-    INCLUDEPATH += $$PWD/ \
-               $$PWD/OpenNI/Include \
-               $$PWD/OpenNI/Include/Linux-x86 \
-               $$PWD/NiTE/Include
-               #$$PWD/GrabDetector/Include
-}
 
-INCLUDEPATH += $$PWD/VBE/includes
+LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lOpenNI2 -lNiTE2
+unix:{
+    linux-g++:contains(QMAKE_TARGET.arch, i686):{
+        message( "Building for 32 bit")
+        LIBS += -lGL \
+            -L$$PWD/OpenNIx86/ \
+            -L$$PWD/NiTEx86/ \
+            -L$$PWD/GrabDetector/
+        INCLUDEPATH += $$PWD/ \
+                   $$PWD/OpenNIx86/Include \
+                   $$PWD/OpenNIx86/Include/Linux-x86 \
+                   $$PWD/NiTEx86/Include
+    } else {
+        message( "Building for 64 bit")
+        LIBS += -lGL \
+            -L$$PWD/OpenNI/ \
+            -L$$PWD/NiTE/ \
+            -L$$PWD/GrabDetector/
+        INCLUDEPATH += $$PWD/ \
+                   $$PWD/OpenNI/Include \
+                   $$PWD/OpenNI/Include/Linux-x86 \
+                   $$PWD/NiTE/Include
+    }
+} else:win32:{
+    message( "Building for Windows" )
+    LIBS -= -lOpenNI2 -lNiTE2
+    LIBS += -lopengl32 -lglu32 -lglut32 -lglew32d \
+        -L"D:/Workspace/SFML-2.1/lib/" \
+        #-L"C:/Program Files/OpenNI2/Lib/" \
+        #-L"C:/Program Files/PrimeSense/NiTE2/Lib/" \
+        -L"D:/Workspace/glew/"
+    INCLUDEPATH += $$PWD/ \
+        "D:/Workspace/SFML-2.1/include/" \
+        #"C:/Program Files/OpenNI2/Include/" \
+        #"C:/Program Files/PrimeSense/NiTE2/Include/" \
+        "D:/Workspace/OpenGL/include/"
+    DEPENDPATH += $$PWD/ \
+        "D:/Workspace/SFML-2.1/include/" \
+        #"C:/Program Files/OpenNI2/Include/" \
+        #"C:/Program Files/PrimeSense/NiTE2/Include/" \
+        "D:/Workspace/OpenGL/include/"
+    DEFINES += SFML_DYNAMIC \
+               GLEW_STATIC
+    SOURCES += $$PWD/glew.c
+    QMAKE_CXXFLAGS += -static-libgcc -static-libstdc++
+}
 
 
 QMAKE_CXXFLAGS += -std=c++11
@@ -54,7 +72,7 @@ SOURCES += \
     $$PWD/SceneSolarSystem/Planet.cpp \
     $$PWD/input/InteractionListener.cpp \
     $$PWD/input/InteractionManager.cpp \
-    $$PWD/input/SensorManager.cpp \
+    #$$PWD/input/SensorManager.cpp \
     SceneSolarSystem/WorldObject.cpp \
     SceneSolarSystem/Rock.cpp \
     SceneSolarSystem/RingPlanet.cpp \
@@ -74,7 +92,7 @@ HEADERS += \
     $$PWD/input/InteractionListener.hpp \
     $$PWD/input/InteractionManager.hpp \
     $$PWD/SceneSolarSystem/inputreader.h \
-    $$PWD/input/SensorManager.hpp \
+    #$$PWD/input/SensorManager.hpp \
     Commons.hpp \
     SceneSolarSystem/WorldObject.hpp \
     SceneSolarSystem/Rock.hpp \
