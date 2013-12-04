@@ -16,7 +16,7 @@ Earth::Earth(const std::string& name, float radius, float orbRadius) : Planet(na
     mat4f rot = glm::mat4(1.0);
     this->setDrawPriority(100); // We want to draw this the last object before the orbits
 
-    //rotation = glm::rotate(glm::quat(rot), -27.5, vec3f(1,0,0));
+    rotation = glm::rotate(glm::quat(rot), -27.5, vec3f(1,0,0));
 }
 
 Earth::~Earth(){
@@ -80,6 +80,7 @@ void Earth::draw() const {
 
     vec3f lightPos = vec3f(0.0f);// - position;
     float shininess = 10.0f;
+
     vec3f emission = vec3f(0.0f);
     //vec3f specular = vec3f(0.5f);
     vec3f specular = vec3f(1.0f, 0.9255f, 0.698f)*0.3f;
@@ -157,9 +158,11 @@ void Earth::draw() const {
     sphere.program->uniform("normalMatrix")->set(normalMatrix);
 
 
-    // glEnable(GL_CULL_FACE);
-    // glCullFace(GL_FRONT);
+    //glDisable(GL_CULL_FACE);
+    //glDepthMask(GL_FALSE);
     sphere.draw();
-    // glCullFace(GL_BACK);
-    // glDisable(GL_CULL_FACE);
+    //glDepthMask(GL_TRUE);
+    //glEnable(GL_CULL_FACE);
+
+
 }

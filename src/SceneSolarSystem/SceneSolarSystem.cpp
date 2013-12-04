@@ -75,7 +75,9 @@ SceneSolarSystem::SceneSolarSystem() :
     earth->orbSpeed = 3.0f/fa;
     earth->rotSpeed = 3.0f;
     earth->addTo(sun);
+    earth->setDrawPriority(100);
     objectsOrder.push_back("earth");
+    
 
     /*Atmosphere* atmo = new Atmosphere("atmo", 1.f, 2300.0f);
     atmo->orbSpeed = 3.0f/fa;
@@ -86,6 +88,13 @@ SceneSolarSystem::SceneSolarSystem() :
     atmo->addTo(earth);
     atmo->rotSpeed = 3.0f;
     objectsOrder.push_back("atmo");
+   
+    // StandardPlanet* clouds = new StandardPlanet("clouds", 1.001f, 0, "planetShader", "earthClouds");
+    // clouds->addTo(earth);
+    // clouds->rotSpeed = -0.7;
+    // clouds->tilt = -15;
+    // clouds->setDrawPriority(102);
+    // objectsOrder.push_back("clouds");
 
 
     StandardPlanet* moon = new StandardPlanet("moon", 0.27f, 62.0f, "planetShaderBump", "moon", "moonbump");
@@ -137,6 +146,8 @@ SceneSolarSystem::SceneSolarSystem() :
     currentObject = objectsOrder.begin();
     cam->setArround((*currentObject));
 
+//glEnable(GL_BLEND);
+//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	std::cout << "* Init done" << std::endl;
 }
 
@@ -239,23 +250,27 @@ bool SceneSolarSystem::loadResources() {
     //Lores
     tex = new Texture(1);
 // <<<<<<< HEAD
-//     if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
+    if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
 // =======
-    if(!tex->loadFromFile("data/earth4k.jpg",true)) return false;
+    // if(!tex->loadFromFile("data/earth4k_2.jpg",true)) return false;
 // >>>>>>> cca6ae2e09879e044340e32981084012f45f652f
     Textures.add("earth", tex);
-    tex = new Texture(5);
+
+    tex = new Texture(2);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
     Textures.add("earthWaterTex", tex);
-    tex = new Texture(2);
-    if(!tex->loadFromFile("data/EarthNight4k.png",true)) return false;
-    Textures.add("earthNight", tex);
     tex = new Texture(3);
-    if(!tex->loadFromFile("data/EarthSpec4k.png",true)) return false;
-    Textures.add("earthWater", tex);
+    if(!tex->loadFromFile("data/earth_night4k_2.jpg",true)) return false;
+    Textures.add("earthNight", tex);
     tex = new Texture(4);
+    if(!tex->loadFromFile("data/earth_spec4k_2.png",true)) return false;
+    Textures.add("earthWater", tex);
+    tex = new Texture(5);
     if(!tex->loadFromFile("data/EarthNormal4k.png",true)) return false;
     Textures.add("earthNormal", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/earth_clouds4k_2.png",true)) return false;
+    Textures.add("earthClouds", tex);
 
 
     //Earth Chris style

@@ -33,10 +33,14 @@ vec4 light(vec4 texColor, vec3 N, vec3 V, vec3 L, vec4 uSpecular)
 
 mat3 tbn(vec2 texCoord, vec3 meshNormal, vec3 pos){
 // compute derivations of the texture coordinate
-vec2 tc_dx = dFdx(texCoord);
+/*vec2 tc_dx = dFdx(texCoord);
 vec2 tc_dy = dFdy(texCoord);
 vec3 p_dx  = dFdx(pos);
-vec3 p_dy  = dFdy(pos);
+vec3 p_dy  = dFdy(pos);*/
+vec2 tc_dx = dFdx(vTexCoord);
+vec2 tc_dy = dFdy(vTexCoord);
+vec3 p_dx  = dFdx(vPos);
+vec3 p_dy  = dFdy(vPos);
 // compute initial tangent and bi-tangent
 vec3 t = normalize( tc_dy.y * p_dx - tc_dx.y * p_dy );
 vec3 b = normalize( tc_dy.x * p_dx - tc_dx.x * p_dy ); // sign inversion
@@ -51,6 +55,7 @@ b = cross(n, x);
 b = normalize(b);
 return mat3(t, b, n);
 }
+
 
 void main() {
     vec3 detailNormal = normalize(texture2D(samplerNormal, vTexCoord).xyz * 2.0 - 1.0);

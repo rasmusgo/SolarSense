@@ -15,11 +15,11 @@ float getMiePhase(float fCos, float fCos2, float g, float g2)
 // Calculates the Rayleigh phase function
 float getRayleighPhase(float fCos2)
 {
-	return 0.75*(0.75+fCos2);
+	return 0.75+ 0.75*fCos2;// 0.75*(1.0+fCos2);
 }
- 
-void main (void)
-{
+
+
+void main (void) {
     float fCos = dot(v3LightPos, v3Direction) / length(v3Direction);   
 	float fCos2 = fCos * fCos;  
 
@@ -30,4 +30,5 @@ void main (void)
 	// // simple "HDR" clamping
 	float fExposure = 0.35;
 	gl_FragColor = (1.0 - exp(-fExposure * gl_FragColor));
+
 }
