@@ -148,7 +148,7 @@ void Camera::update(float deltaTime, float time) {
 
     std::pair<mat4f,mat4f> eyes = getViewMatrix3D();
 
-    if (getGame()->isSlave) view = eyes.first;
+    if (!getGame()->isSlave) view = eyes.first;
     else view = eyes.second;
 
     focusSpeed = 0.01f*deltaTime;
