@@ -11,6 +11,9 @@ uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
 uniform vec3 lightSpecular;
 
+varying vec3 c0;
+varying vec3 c1;
+
 varying vec2 vTexCoord;
 
 varying vec3 vNormal;
@@ -64,14 +67,17 @@ void main() {
     float lightIntensity = max(0.1, min(dot(vLight, vNormal) + 0.1, 1.0));
 
     vec4 texColor = texture2D(sampler,vTexCoord);
+
     vec4 waterColor = texture2D(samplerWater,vTexCoord);
 
     vec4 lightColor = texture2D(samplerNight,vTexCoord);
+
     if (lightIntensity > 0.4) lightColor = vec4(0.0);
     else if (lightIntensity > 0.05) {
         lightColor *= 1.0 - (lightIntensity-0.05)/(0.4-0.05);
         lightColor *= max(0.1, min(dot(-tanLight, detailNormal) + 0.1, 1.0));
     }
+
 
     vec4 color;
    // float levelW = max(dot(waterColor, waterColor), 0.1);
@@ -82,14 +88,12 @@ void main() {
         vec4 blueWater = texture2D(samplerWaterTex, vTexCoord);
         texColor = (1.0-frac)*texColor + frac * blueWater;
     }
-    //if (waterColor.r < 0.5)
-     //   color = min(light(texColor, vNormal, vCam, vLight, specular), 0.7)*lightIntensity+lightColor;
-    //else color = texColor*lightIntensity+lightColor;
-    //if (waterColor.r < 0.9)
-     //   color = min(light(texColor, vNormal, vCam, vLight, lightSpecular * levelW ), 0.5)*lightIntensity+lightColor;
-    //else color = texColor*lightIntensity+lightColor;
+    texColor = texColor * vec4(c1,1.0);
+    lightColor = mix(lightColor,vec4(1.0)-vec4(c1,1.0), min(dot(-vLight, vNormal), 0.0));
+
+
     color = light(texColor, detailNormal, vCam*TBN, tanLight, specularC )*lightIntensity+lightColor; //*lightIntensity
 
 
-    gl_FragColor = vec4(color.xyz, 1.0);
+    gl_FragColor = vec4(c0+color.xyz, 1.0);
 }

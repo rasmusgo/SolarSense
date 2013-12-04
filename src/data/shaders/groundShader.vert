@@ -1,4 +1,3 @@
-
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 modelMatrix;
@@ -6,30 +5,33 @@ uniform mat4 modelMatrix;
 uniform vec3 v3CameraPos;		// The camera's current position
 uniform vec3 v3LightPos;		// The direction vector to the light source
 uniform vec3 v3InvWavelength;	// 1 / pow(wavelength, 4) for the red, green, and blue channels
-// uniform float fCameraHeight;	// The camera's current height
+uniform vec3 v3InvWavelength;	// 1 / pow(wavelength, 4) for the red, green, and blue channels
+uniform float fCameraHeight;	// The camera's current height
 uniform float fCameraHeight2;	// fCameraHeight^2
 uniform float fOuterRadius;		// The outer (atmosphere) radius
 uniform float fOuterRadius2;	// fOuterRadius^2
 uniform float fInnerRadius;		// The inner (planetary) radius
-// uniform float fInnerRadius2;	// fInnerRadius^2
-uniform float fKrESun;          // Kr * ESun        
-uniform float fKmESun;          // Km * ESun       
+uniform float fInnerRadius2;	// fInnerRadius^2
+uniform float fKrESun;			// Kr * ESun
+uniform float fKmESun;			// Km * ESun
 uniform float fKr4PI;			// Kr * 4 * PI
 uniform float fKm4PI;			// Km * 4 * PI
 uniform float fScale;			// 1 / (fOuterRadius - fInnerRadius)
 uniform float fScaleDepth;		// The scale depth (i.e. the altitude at which the atmosphere's average density is found)
 uniform float fScaleOverScaleDepth;	// fScale / fScaleDepth
-const int nSamples = 3; 
-const float fSamples = 3.0; 
-
-// uniform int nSamples;
-// uniform float fSamples;
 
 attribute vec3 a_position;
-// attribute vec3 a_normal;
+attribute vec3 a_normal;
+attribute vec2 a_texCoord;
 
 varying vec3 v3Direction;
-varying vec3 c0, c1;
+varying vec3 c0;
+varying vec3 c1;
+varying vec3 vNormal;
+varying vec2 vUv;
+
+const int nSamples = 3;
+const float fSamples = 3.0;
 
 float scale(float fCos)
 {
@@ -39,10 +41,8 @@ float scale(float fCos)
 
 void main(void)
 {
-	
 	// Get the ray from the camera to the vertex and its length (which is the far point of the ray passing through the atmosphere)
-	vec3 v3Pos = a_position; //vec3(modelMatrix*vec4(a_position,0.0));
-	vec3 v3Ray = v3Pos-v3CameraPos;
+	vec3 v3Ray = a_position - v3CameraPos;
 	float fFar = length(v3Ray);
 	v3Ray /= fFar;
 
@@ -55,12 +55,15 @@ void main(void)
 	// Calculate the ray's starting position, then calculate its scattering offset
 	vec3 v3Start = v3CameraPos + v3Ray * fNear;
 	fFar -= fNear;
-	float fStartAngle = dot(v3Ray, v3Start) / fOuterRadius;
-	float fStartDepth = exp(-1.0 / fScaleDepth);
-	float fStartOffset = fStartDepth*scale(fStartAngle);
+	float fDepth = exp((fInnerRadius - fOuterRadius) / fScaleDepth);
+	float fCameraAngle = dot(-v3Ray, a_position) / length(a_position);
+	float fLightAngle = dot(v3LightPosition, position) / length(position);
+	float fCameraScale = scale(fCameraAngle);
+	float fLightScale = scale(fLightAngle);
+	float fCameraOffset = fDepth*fCameraScale;
+	float fTemp = (fLightScale + fCameraScale);
 
 	// Initialize the scattering loop variables
-	//gl_FrontColor = vec4(0.0, 0.0, 0.0, 0.0);
 	float fSampleLength = fFar / fSamples;
 	float fScaledLength = fSampleLength * fScale;
 	vec3 v3SampleRay = v3Ray * fSampleLength;
@@ -68,26 +71,22 @@ void main(void)
 
 	// Now loop through the sample rays
 	vec3 v3FrontColor = vec3(0.0, 0.0, 0.0);
+	vec3 v3Attenuate;
 	for(int i=0; i<nSamples; i++)
 	{
 		float fHeight = length(v3SamplePoint);
 		float fDepth = exp(fScaleOverScaleDepth * (fInnerRadius - fHeight));
-		float fLightAngle = dot(v3LightPos, v3SamplePoint) / fHeight;
-		//float fCameraAngle = 1.0;
-		//float fCameraAngle = dot(-v3Ray, v3SamplePoint) / fHeight;
-		float fCameraAngle = dot(v3Ray, v3Pos) / length(v3Pos);
-		// if (fCameraAngle < 0.0000000001) { 
-		// 	continue; 
-		// }
-		float fScatter = (fStartOffset + fDepth*(scale(fLightAngle) - scale(fCameraAngle)));
-		vec3 v3Attenuate = exp(-fScatter * (v3InvWavelength * fKr4PI + fKm4PI));
+		float fScatter = fDepth*fTemp - fCameraOffset;
+		v3Attenuate = exp(-fScatter * (v3InvWavelength * fKr4PI + fKm4PI));
 		v3FrontColor += v3Attenuate * (fDepth * fScaledLength);
 		v3SamplePoint += v3SampleRay;
 	}
-	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(a_position,1.0);
 
-	// Finally, scale the Mie and Rayleigh colors and set up the varying variables for the pixel shader    
-    c0 = v3FrontColor * (v3InvWavelength * fKrESun); 
-    c1 = v3FrontColor * fKmESun;
-    v3Direction = v3CameraPos - v3Pos;                   
+	// Calculate the attenuation factor for the ground
+	c0 = v3Attenuate;
+	c1 = v3FrontColor * (v3InvWavelength * fKrESun + fKmESun);
+
+	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(a_position,1.0);
+  	vUv = a_texCoord;
+  	vNormal = a_normal;
 }

@@ -3,11 +3,14 @@
 #include "Earth.hpp"
 #include "Camera.hpp"
 
+#define PI 3.1415926535897932384626433832795f
+
+
 Earth::Earth(const std::string& name, float radius, float orbRadius) : Planet(name, radius, orbRadius), time(0.0f) {
     sphere.program = Programs.get("earthShader");
 
-    atmo.mesh = Meshes.get("sphere");
-    atmo.program = Programs.get("atmosphereShader");
+    sphere.mesh = Meshes.get("sphere");
+    // sphere.program = Programs.get("atmosphereShader");
     this->innerRadius = radius;
     this->outerRadius = radius *1.025f;
     mat4f rot = glm::mat4(1.0);
@@ -27,11 +30,16 @@ void Earth::update(float deltaTime) {
 
     rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0)); //*axisRotation;
 
-    // atmo->setPosition(position);
+    // sphere->setPosition(position);
 
     WorldObject::update(deltaTime);
     Planet::update(deltaTime);
 }
+
+    vec3f mul4(const mat4f& m, const vec3f& v){
+        return (vec3f) ( m * vec4f(v, 0));
+    }
+
 
 void Earth::draw() const {
     Camera* cam = static_cast<Camera*>(getGame()->getObjectByName("cam"));
@@ -71,13 +79,47 @@ void Earth::draw() const {
     mat4f normalMatrix( glm::transpose(glm::inverse(model)));
 
     vec3f lightPos = vec3f(0.0f);// - position;
-    float shininess = 20.0f;
+    float shininess = 10.0f;
     vec3f emission = vec3f(0.0f);
     //vec3f specular = vec3f(0.5f);
-    vec3f specular = vec3f(1.0f, 0.9255f, 0.698f)*0.6f;
+    vec3f specular = vec3f(1.0f, 0.9255f, 0.698f)*0.3f;
     vec3f lightAmbient = vec3f(0.0f);
     vec3f lightDiffuse(1.0f);
     vec3f lightSpecular(1.0f);
+
+    mat4f viewModel = glm::inverse(view*model);
+    vec4f camPos = viewModel[3];
+    mat4f iModel = ( (glm::inverse(model)));
+    vec3f cameraPos = vec3f(camPos); //(vec3f) (iModel*(vec4f(cam->getPosition(), 0)));//****  //vec3f(model*vec4f(cam->getPosition(),1.0));// 
+    float Kr = 0.0025f;
+    float Km = 0.0010f;
+    float ESun = 5.f;
+    float fScale = 1.f/(outerRadius-innerRadius);
+    float fScaleDepth = 0.25f; //Must be 25%
+    float fCameraHeight = glm::length(cameraPos);
+    float g = -0.980f; // Mie aerosol scattering constant
+    float g2 = g*g;
+    vec3f wavelength = vec3f(0.650f, 0.570f, 0.475f);
+    vec3f v3InvWavelength = vec3f(1.0f / powf(wavelength.x, 4.0f), 1.0f / powf(wavelength.y, 4.0f), 1.0f / powf(wavelength.z, 4.0f));
+    vec3f lightPos_v2 = glm::normalize(mul4(iModel, -getPosition()));
+    // vec3f lightPos = vec3f(0.f);
+    sphere.program->uniform("v3CameraPos")->set(cameraPos);       // The camera's current position
+    sphere.program->uniform("v3LightPos")->set(lightPos_v2);        // The direction vector to the light source
+    sphere.program->uniform("v3InvWavelength")->set(v3InvWavelength);   // 1 / pow(wavelength, 4) for the red, green, and blue channels
+    // sphere.program->uniform("fCameraHeight")->set(fCameraHeight); // The camera's current height
+    sphere.program->uniform("fCameraHeight2")->set(fCameraHeight*fCameraHeight); // fCameraHeight^2
+    sphere.program->uniform("fOuterRadius")->set(outerRadius);                   // The outer (spheresphere) radius
+    sphere.program->uniform("fOuterRadius2")->set(outerRadius*outerRadius);      // fOuterRadius^2
+    sphere.program->uniform("fInnerRadius")->set(innerRadius);                   // The inner (planetary) radius
+    // sphere.program->uniform("fInnerRadius2")->set(innerRavec3f(0.0f);//*******  //dius*innerRadius);      // fInnerRadius^2
+    sphere.program->uniform("fKrESun")->set(Kr*ESun);                            // Kr * ESun
+    sphere.program->uniform("fKmESun")->set(Km*ESun);                            // Kr * ESun
+    sphere.program->uniform("fKr4PI")->set(Kr*4.f*PI);                           // Kr * 4 * PI
+    sphere.program->uniform("fKm4PI")->set(Km*4.f*PI);                           // Km * 4 * PI
+    sphere.program->uniform("fScale")->set(fScale);                              // 1 / (fOuterRadius - fInnerRadius)
+    sphere.program->uniform("fScaleDepth")->set(fScaleDepth);                    // The scale depth (i.e. the altitude at which the spheresphere's average density is found)
+    sphere.program->uniform("fScaleOverScaleDepth")->set(fScale / (fScaleDepth) );  // fScale / fScaleDepth
+
 
     sphere.program->uniform("lightPos")->set(lightPos);
     sphere.program->uniform("shininess")->set(shininess);
@@ -114,8 +156,10 @@ void Earth::draw() const {
     sphere.program->uniform("viewMatrix")->set(view);
     sphere.program->uniform("normalMatrix")->set(normalMatrix);
 
+
+    // glEnable(GL_CULL_FACE);
+    // glCullFace(GL_FRONT);
     sphere.draw();
-
-
-
+    // glCullFace(GL_BACK);
+    // glDisable(GL_CULL_FACE);
 }

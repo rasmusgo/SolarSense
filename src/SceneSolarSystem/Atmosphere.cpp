@@ -49,17 +49,20 @@ void Atmosphere::draw() const {
     vec4f camPos = viewModel[3];
     mat4f iModel = ( (glm::inverse(model)));
     vec3f cameraPos = vec3f(camPos); //(vec3f) (iModel*(vec4f(cam->getPosition(), 0)));//****  //vec3f(model*vec4f(cam->getPosition(),1.0));// 
-    float Kr = 0.0020f;
-    float Km = 0.0015f;
-    float ESun = 20.f;
+    float Kr = 0.00025f;
+    float Km = 0.00010f;
+    float ESun = 5.f;
     float fScale = 1.f/(outerRadius-innerRadius);
-    float fScaleDepth = 0.125; //Must be 25%
+    float fScaleDepth = 0.25f; //Must be 25%
     float fCameraHeight = glm::length(cameraPos-getLocalPosition());
-    float g = -0.9810f; // Mie aerosol scattering constant
+    float g = -0.990f; // Mie aerosol scattering constant
     float g2 = g*g;
     vec3f wavelength = vec3f(0.650f, 0.570f, 0.475f);
     vec3f v3InvWavelength = vec3f(1.0f / powf(wavelength.x, 4.0f), 1.0f / powf(wavelength.y, 4.0f), 1.0f / powf(wavelength.z, 4.0f));
+   
     vec3f lightPos = glm::normalize(mulm4(iModel, -getPosition())); //vec3f(0.0f);//*******  //-vec3f(vec4f(cam->getPosition(),1.0f)*model); //vec3f(model*vec4f(vec3f(0.0),1.0));//
+
+    // vec3f lightPos = glm::normalize(mulm4(iModel, -getPosition())); //vec3f(0.0f);//*******  //-vec3f(vec4f(cam->getPosition(),1.0f)*model); //vec3f(model*vec4f(vec3f(0.0),1.0));//
     // vec3f lightPos = vec3f(0.f);
     atmo.program->uniform("v3CameraPos")->set(cameraPos);       // The camera's current position
     atmo.program->uniform("v3LightPos")->set(lightPos);        // The direction vector to the light source
@@ -76,7 +79,7 @@ void Atmosphere::draw() const {
     atmo.program->uniform("fKm4PI")->set(Km*4.f*PI);                           // Km * 4 * PI
     atmo.program->uniform("fScale")->set(fScale);                              // 1 / (fOuterRadius - fInnerRadius)
     atmo.program->uniform("fScaleDepth")->set(fScaleDepth);                    // The scale depth (i.e. the altitude at which the atmosphere's average density is found)
-    atmo.program->uniform("fScaleOverScaleDepth")->set(fScale / 0.125f);  // fScale / fScaleDepth
+    atmo.program->uniform("fScaleOverScaleDepth")->set(fScale / (fScaleDepth) );  // fScale / fScaleDepth
 
     atmo.program->uniform("modelMatrix")->set(model);
     atmo.program->uniform("viewMatrix")->set(view);
