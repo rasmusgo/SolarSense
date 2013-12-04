@@ -8,7 +8,7 @@
 Atmosphere::Atmosphere(const std::string& name, float radius, float orbRadius) : Planet(name, radius, orbRadius), time(0.0f){
     this->setName(name);
     this->innerRadius = radius;
-    this->outerRadius = radius*1.025;
+    this->outerRadius = radius*1.025f;
     this->scale = vec3f(outerRadius);
 
     atmo.mesh = Meshes.get("spherehigh");
@@ -47,7 +47,7 @@ void Atmosphere::draw() const {
     mat4f model = glm::scale(fullTransform, getScale());
     mat4f viewModel = glm::inverse(view*model);
     vec4f camPos = viewModel[3];
-    mat4f iModel = ( (glm::inverse(model)));
+    mat4f iModel = glm::inverse(model);
     vec3f cameraPos = vec3f(camPos); //(vec3f) (iModel*(vec4f(cam->getPosition(), 0)));//****  //vec3f(model*vec4f(cam->getPosition(),1.0));// 
     float Kr = 0.00025f;
     float Km = 0.00010f;

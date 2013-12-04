@@ -134,6 +134,7 @@ SceneSolarSystem::SceneSolarSystem() :
     neptune->addTo(sun);
     objectsOrder.push_back("neptune");
 
+
 //    Rock* rock = new Rock("rock", 1.5f, 40.0f, "objectShader", "cage");
 //    rock->orbSpeed = 8.0f/fa;
 //    rock->rotSpeed = 7.0f;

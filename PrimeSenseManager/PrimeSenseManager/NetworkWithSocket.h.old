@@ -1,0 +1,66 @@
+#ifndef NETWORK_H
+#define NETWORK_H
+
+/*
+ * Code taken from http://www.codeproject.com/Articles/412511/Simple-client-server-network-using-Cplusplus-and-W
+ * See also http://msdn.microsoft.com/en-us/library/windows/desktop/ms738545(v=vs.85).aspx
+ */
+
+#pragma once
+#include <winsock2.h>
+#include <Windows.h>
+#include <ws2tcpip.h>
+#include <map>
+#include <string.h>
+
+#define DEFAULT_BUFLEN 512
+#define DEFAULT_PORT "5054" 
+
+using namespace std;
+#pragma comment (lib, "Ws2_32.lib")
+
+
+#define MAX_PACKET_SIZE 1000000
+
+enum PacketTypes {
+	INIT_CONNECTION = 0,
+	ACTION_EVENT = 1
+};
+
+struct Packet {
+	unsigned int packet_type;
+
+	void serialize(char * data) {
+		memcpy(data, this, sizeof(Packet));
+	}
+
+	void deserialize(char * data) {
+		memcpy(this, data, sizeof(Packet));
+	}
+};
+
+class Network {
+public:
+	Network();
+	~Network();
+
+	// Socket to listen for new connections
+	SOCKET listenSocket;
+	// Socket to give to the client
+	SOCKET clientSocket;
+	// for error checking return values
+	int iResult;
+
+	// Accept connection
+	bool acceptConnection(unsigned int & id);
+	// Send data to the client
+	void sendData(Packet packet);
+	// Receive incoming data
+	int receiveData(unsigned int client_id, char * recvbuf);
+
+private:
+	static int sendMessage(SOCKET curSocket, char * message, int messageSize);
+	static int receiveMessage(SOCKET curSocket, char * buffer, int bufSize);
+};
+
+#endif // NETWORK_H
