@@ -37,7 +37,7 @@ SceneSolarSystem::SceneSolarSystem() :
     glCullFace(GL_BACK);
     glShadeModel(GL_SMOOTH);
 
-    NetworkManager::connect();
+    if (!getGame()->isSlave) NetworkManager::connect();
 
 	//Center mouse
     Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
@@ -382,104 +382,106 @@ void SceneSolarSystem::update(float deltaTime, float time) {
 		fpsCount = 0;
 	}
 
-    // Comunication outside
-    static command cmd;
-    m_cmd_q.lock();
-    while(!cmd_q.empty()){
-        cmd = cmd_q.front(); cmd_q.pop();
-        switch(cmd.opcode){
-            case 1: //Planet switch commands
-            {
-                int action;
-                sscanf(cmd.buffer, "%d", &action);
-                if( ! cam->interpolating){
-                    switch(action){
-                        case 1:
-                            if(--currentObject != objectsOrder.end()){
-                                cam->setArround((*currentObject));
-                            }
-                            break;
-                        case 2:
-                            if(++currentObject != objectsOrder.end()){
-                                cam->setArround((*currentObject));
-                            }
-                            break;
-                        case 3:
-                            cam->setMode(Camera::Free);
-                            break;
+    if (!getGame()->isSlave) {
+        // Comunication outside
+        static command cmd;
+        m_cmd_q.lock();
+        while(!cmd_q.empty()){
+            cmd = cmd_q.front(); cmd_q.pop();
+            switch(cmd.opcode){
+                case 1: //Planet switch commands
+                {
+                    int action;
+                    sscanf(cmd.buffer, "%d", &action);
+                    if( ! cam->interpolating){
+                        switch(action){
+                            case 1:
+                                if(--currentObject != objectsOrder.end()){
+                                    cam->setArround((*currentObject));
+                                }
+                                break;
+                            case 2:
+                                if(++currentObject != objectsOrder.end()){
+                                    cam->setArround((*currentObject));
+                                }
+                                break;
+                            case 3:
+                                cam->setMode(Camera::Free);
+                                break;
+                        }
                     }
+
                 }
+               case 2: //rotation commands
+                    double xdelta, ydelta;
+                    sscanf(cmd.buffer, "%lf %lf", &xdelta, &ydelta);
+                    cam->vel.x = 2 * ydelta;
+                    cam->vel.y = 2 * xdelta;
+                break;
+                case 3:  // zoom
+                    double zdelta;
+                    sscanf(cmd.buffer, "%lf", &zdelta);
+                    cam->vel.z = -1 * zdelta;
+
 
             }
-           case 2: //rotation commands
-                double xdelta, ydelta;
-                sscanf(cmd.buffer, "%lf %lf", &xdelta, &ydelta);
-                cam->vel.x = 2 * ydelta;
-                cam->vel.y = 2 * xdelta;
-            break;
-            case 3:  // zoom
-                double zdelta;
-                sscanf(cmd.buffer, "%lf", &zdelta);
-                cam->vel.z = -1 * zdelta;
 
-        
+           delete[] cmd.buffer;
+        }
+        m_cmd_q.unlock();
+
+        // Update sensor
+        if (!getGame()->isSlave) NetworkManager::update();
+
+        //Update logic
+        std::pair<WorldObject*, bool> col = closestWorldObject();
+
+        if (not cam->interpolating && col.second) {
+            setCameraArround(col.first);
+        }
+        if (Input::isKeyPressed(sf::Keyboard::P)) paused = !paused;
+
+        if (Input::isKeyPressed(sf::Keyboard::Space)) {
+            setCameraArround(col.first);
         }
 
-       delete[] cmd.buffer;
-    }
-    m_cmd_q.unlock();
-
-    // Update sensor
-    NetworkManager::update();
-
-    //Update logic
-    std::pair<WorldObject*, bool> col = closestWorldObject();
-
-    if (not cam->interpolating && col.second) {
-        setCameraArround(col.first);
-    }
-    if (Input::isKeyPressed(sf::Keyboard::P)) paused = !paused;
-
-    if (Input::isKeyPressed(sf::Keyboard::Space)) {
-        setCameraArround(col.first);
-    }
-
-    if (Input::isKeyPressed(sf::Keyboard::H)){
-        cam->setArround((WorldObject*)(getGame()->getObjectByName("earth")));
-    }
-     if (Input::isKeyPressed(sf::Keyboard::M)){
-        cam->setArround((WorldObject*)(getGame()->getObjectByName("moon")));
-    }
-    if (paused) deltaTime = 0.0f;
-    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || NetworkManager::checkGesture() == NetworkManager::SwipeRight)) {
-        if (cam->mode == Camera::Arround) {
-            if (++currentObject != objectsOrder.end())
-                cam->setArround((*currentObject));
-            else --currentObject;
+        if (Input::isKeyPressed(sf::Keyboard::H)){
+            cam->setArround((WorldObject*)(getGame()->getObjectByName("earth")));
         }
-        else {
-            setCameraArround(closestWorldObject().first);
+         if (Input::isKeyPressed(sf::Keyboard::M)){
+            cam->setArround((WorldObject*)(getGame()->getObjectByName("moon")));
         }
-    }
-    if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Left) || NetworkManager::checkGesture() == NetworkManager::SwipeLeft)) {
-        if (cam->mode == Camera::Arround) {
-            if (currentObject != objectsOrder.begin())
-                cam->setArround((*--currentObject));
+        if (paused) deltaTime = 0.0f;
+        if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Right) || NetworkManager::checkGesture() == NetworkManager::SwipeRight)) {
+            if (cam->mode == Camera::Arround) {
+                if (++currentObject != objectsOrder.end())
+                    cam->setArround((*currentObject));
+                else --currentObject;
+            }
+            else {
+                setCameraArround(closestWorldObject().first);
+            }
         }
-        else {
-            setCameraArround(closestWorldObject().first);
+        if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::Left) || NetworkManager::checkGesture() == NetworkManager::SwipeLeft)) {
+            if (cam->mode == Camera::Arround) {
+                if (currentObject != objectsOrder.begin())
+                    cam->setArround((*--currentObject));
+            }
+            else {
+                setCameraArround(closestWorldObject().first);
+            }
         }
-    }
-    //if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
-    if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
-    if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
-    if (Input::isKeyPressed(sf::Keyboard::Num3)) {
-        stereoscopic3D = !stereoscopic3D;
-        cam->setStereoscopic(stereoscopic3D);
-    }
-    //if (Input::isKeyPressed(sf::Keyboard::R) && SensorManager::sensorConnected()) SensorManager::resetTracking();
+        //if (not cam->interpolating && (Input::isKeyPressed(sf::Keyboard::F) || SensorManager::checkGesture() == SensorManager::PUNCH)) cam->setMode(Camera::Free);
+        if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::F)) cam->setMode(Camera::Free);
+        if (not cam->interpolating && Input::isKeyPressed(sf::Keyboard::G)) cam->setMode(Camera::Arround);
+        if (Input::isKeyPressed(sf::Keyboard::Num3)) {
+            stereoscopic3D = !stereoscopic3D;
+            cam->setStereoscopic(stereoscopic3D);
+        }
+        //if (Input::isKeyPressed(sf::Keyboard::R) && SensorManager::sensorConnected()) SensorManager::resetTracking();
 
-    //if(!isWindow) Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
+        //if(!isWindow) Input::setMousePos(SCRWIDTH/2,SCRHEIGHT/2,getGame()->getWindow());
+    }
 }
 
 std::pair<WorldObject*,bool> SceneSolarSystem::closestWorldObject() {

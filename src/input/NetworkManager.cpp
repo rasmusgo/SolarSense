@@ -46,7 +46,7 @@ NetworkManager::Status NetworkManager::update() {
     if (waitingForConnection) {
         status = listener.accept(client);
         if (status == sf::Socket::NotReady) {
-            std::cout << "Network | Waiting for incoming connection attempts..." << std::endl;
+            //std::cout << "Network | Waiting for incoming connection attempts..." << std::endl;
         } else if (status == sf::Socket::Done) {
             waitingForConnection = false;
             std::cout << "Network | Connection established." << std::endl;
