@@ -18,5 +18,19 @@
     <ClCompile Include="main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="PrimeSense.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PrimeSense.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
