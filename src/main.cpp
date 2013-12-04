@@ -16,19 +16,24 @@ int main(int argc, char* argv[]) {
 
     bool slaveMode = false;
 
+    char* ip = "";
     if(argc > 1){
         if(argv[1][0] == 'w') {
             isWindow = true;
             SCRWIDTH = sf::VideoMode::getDesktopMode().width/2;
             SCRHEIGHT = sf::VideoMode::getDesktopMode().height/2;
         }
-        else if (argv[1][0] == 's')
+        else if (argv[1][0] == 's') {
             slaveMode = true;
+
+            if (argc > 2)
+                ip = argv[2];
+        }
     }
 
 
     // Init
-    Game game(slaveMode);
+    Game game(slaveMode, ip);
     game.setRoot(new SceneSolarSystem());
     game.run();
 
