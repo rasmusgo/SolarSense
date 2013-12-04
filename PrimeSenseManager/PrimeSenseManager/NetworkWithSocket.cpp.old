@@ -1,0 +1,139 @@
+//#include "StdAfx.h"
+#include "NetworkWithSocket.h"
+
+Network::Network() {
+	// Create WSADATA object
+	WSADATA wsaData;
+
+	// Our sockets for the server
+	listenSocket = INVALID_SOCKET;
+	clientSocket = INVALID_SOCKET;
+
+	// Address info for the server to listen to
+	struct addrinfo *result = NULL;
+	struct addrinfo hints;
+
+	// Initialize Winsock
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0) {
+		printf("Network | WSAStartup failed with error: %d\n", iResult);
+		exit(1);
+	}
+
+	// Set address information
+	ZeroMemory(&hints, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;    // TCP connection!!!
+	hints.ai_flags = AI_PASSIVE;
+
+	// Resolve the server address and port
+	// NULL = localhost
+	iResult = getaddrinfo("localhost", DEFAULT_PORT, &hints, &result);
+
+	if (iResult != 0) {
+		printf("Network | getaddrinfo() failed with error: %d\n", iResult);
+		WSACleanup();
+		exit(1);
+	}
+
+	// Create a SOCKET for connecting to server
+	listenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+
+	if (listenSocket == INVALID_SOCKET) {
+		printf("Network | socket() failed with error: %ld\n", WSAGetLastError());
+		freeaddrinfo(result);
+		WSACleanup();
+		exit(1);
+	}
+
+	// Set the mode of the socket to be nonblocking
+	u_long iMode = 1;
+	iResult = ioctlsocket(listenSocket, FIONBIO, &iMode);
+
+	if (iResult == SOCKET_ERROR) {
+		printf("Network | ioctlsocket() failed with error: %d\n", WSAGetLastError());
+		closesocket(listenSocket);
+		WSACleanup();
+		exit(1);
+	}
+
+	// Setup the TCP listening socket
+	iResult = bind(listenSocket, result->ai_addr, (int)result->ai_addrlen);
+
+	if (iResult == SOCKET_ERROR) {
+		printf("Network | bind() failed with error: %d\n", WSAGetLastError());
+		freeaddrinfo(result);
+		closesocket(listenSocket);
+		WSACleanup();
+		exit(1);
+	}
+
+	// No longer need address information
+	freeaddrinfo(result);
+
+	// Start listening for new clients attempting to connect
+	iResult = listen(listenSocket, SOMAXCONN);
+
+	if (iResult == SOCKET_ERROR) {
+		printf("Network | listen() failed with error: %d\n", WSAGetLastError());
+		closesocket(listenSocket);
+		WSACleanup();
+		exit(1);
+	}
+}
+
+Network::~Network() {}
+
+// Accept connection
+bool Network::acceptConnection(unsigned int& id) {
+	// If client waiting, accept the connection and save the socket
+	clientSocket = accept(listenSocket, NULL, NULL);
+
+	if (clientSocket != INVALID_SOCKET) {
+		// Disable nagle on the client's socket
+		char value = 1;
+		setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value));
+		return true;
+	}
+
+	return false;
+}
+
+// Send data to the client
+void Network::sendData(Packet packet) {
+	// Serialize packet
+	const unsigned int packet_size = sizeof(Packet);
+	char packet_data[packet_size];
+	packet.serialize(packet_data);
+
+	// Send packet
+	int iSendResult;
+	iSendResult = sendMessage(clientSocket, packet_data, packet_size);
+
+	if (iSendResult == SOCKET_ERROR) {
+		printf("Network | send() failed with error: %d\n", WSAGetLastError());
+		closesocket(clientSocket);
+	}
+}
+
+// Receive incoming data
+int Network::receiveData(unsigned int client_id, char * recvbuf) {
+	if (clientSocket != INVALID_SOCKET)	{
+		iResult = receiveMessage(clientSocket, recvbuf, MAX_PACKET_SIZE);
+		if (iResult == 0) {
+			printf("Network | Connection closed\n");
+			closesocket(clientSocket);
+		}
+		return iResult;
+	}
+	return 0;
+}
+
+int Network::sendMessage(SOCKET curSocket, char * message, int messageSize) {
+	return send(curSocket, message, messageSize, 0);
+}
+
+int Network::receiveMessage(SOCKET curSocket, char * buffer, int bufSize) {
+	return recv(curSocket, buffer, bufSize, 0);
+}

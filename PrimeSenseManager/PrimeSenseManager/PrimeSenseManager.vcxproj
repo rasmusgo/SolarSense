@@ -51,14 +51,14 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(NITE2_INCLUDE);$(OPENNI2_INCLUDE);./GrabDetector/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(NITE2_INCLUDE);$(OPENNI2_INCLUDE);./GrabDetector/Include;$(SFML32_DIR)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(NITE2_LIB);$(OPENNI2_LIB);./GrabDetector/Lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenNI2.lib;NiTE2.lib;GrabDetector.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(NITE2_LIB);$(OPENNI2_LIB);./GrabDetector/Lib;$(SFML32_DIR)/lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenNI2.lib;NiTE2.lib;GrabDetector.lib;sfml-system.lib;sfml-network.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -69,20 +69,26 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(NITE2_INCLUDE);$(OPENNI2_INCLUDE);./GrabDetector/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(NITE2_INCLUDE);$(OPENNI2_INCLUDE);./GrabDetector/Include;$(SFML32_DIR)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(NITE2_LIB);$(OPENNI2_LIB);./GrabDetector/Lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenNI2.lib;NiTE2.lib;GrabDetector.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(NITE2_LIB);$(OPENNI2_LIB);./GrabDetector/Lib;$(SFML32_DIR)/lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenNI2.lib;NiTE2.lib;GrabDetector.lib;sfml-system.lib;sfml-network.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Network.cpp" />
+    <ClCompile Include="PrimeSense.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Network.h" />
+    <ClInclude Include="PrimeSense.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
