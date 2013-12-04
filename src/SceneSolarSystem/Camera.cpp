@@ -38,7 +38,7 @@ void Camera::drawHUD() {
     if (not wasTracking)
         handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
 
-    if (!NetworkManager::isTracking()) {
+    if (NetworkManager::isConnected() && !NetworkManager::isTracking()) {
 
         hudHand.program->uniform("time")->set(glm::mod(GLOBALCLOCK.getElapsedTime().asSeconds(), 20.0f));
         hudHand.program->uniform("lastTime")->set(handTime);
@@ -178,7 +178,7 @@ void Camera::updateAcceleration(float deltaTime) {
             vel = handMovement;
         }*/
 
-        // Check the network manager for new hand movement.
+        // Check the network manager for new hand movement, but only if the user is grabbing
         if (NetworkManager::isGrabbing()) {
             vec3f handMovement = NetworkManager::getHandMovement();
             vel = handMovement;
