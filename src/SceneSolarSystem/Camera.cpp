@@ -1,5 +1,5 @@
 #include "Camera.hpp"
-#include "../input/SensorManager.hpp"
+#include "../input/NetworkManager.hpp"
 
 Camera::Camera(const vec3f& pos, const mat4f& projection) :
     projection(projection), stereoscopic3D(false) {
@@ -38,7 +38,7 @@ void Camera::drawHUD() {
     if (not wasTracking)
         handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
 
-    if (SensorManager::sensorConnected() && !SensorManager::isTracking()) {
+    if (!NetworkManager::isTracking()) {
 
         hudHand.program->uniform("time")->set(glm::mod(GLOBALCLOCK.getElapsedTime().asSeconds(), 20.0f));
         hudHand.program->uniform("lastTime")->set(handTime);
@@ -55,7 +55,7 @@ void Camera::drawHUD() {
         glEnable(GL_CULL_FACE);
     }
 
-    wasTracking = SensorManager::isTracking();
+    //wasTracking = SensorManager::isTracking();
 }
 
 void Camera::update(float deltaTime) {
@@ -113,7 +113,7 @@ void Camera::update(float deltaTime) {
         }
         else {
             interpolating = false;
-            SensorManager::resetInitialHandPos();
+            //SensorManager::resetInitialHandPos();
             lastArrDist = glm::length(position - arrObject->getPosition());
         }
 
@@ -160,7 +160,7 @@ void Camera::updateAcceleration(float deltaTime) {
         }
 
         // Check SensorManager
-        if (SensorManager::isTracking() && SensorManager::significantMovement()) {
+        /*if (SensorManager::isTracking() && SensorManager::significantMovement()) {
             float speedFactor = 1.f;
 
             vec3f handMovement = SensorManager::getHandMovement();
@@ -175,6 +175,12 @@ void Camera::updateAcceleration(float deltaTime) {
             handMovement.z *= speedFactor;
             handMovement *= maxVel*speedFactor;
 
+            vel = handMovement;
+        }*/
+
+        // Check the network manager for new hand movement.
+        if (NetworkManager::isGrabbing()) {
+            vec3f handMovement = NetworkManager::getHandMovement();
             vel = handMovement;
         }
 

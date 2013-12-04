@@ -3,13 +3,13 @@ include(VBE/VBE.pro)
 DEFINES += __DEBUG __LOG
 
 TEMPLATE = app
-LD_LIBRARY_PATH += libs:
+LD_LIBRARY_PATH += libs
 CONFIG -= qt
 
 linux-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
 
 
-LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lOpenNI2 -lNiTE2
+LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-network -lOpenNI2 -lNiTE2
 unix:{
     linux-g++:contains(QMAKE_TARGET.arch, i686):{
         message( "Building for 32 bit")
@@ -67,15 +67,15 @@ SOURCES += \
     $$PWD/SceneSolarSystem/Camera.cpp \
     $$PWD/SceneSolarSystem/Sun.cpp \
     $$PWD/SceneSolarSystem/Earth.cpp \
+    $$PWD/SceneSolarSystem/Atmosphere.cpp \
     $$PWD/SceneSolarSystem/SunHalo.cpp \
     $$PWD/SceneSolarSystem/Planet.cpp \
-    $$PWD/input/InteractionListener.cpp \
-    $$PWD/input/InteractionManager.cpp \
-    #$$PWD/input/SensorManager.cpp \
+    $$PWD/input/SensorManager.cpp \
     SceneSolarSystem/WorldObject.cpp \
     SceneSolarSystem/Rock.cpp \
     SceneSolarSystem/RingPlanet.cpp \
-    SceneSolarSystem/Orbit.cpp
+    SceneSolarSystem/Orbit.cpp \
+    input/NetworkManager.cpp
 
 
 HEADERS += \
@@ -84,18 +84,18 @@ HEADERS += \
     $$PWD/SceneSolarSystem/Camera.hpp \
     $$PWD/SceneSolarSystem/StandardPlanet.hpp \
     $$PWD/SceneSolarSystem/Sun.hpp \
+    $$PWD/SceneSolarSystem/Atmosphere.hpp \
     $$PWD/SceneSolarSystem/Planet.hpp \
     $$PWD/SceneSolarSystem/Earth.hpp \
     $$PWD/SceneSolarSystem/SunHalo.hpp \
-    $$PWD/input/InteractionListener.hpp \
-    $$PWD/input/InteractionManager.hpp \
     $$PWD/SceneSolarSystem/inputreader.h \
-    #$$PWD/input/SensorManager.hpp \
+    $$PWD/input/SensorManager.hpp \
     Commons.hpp \
     SceneSolarSystem/WorldObject.hpp \
     SceneSolarSystem/Rock.hpp \
     SceneSolarSystem/RingPlanet.hpp \
-    SceneSolarSystem/Orbit.hpp
+    SceneSolarSystem/Orbit.hpp \
+    input/NetworkManager.hpp
 
 OTHER_FILES += \
     $$PWD/data/shaders/sample.vert \

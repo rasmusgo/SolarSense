@@ -20,6 +20,12 @@ StandardPlanet::~StandardPlanet(){
 }
 
 void StandardPlanet::update(float deltaTime) {
+    static bool upd = false;
+    if(!upd){
+        upd = true;
+        mat4f rot = glm::mat4(1.0);
+        rotation = glm::rotate(glm::quat(rot), -tilt, vec3f(1,0,0));
+    }
     time += deltaTime;
 
     position = vec3f(orbRadius*cos(time*orbSpeed), 0.0f, orbRadius*sin(time*orbSpeed));
@@ -27,6 +33,7 @@ void StandardPlanet::update(float deltaTime) {
 
     WorldObject::update(deltaTime);
     Planet::update(deltaTime);
+
 }
 
 void StandardPlanet::draw() const {

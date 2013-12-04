@@ -1,4 +1,5 @@
 #include "SceneSolarSystem/SceneSolarSystem.hpp"
+#include "input/NetworkManager.hpp"
 
 bool isWindow = false;
 
@@ -10,7 +11,7 @@ int main(int argc, char* argv[]) {
     CONTEXT_SETTINGS_OPENGL = sf::ContextSettings(32,32,4,2,0);
     FOV = 60.0f; //degrees
     ZNEAR = 0.01f;
-    ZFAR = 2000.0f;
+    ZFAR = 300000.0f;
     SCRWIDTH = sf::VideoMode::getDesktopMode().width;
     SCRHEIGHT = sf::VideoMode::getDesktopMode().height;
 
@@ -23,7 +24,6 @@ int main(int argc, char* argv[]) {
         SCRWIDTH = sf::VideoMode::getDesktopMode().width;
         SCRHEIGHT = sf::VideoMode::getDesktopMode().height;
     }
-
 
     // Init
     Game game;

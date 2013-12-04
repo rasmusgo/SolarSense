@@ -2,7 +2,7 @@
 #define ATMOSPHERE_HPP
 
 #include "Commons.hpp"
-#include "WorldObject.hpp"
+#include "Planet.hpp"
 
 class Atmosphere : public Planet {
     public:
