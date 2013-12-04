@@ -250,9 +250,9 @@ bool SceneSolarSystem::loadResources() {
     //Lores
     tex = new Texture(1);
 // <<<<<<< HEAD
-    if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
+    // if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
 // =======
-    // if(!tex->loadFromFile("data/earth4k_2.jpg",true)) return false;
+    if(!tex->loadFromFile("data/earth4k_2.jpg",true)) return false;
 // >>>>>>> cca6ae2e09879e044340e32981084012f45f652f
     Textures.add("earth", tex);
 
@@ -268,7 +268,7 @@ bool SceneSolarSystem::loadResources() {
     tex = new Texture(5);
     if(!tex->loadFromFile("data/EarthNormal4k.png",true)) return false;
     Textures.add("earthNormal", tex);
-    tex = new Texture(1);
+    tex = new Texture(6);
     if(!tex->loadFromFile("data/earth_clouds4k_2.png",true)) return false;
     Textures.add("earthClouds", tex);
 

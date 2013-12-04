@@ -94,11 +94,11 @@ void Earth::draw() const {
     vec3f cameraPos = vec3f(camPos); //(vec3f) (iModel*(vec4f(cam->getPosition(), 0)));//****  //vec3f(model*vec4f(cam->getPosition(),1.0));// 
     float Kr = 0.0025f;
     float Km = 0.0010f;
-    float ESun = 5.f;
+    float ESun = 2.f;
     float fScale = 1.f/(outerRadius-innerRadius);
     float fScaleDepth = 0.25f; //Must be 25%
     float fCameraHeight = glm::length(cameraPos);
-    float g = -0.980f; // Mie aerosol scattering constant
+    float g = -0.750f; // Mie aerosol scattering constant
     float g2 = g*g;
     vec3f wavelength = vec3f(0.650f, 0.570f, 0.475f);
     vec3f v3InvWavelength = vec3f(1.0f / powf(wavelength.x, 4.0f), 1.0f / powf(wavelength.y, 4.0f), 1.0f / powf(wavelength.z, 4.0f));
@@ -152,10 +152,15 @@ void Earth::draw() const {
     tex->bind();
     sphere.program->uniform("samplerNormal")->set((int)tex->getSlot());
     
+    tex = Textures.get("earthClouds");
+    tex->bind();
+    sphere.program->uniform("samplerCloud")->set((int)tex->getSlot());
+    
     sphere.program->uniform("modelViewProjectionMatrix")->set(t);
     sphere.program->uniform("modelMatrix")->set(model);
     sphere.program->uniform("viewMatrix")->set(view);
     sphere.program->uniform("normalMatrix")->set(normalMatrix);
+    sphere.program->uniform("globaltime")->set(time);
 
 
     //glDisable(GL_CULL_FACE);

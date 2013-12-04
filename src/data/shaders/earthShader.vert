@@ -23,8 +23,8 @@ uniform float fKm4PI;                        // Km * 4 * PI
 uniform float fScale;                        // 1 / (fOuterRadius - fInnerRadius) 
 uniform float fScaleDepth;                // The scale depth (i.e. the altitude at which the atmosphere's average density is found) 
 uniform float fScaleOverScaleDepth;        // fScale / fScaleDepth 
-const int iSamples = 4; 
-const float fInvSamples = 0.25; 
+const int iSamples = 8; 
+const float fInvSamples = 0.125; 
 
 
 attribute vec3 a_position;
@@ -40,6 +40,8 @@ varying vec3 vNormal;
 varying vec3 vCam;
 varying vec3 vLight;
 varying vec3 vPos;
+
+
 
 
 float scale(float fCos)        

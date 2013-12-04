@@ -3,6 +3,7 @@ uniform sampler2D samplerNight;
 uniform sampler2D samplerWater;
 uniform sampler2D samplerNormal;
 uniform sampler2D samplerWaterTex;
+uniform sampler2D samplerCloud;
 
 uniform float shininess;
 uniform vec3 emission;
@@ -10,6 +11,8 @@ uniform vec3 specular;
 uniform vec3 lightAmbient;
 uniform vec3 lightDiffuse;
 uniform vec3 lightSpecular;
+uniform float globaltime;
+
 
 varying vec3 c0;
 varying vec3 c1;
@@ -38,12 +41,8 @@ vec4 light(vec4 texColor, vec3 N, vec3 V, vec3 L, vec4 uSpecular)
                 vec4(specular,1.0) * uSpecular * Ispec; //specular
 }
 
-mat3 tbn(vec2 texCoord, vec3 meshNormal, vec3 pos){
+mat3 tbn(void){
 // compute derivations of the texture coordinate
-/*vec2 tc_dx = dFdx(texCoord);
-vec2 tc_dy = dFdy(texCoord);
-vec3 p_dx  = dFdx(pos);
-vec3 p_dy  = dFdy(pos);*/
 vec2 tc_dx = dFdx(vTexCoord);
 vec2 tc_dy = dFdy(vTexCoord);
 vec3 p_dx  = dFdx(vPos);
@@ -52,7 +51,7 @@ vec3 p_dy  = dFdy(vPos);
 vec3 t = normalize( tc_dy.y * p_dx - tc_dx.y * p_dy );
 vec3 b = normalize( tc_dy.x * p_dx - tc_dx.x * p_dy ); // sign inversion
 // get new tangent from a given mesh normal
-vec3 n = normalize(meshNormal);
+vec3 n = normalize(vNormal);
 vec3 x = cross(n, t);
 t = cross(x, n);
 t = normalize(t);
@@ -63,9 +62,11 @@ b = normalize(b);
 return mat3(t, b, n);
 }
 
+
+
 void main() {
     vec3 detailNormal = normalize(texture2D(samplerNormal, vTexCoord).xyz * 2.0 - 1.0);
-    mat3 TBN = tbn(vTexCoord, vNormal, vPos);
+    mat3 TBN = tbn();
     vec3 tanLight = vLight * TBN;
 
     float lightIntensity = max(0.1, min(dot(vLight, vNormal) + 0.1, 1.0));
@@ -93,7 +94,6 @@ void main() {
         lightColor *= max(0.1, min(dot(-tanLight, detailNormal) + 0.1, 1.0));
     }
 
-
     vec4 color;
    // float levelW = max(dot(waterColor, waterColor), 0.1);
     vec4 specularC = vec4(1.0) - waterColor;
@@ -105,19 +105,19 @@ void main() {
         vec4 blueWater = texture2D(samplerWaterTex, vTexCoord);
         texColor = (1.0-frac)*texColor + frac * blueWater;
     }
-    texColor = texColor * vec4(c1,1.0);
-    lightColor = mix(lightColor,vec4(1.0)-vec4(c1,1.0), min(dot(-vLight, vNormal), 0.0));
+    specularC *= texColor;
 
+    float time      = globaltime*0.001;
+    vec2 uv         = vTexCoord.xy;
 
-    color = light(texColor, detailNormal, vCam*TBN, tanLight, specularC )*lightIntensity+lightColor; //*lightIntensity
-    //if (waterColor.r < 0.5)
-     //   color = min(light(texColor, vNormal, vCam, vLight, specular), 0.7)*lightIntensity+lightColor;
-    //else color = texColor*lightIntensity+lightColor;
-    //if (waterColor.r < 0.9)
-     //   color = min(light(texColor, vNormal, vCam, vLight, lightSpecular * levelW ), 0.5)*lightIntensity+lightColor;
-    //else color = texColor*lightIntensity+lightColor;
-    // color = light(texColor, detailNormal, vCam*TBN, tanLight, specularC )+lightColor; //*lightIntensity
+    uv += vec2( time, time );
+    
+    // vec3 texSample  = texture2D( samplerCloud, newUv ).rgb;
+    // // float uOff      = ( texSample.r *  time );
+    // // vec2 warpedUV     = newUv + vec2( uOff, 0.0 );
+    vec4 cloudColor = texture2D(samplerCloud,uv)*max(0.0,dot(vLight, vNormal));
 
+    color = light(texColor, detailNormal, vCam*TBN, tanLight, specularC )+lightColor; //*lightIntensity
 
-    gl_FragColor = vec4(c0+color.xyz, 1.0);
+    gl_FragColor = vec4(c0*0.75+mix(mix(cloudColor.xyz,color.xyz,0.5), vec3(1.0)-vec3(c1), min(dot(-vLight, vNormal), 0.0)), 1.0);
 }
