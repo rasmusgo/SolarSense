@@ -5,6 +5,7 @@
 #include "Earth.hpp"
 #include "SunHalo.hpp"
 #include "StandardPlanet.hpp"
+#include "Atmosphere.hpp"
 #include "RingPlanet.hpp"
 #include "input/NetworkManager.hpp"
 #include "Rock.hpp"
@@ -49,7 +50,7 @@ SceneSolarSystem::SceneSolarSystem() :
 
     //add gameObjects
     stars = new SphereObject();
-    stars->radius = 1000.0f;
+    stars->radius = 70000.0f;
     stars->setDrawPriority(-10);
     stars->addTo(this);
 
@@ -71,13 +72,33 @@ SceneSolarSystem::SceneSolarSystem() :
     venus->addTo(sun);
     objectsOrder.push_back("venus");
 
-    Earth* earth = new Earth("earth", 1.0f, 30.0f);
+    Earth* earth = new Earth("earth", 1.0f, 1000.0f);
     earth->orbSpeed = 3.0f/fa;
     earth->rotSpeed = 3.0f;
     earth->addTo(sun);
+    earth->setDrawPriority(100);
     objectsOrder.push_back("earth");
+    
 
-    StandardPlanet* moon = new StandardPlanet("moon", 0.2f, 3.0f, "planetShaderBump", "moon", "moonbump");
+    /*Atmosphere* atmo = new Atmosphere("atmo", 1.f, 2300.0f);
+    atmo->orbSpeed = 3.0f/fa;
+    atmo->rotSpeed = 3.0f;
+    atmo->addTo(sun);
+    objectsOrder.push_back("atmo");*/
+    Atmosphere* atmo = new Atmosphere("atmo", 1.0f, 0);
+    atmo->addTo(earth);
+    atmo->rotSpeed = 3.0f;
+    objectsOrder.push_back("atmo");
+   
+    // StandardPlanet* clouds = new StandardPlanet("clouds", 1.001f, 0, "planetShader", "earthClouds");
+    // clouds->addTo(earth);
+    // clouds->rotSpeed = -0.7;
+    // clouds->tilt = -15;
+    // clouds->setDrawPriority(102);
+    // objectsOrder.push_back("clouds");
+
+
+    StandardPlanet* moon = new StandardPlanet("moon", 0.27f, 62.0f, "planetShaderBump", "moon", "moonbump");
     moon->orbSpeed = 10.0f/fa;
     moon->rotSpeed = -2.0*earth->rotSpeed;
     moon->addTo(earth);
@@ -126,6 +147,8 @@ SceneSolarSystem::SceneSolarSystem() :
     currentObject = objectsOrder.begin();
     cam->setArround((*currentObject));
 
+//glEnable(GL_BLEND);
+//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	std::cout << "* Init done" << std::endl;
 }
 
@@ -228,23 +251,27 @@ bool SceneSolarSystem::loadResources() {
     //Lores
     tex = new Texture(1);
 // <<<<<<< HEAD
-//     if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
+    // if(!tex->loadFromFile("data/earth_daytime.png",true)) return false;
 // =======
-    if(!tex->loadFromFile("data/earth4k.jpg",true)) return false;
+    if(!tex->loadFromFile("data/earth4k_2.jpg",true)) return false;
 // >>>>>>> cca6ae2e09879e044340e32981084012f45f652f
     Textures.add("earth", tex);
-    tex = new Texture(5);
+
+    tex = new Texture(2);
     if(!tex->loadFromFile("data/earthmap.jpg",true)) return false;
     Textures.add("earthWaterTex", tex);
-    tex = new Texture(2);
-    if(!tex->loadFromFile("data/EarthNight4k.png",true)) return false;
-    Textures.add("earthNight", tex);
     tex = new Texture(3);
-    if(!tex->loadFromFile("data/EarthSpec4k.png",true)) return false;
-    Textures.add("earthWater", tex);
+    if(!tex->loadFromFile("data/earth_night4k_2.jpg",true)) return false;
+    Textures.add("earthNight", tex);
     tex = new Texture(4);
+    if(!tex->loadFromFile("data/earth_spec4k_2.png",true)) return false;
+    Textures.add("earthWater", tex);
+    tex = new Texture(5);
     if(!tex->loadFromFile("data/EarthNormal4k.png",true)) return false;
     Textures.add("earthNormal", tex);
+    tex = new Texture(6);
+    if(!tex->loadFromFile("data/earth_clouds4k_2.png",true)) return false;
+    Textures.add("earthClouds", tex);
 
 
     //Earth Chris style
@@ -332,7 +359,7 @@ bool SceneSolarSystem::loadResources() {
     //Create meshes
     Meshes.add("cube",new Mesh("data/10x10.obj"));
     Meshes.add("spherehigh", new Mesh("data/128.obj"));
-    Meshes.add("sphere",new Mesh("data/32.obj"));
+    Meshes.add("sphere",new Mesh("data/64.obj"));
     Meshes.add("spherelow",new Mesh("data/32.obj"));
     Meshes.add("spheresuperlow", new Mesh("data/16.obj"));
     Meshes.add("square",new Mesh("data/square.obj"));

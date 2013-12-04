@@ -22,7 +22,7 @@ void main() {
     if (length(vPos) > orbRadius) { // over the orbiting radius, could be shadowed
         vec3 sphericProj = normalize(vPos)*orbRadius;
         if (length(sphericProj - planetCenter) < radius) { // Behind the planet
-            lightIntensity = 0.15;
+            lightIntensity = 0.0;
         }
     }
 

@@ -3,7 +3,7 @@ include(VBE/VBE.pro)
 DEFINES += __DEBUG __LOG
 
 TEMPLATE = app
-LD_LIBRARY_PATH += libs:
+LD_LIBRARY_PATH += libs
 CONFIG -= qt
 
 linux-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
@@ -67,6 +67,7 @@ SOURCES += \
     $$PWD/SceneSolarSystem/Camera.cpp \
     $$PWD/SceneSolarSystem/Sun.cpp \
     $$PWD/SceneSolarSystem/Earth.cpp \
+    $$PWD/SceneSolarSystem/Atmosphere.cpp \
     $$PWD/SceneSolarSystem/SunHalo.cpp \
     $$PWD/SceneSolarSystem/Planet.cpp \
     $$PWD/input/SensorManager.cpp \
@@ -83,6 +84,7 @@ HEADERS += \
     $$PWD/SceneSolarSystem/Camera.hpp \
     $$PWD/SceneSolarSystem/StandardPlanet.hpp \
     $$PWD/SceneSolarSystem/Sun.hpp \
+    $$PWD/SceneSolarSystem/Atmosphere.hpp \
     $$PWD/SceneSolarSystem/Planet.hpp \
     $$PWD/SceneSolarSystem/Earth.hpp \
     $$PWD/SceneSolarSystem/SunHalo.hpp \

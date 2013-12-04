@@ -2,76 +2,91 @@
 #include "Atmosphere.hpp"
 #include "Camera.hpp"
 
-Atmosphere::Atmosphere(const std::string& name, float planetRadius, float outerRadius) : time(0.0f) {
-    this->setName(name);
-    this->scale = vec3f(outerRadius);
-    this->outerRadius = outerRadius;
-    this->innerRadius = planetRadius;
+#define PI 3.1415926535897932384626433832795f
 
+
+Atmosphere::Atmosphere(const std::string& name, float radius, float orbRadius) : Planet(name, radius, orbRadius), time(0.0f){
+    this->setName(name);
+    this->innerRadius = radius;
+    this->outerRadius = radius*1.025;
+    this->scale = vec3f(outerRadius);
+
+    atmo.mesh = Meshes.get("spherehigh");
     atmo.program = Programs.get("atmosphereShader");
 
-    this->setDrawPriority(100); // We want to draw this the last object before the orbits
+    this->setDrawPriority(1000); // We want to draw this the last object before the orbits
 }
 
 Atmosphere::~Atmosphere(){
 
-}
+} 
 
 
 void Atmosphere::update(float deltaTime) {
-    time += deltaTime;
-    transform = glm::rotate(mat4f(1.0f),90.f,vec3f(1,0,0));
-    transform = glm::scale(transform, vec3f(getScale()));
+   time += deltaTime;
+
+    position = vec3f(orbRadius*cos(time*orbSpeed), 0.0f, orbRadius*sin(time*orbSpeed));
+    // rotation = glm::rotate(rotation, deltaTime*rotSpeed, vec3f(0,1,0)); //*axisRotation;
+
+    // atmo->setPosition(position);
+
+    WorldObject::update(deltaTime);
+    Planet::update(deltaTime);
 }
+
+
+    vec3f mulm4(const mat4f& m, const vec3f& v){
+        return (vec3f) ( m * vec4f(v, 0));
+    }
+
 
 void Atmosphere::draw() const {
     Camera* cam = static_cast<Camera*>(getGame()->getObjectByName("cam"));
     mat4f projection = cam->projection;
     mat4f view = cam->view;
     mat4f model = glm::scale(fullTransform, getScale());
-    mat4f t = projection*view*modelM;
-
-    Texture* tex = Textures.get("sun");
-    tex->bind();
-
-    float Kr = 0.5f;
-    float Km = 0.5f;
+    mat4f viewModel = glm::inverse(view*model);
+    vec4f camPos = viewModel[3];
+    mat4f iModel = ( (glm::inverse(model)));
+    vec3f cameraPos = vec3f(camPos); //(vec3f) (iModel*(vec4f(cam->getPosition(), 0)));//****  //vec3f(model*vec4f(cam->getPosition(),1.0));// 
+    float Kr = 0.00025f;
+    float Km = 0.00010f;
     float ESun = 5.f;
     float fScale = 1.f/(outerRadius-innerRadius);
-    float fScaleDepth = 0.25f;
-    float fCameraHeight = (float) cam->getPosition().y;
-    float g = -0.75f; // Mie aerosol scattering constant
+    float fScaleDepth = 0.25f; //Must be 25%
+    float fCameraHeight = glm::length(cameraPos-getLocalPosition());
+    float g = -0.990f; // Mie aerosol scattering constant
     float g2 = g*g;
-    float wavelength = 100.f;
-    vec3f v3InvWavelength = vec3f(1 / pow(wavelength, 4));
+    vec3f wavelength = vec3f(0.650f, 0.570f, 0.475f);
+    vec3f v3InvWavelength = vec3f(1.0f / powf(wavelength.x, 4.0f), 1.0f / powf(wavelength.y, 4.0f), 1.0f / powf(wavelength.z, 4.0f));
+   
+    vec3f lightPos = glm::normalize(mulm4(iModel, -getPosition())); //vec3f(0.0f);//*******  //-vec3f(vec4f(cam->getPosition(),1.0f)*model); //vec3f(model*vec4f(vec3f(0.0),1.0));//
 
-    model.program->uniform("v3CameraPos")->set(cam->getPosition());       // The camera's current position
-    model.program->uniform("v3LightPos")->set(vec3f(0.f));        // The direction vector to the light source
-    model.program->uniform("v3InvWavelength")->set(v3InvWavelength);   // 1 / pow(wavelength, 4) for the red, green, and blue channels
-    model.program->uniform("fCameraHeight")->set(fCameraHeight); // The camera's current height
-    model.program->uniform("fCameraHeight2")->set(fCameraHeight*fCameraHeight); // fCameraHeight^2
-    model.program->uniform("fOuterRadius")->set(outerRadius);                   // The outer (atmosphere) radius
-    model.program->uniform("fOuterRadius2")->set(outerRadius*outerRadius);      // fOuterRadius^2
-    model.program->uniform("fInnerRadius")->set(innerRadius);                   // The inner (planetary) radius
-    model.program->uniform("fInnerRadius2")->set(innerRadius*innerRadius);      // fInnerRadius^2
-    model.program->uniform("fKrESun")->set(Kr*ESun);                            // Kr * ESun
-    model.program->uniform("fKr4PI")->set(Kr*4.f*3.14f);                           // Kr * 4 * PI
-    model.program->uniform("fKm4PI")->set(Km*4.f*3.14f);                           // Km * 4 * PI
-    model.program->uniform("fScale")->set(fScale);                              // 1 / (fOuterRadius - fInnerRadius)
-    model.program->uniform("fScaleDepth")->set(fScaleDepth);                    // The scale depth (i.e. the altitude at which the atmosphere's average density is found)
-    model.program->uniform("fScaleOverScaleDepth")->set(fScale / fScaleDepth);  // fScale / fScaleDepth
-    model.program->uniform("nSamples")->set(2);  
-    model.program->uniform("fSamples")->set(0.5f);  
+    // vec3f lightPos = glm::normalize(mulm4(iModel, -getPosition())); //vec3f(0.0f);//*******  //-vec3f(vec4f(cam->getPosition(),1.0f)*model); //vec3f(model*vec4f(vec3f(0.0),1.0));//
+    // vec3f lightPos = vec3f(0.f);
+    atmo.program->uniform("v3CameraPos")->set(cameraPos);       // The camera's current position
+    atmo.program->uniform("v3LightPos")->set(lightPos);        // The direction vector to the light source
+    atmo.program->uniform("v3InvWavelength")->set(v3InvWavelength);   // 1 / pow(wavelength, 4) for the red, green, and blue channels
+    // atmo.program->uniform("fCameraHeight")->set(fCameraHeight); // The camera's current height
+    atmo.program->uniform("fCameraHeight2")->set(fCameraHeight*fCameraHeight); // fCameraHeight^2
+    atmo.program->uniform("fOuterRadius")->set(outerRadius);                   // The outer (atmosphere) radius
+    atmo.program->uniform("fOuterRadius2")->set(outerRadius*outerRadius);      // fOuterRadius^2
+    atmo.program->uniform("fInnerRadius")->set(innerRadius);                   // The inner (planetary) radius
+    // atmo.program->uniform("fInnerRadius2")->set(innerRavec3f(0.0f);//*******  //dius*innerRadius);      // fInnerRadius^2
+    atmo.program->uniform("fKrESun")->set(Kr*ESun);                            // Kr * ESun
+    atmo.program->uniform("fKmESun")->set(Km*ESun);                            // Kr * ESun
+    atmo.program->uniform("fKr4PI")->set(Kr*4.f*PI);                           // Kr * 4 * PI
+    atmo.program->uniform("fKm4PI")->set(Km*4.f*PI);                           // Km * 4 * PI
+    atmo.program->uniform("fScale")->set(fScale);                              // 1 / (fOuterRadius - fInnerRadius)
+    atmo.program->uniform("fScaleDepth")->set(fScaleDepth);                    // The scale depth (i.e. the altitude at which the atmosphere's average density is found)
+    atmo.program->uniform("fScaleOverScaleDepth")->set(fScale / (fScaleDepth) );  // fScale / fScaleDepth
 
-    // model.program->uniform("modelViewProjectionMatrix")->set(t);
-    // model.program->uniform("globaltime")->set(time);
-    // sphere.program->uniform("modelMatrix")->set(model);
-    // sphere.program->uniform("viewMatrix")->set(view);
-
-
-   glDisable(GL_CULL_FACE);
-   glDepthMask(GL_FALSE);
-   model.draw();
-   glDepthMask(GL_TRUE);
-   glEnable(GL_CULL_FACE);
+    atmo.program->uniform("modelMatrix")->set(model);
+    atmo.program->uniform("viewMatrix")->set(view);
+    atmo.program->uniform("projectionMatrix")->set(projection);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    atmo.draw();    
+    glCullFace(GL_BACK);
+    glDisable(GL_CULL_FACE);
 }

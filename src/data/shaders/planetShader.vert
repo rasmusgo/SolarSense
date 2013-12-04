@@ -29,7 +29,7 @@ void main()
  float spec = clamp(dot(reflectVec, viewVec), 0.0, 1.0); 
  spec = pow(spec, 8.0); 
 
- Specular = spec * vec3(1.0, 0.941, 0.898) * 0.3;
+ Specular = spec * vec3(1.0, 0.941, 0.898) * 0.4;
  Diffuse = max(dot(lightVec, tnorm), 0.0);
 
  // LightIntensity = diffuseContribution 
