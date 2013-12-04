@@ -1,4 +1,5 @@
 #include "SceneSolarSystem/SceneSolarSystem.hpp"
+#include "input/NetworkManager.hpp"
 
 bool isWindow = false;
 
@@ -23,7 +24,6 @@ int main(int argc, char* argv[]) {
         SCRWIDTH = sf::VideoMode::getDesktopMode().width;
         SCRHEIGHT = sf::VideoMode::getDesktopMode().height;
     }
-
 
     // Init
     Game game;
