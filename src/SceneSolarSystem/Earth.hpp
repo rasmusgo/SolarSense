@@ -14,6 +14,7 @@ class Earth : public Planet {
 
         Model atmo;
     private:
+        float time;
         float innerRadius;
         float outerRadius;
         //vec3f rotationAxis;

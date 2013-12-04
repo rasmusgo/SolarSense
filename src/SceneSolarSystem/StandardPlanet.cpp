@@ -20,6 +20,12 @@ StandardPlanet::~StandardPlanet(){
 }
 
 void StandardPlanet::update(float deltaTime, float time) {
+    static bool upd = false;
+    if(!upd){
+        upd = true;
+        mat4f rot = glm::mat4(1.0);
+        rotation = glm::rotate(glm::quat(rot), -tilt, vec3f(1,0,0));
+    }
 
     position = vec3f(orbRadius*cos(time*orbSpeed), 0.0f, orbRadius*sin(time*orbSpeed));
     rotation = glm::rotate(quat(), time*rotSpeed, vec3f(0,1,0));

@@ -1,4 +1,5 @@
 #include "SceneSolarSystem/SceneSolarSystem.hpp"
+#include "input/NetworkManager.hpp"
 
 bool isWindow = false;
 
@@ -30,7 +31,6 @@ int main(int argc, char* argv[]) {
                 ip = argv[2];
         }
     }
-
 
     // Init
     Game game(slaveMode, ip);

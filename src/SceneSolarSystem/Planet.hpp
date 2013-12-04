@@ -19,6 +19,7 @@ class Planet : public WorldObject {
         float orbRadius;
         float orbSpeed;
         float rotSpeed;
+        float tilt;
         bool drawOrbit;
 
         const GameObject* getArroundParent() const;

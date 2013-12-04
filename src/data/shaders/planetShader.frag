@@ -38,12 +38,12 @@ void main() {
 
     //vec3 specular_map = texture2D(EarthSpecularMap, vTexCoord).rgb;
     //vec3 color = daytime;
-
-    vec3 color = (texture2D(sampler, vTexCoord).rgb) * max((Diffuse+ Specular), 0.1);
+    vec4 sample =  texture2D(sampler, vTexCoord);
+    vec3 color = sample.rgb * max((Diffuse+ Specular), 0.0);
 
     //if (Diffuse < 0.1)
     //    color = mix(nighttime, daytime, (Diffuse + 0.15) * 5.0);
 
-    gl_FragColor =  vec4(color, 1.0); //vec4(clamp(daytime, 0, 255), 1.0);
+    gl_FragColor =  vec4(color, sample.a); //vec4(clamp(daytime, 0, 255), 1.0);
 }
 

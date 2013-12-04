@@ -27,7 +27,7 @@ void Planet::update(float deltaTime, float time) {
 
     float dist = glm::length(cam->getPosition() - getPosition());
     float s = getScale().x;
-    if (dist > 15.0*s) {
+    /*if (dist > 15.0*s) {
         sphere.mesh = Meshes.get("spheresuperlow");
     }
     else if (dist > 10.0*s) { // If we are far away we use the low poly sphere
@@ -35,8 +35,9 @@ void Planet::update(float deltaTime, float time) {
     }
     else if (dist > 4.0*s) {
         sphere.mesh = Meshes.get("sphere");
-    }
-    else sphere.mesh = Meshes.get("spherehigh");
+    }*/
+    //else 
+    sphere.mesh = Meshes.get("spherehigh");
 }
 
 const GameObject* Planet::getArroundParent() const {

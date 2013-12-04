@@ -2,14 +2,14 @@
 #define ATMOSPHERE_HPP
 
 #include "Commons.hpp"
-#include "WorldObject.hpp"
+#include "Planet.hpp"
 
 class Atmosphere : public Planet {
     public:
 		Atmosphere(const std::string& name, float planetRadius, float outerRadius);
         ~Atmosphere();
 
-        void update(float deltaTime);
+        void update(float deltaTime, float time);
         void draw() const;
 
         Model atmo;

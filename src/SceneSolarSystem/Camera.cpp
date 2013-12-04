@@ -1,5 +1,5 @@
 #include "Camera.hpp"
-//#include "../input/SensorManager.hpp"
+#include "../input/NetworkManager.hpp"
 
 Camera::Camera(const vec3f& pos, const mat4f& projection) :
     projection(projection), stereoscopic3D(false) {
@@ -38,7 +38,8 @@ void Camera::drawHUD() {
     if (not wasTracking)
         handTime = GLOBALCLOCK.getElapsedTime().asSeconds();
 
-    /*if (SensorManager::sensorConnected() && !SensorManager::isTracking()) {
+
+    if (!NetworkManager::isTracking()) {
 
         hudHand.program->uniform("time")->set(glm::mod(GLOBALCLOCK.getElapsedTime().asSeconds(), 20.0f));
         hudHand.program->uniform("lastTime")->set(handTime);
@@ -53,7 +54,7 @@ void Camera::drawHUD() {
         hudHand.draw();
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-    }*/
+    }
 
     //wasTracking = SensorManager::isTracking();
 }
@@ -103,6 +104,7 @@ void Camera::update(float deltaTime, float time) {
                     rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
             }
         }
+
         else { //Interpolating
             rotation = glm::rotate(rotation,vel.y/2.0f,vec3f(0,1,0));
             rotation = glm::rotate(rotation,vel.x/2.0f,(vec3f(1,0,0) * rotation));
@@ -126,8 +128,6 @@ void Camera::update(float deltaTime, float time) {
                 //SensorManager::resetInitialHandPos();
                 lastArrDist = glm::length(position - arrObject->getPosition());
             }
-
-
         }
 
 
@@ -188,24 +188,12 @@ void Camera::updateAcceleration(float deltaTime) {
             acc.x = -maxAcc;
         }
 
-        /*// Check SensorManager
-        if (SensorManager::isTracking() && SensorManager::significantMovement()) {
-            float speedFactor = 1.f;
 
-            vec3f handMovement = SensorManager::getHandMovement();
-            if (mode == Free) {
-                handMovement.x = -handMovement.x;
-            } else {
-                float distToObj = glm::length(position - arrObject->getPosition()) / glm::min(arrObject->getScale().x, 20.0f);
-                speedFactor = glm::min((distToObj - 0.5)/ 5.f, 0.8)  + 0.2f; // 0.5 is the minimum value for distToObject, 5 is the maximum value for distToObj
-            }
-            handMovement.x = -handMovement.x;
-
-            handMovement.z *= speedFactor;
-            handMovement *= maxVel*speedFactor;
-
+        // Check the network manager for new hand movement.
+        if (NetworkManager::isGrabbing()) {
+            vec3f handMovement = NetworkManager::getHandMovement();
             vel = handMovement;
-        }*/
+        }
 
         if (Input::isMouseDown(sf::Mouse::Left)) {
             vec2i dis = Input::getMouseDisplacement();
