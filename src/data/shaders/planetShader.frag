@@ -39,7 +39,7 @@ void main() {
     //vec3 specular_map = texture2D(EarthSpecularMap, vTexCoord).rgb;
     //vec3 color = daytime;
     vec4 sample =  texture2D(sampler, vTexCoord);
-    vec3 color = sample.rgb * max((Diffuse+ Specular), 0.1);
+    vec3 color = sample.rgb * max((Diffuse+ Specular), 0.0);
 
     //if (Diffuse < 0.1)
     //    color = mix(nighttime, daytime, (Diffuse + 0.15) * 5.0);

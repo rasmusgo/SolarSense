@@ -49,7 +49,7 @@ SceneSolarSystem::SceneSolarSystem() :
 
     //add gameObjects
     stars = new SphereObject();
-    stars->radius = 30000.0f;
+    stars->radius = 70000.0f;
     stars->setDrawPriority(-10);
     stars->addTo(this);
 
