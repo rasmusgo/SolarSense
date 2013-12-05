@@ -28,17 +28,18 @@
 
 
 body {
+	background: transparent url('background.png') no-repeat;
+	background-size: 100% 100%;
     overflow: hidden;
     padding: 0;
     margin: 0;
     width: 100%;
     /*min-height: 100%;*/
     height: 97%;
-    background: gray;
 }
 
 #log {
-    background: white;
+    background: transparent;
     margin: 0;
     padding: 0.5em 0.5em 0.5em 0.5em;
     position: absolute;
@@ -65,7 +66,7 @@ body {
     width: 98%;
     padding: 1em;
     min-height: 95%;
-    background-color: white; 
+    background-color: transparent; 
     margin: 1em auto 1em auto;
     box-shadow: 0px 0px 10px black;
 }
@@ -109,7 +110,7 @@ joystickbackground {
     left: 100px;
     bottom: 100px;
     /*top: 5em;*/
-    background:#00A3FF;
+    background:grey;
     border-style:solid;
     border-width:2px;
     border-color:black;
@@ -150,7 +151,29 @@ joystickhitzone {
     left: 50px;
     z-index: 1;
     
+}
+#b1 {
+  background-image: url(bleft.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 107px;
+  width: 107px;
+background-size: 100% 100%;
+}
+#b2 {
+  background-image: url(bright.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  
+  height: 107px;
+  width: 107px;
+
 }*/
+img.button {
+  height: 64px;
+  width: 64px;
+  }
 </style>
 </head>
 
@@ -160,18 +183,34 @@ joystickhitzone {
 
     <div id="content">
     <div class="btn-group buttonset .btn-group-lg two" >
-        <a  class="btn btn-lg  input-block-level" name="Previous" value="Previous" id="b1" data-code="1">Previous</a>
-        <a type="button" class="btn btn-lg  input-block-level" name="Next" value="Next" id="b2" data-code="2">Next</a>
+        <a  class="cmdbtn button" name="Previous" value="Previous" id="b1" data-code="1">
+			<img src="bleft.png" class="button"/>
+			<img src="bleftpressed.png" class="button" style="display: none;"/>
+		</a>
+        <a type="button" class="cmdbtn button" name="Next" value="Next" id="b2" data-code="2">
+			<img src="bright.png" class="button"/>
+			<img src="brightpressed.png" class="button" style="display: none;"/>
+		</a>
     </div>
-    <div class="btn-group buttonset .btn-group-lg">
+	
+	
+	
+	
+  <!--  <div class="btn-group buttonset .btn-group-lg">
         <a class="btn btn-lg  input-block-level" name="Freemode" value="Freemode" id="b3" data-code="3">Free Mode</a>
-    </div>
+    </div>-->
 
 
 
     <div class="btn-group buttonset .btn-group-lg two" >
-        <button  class="btn-lg  input-block-level zoom" name="Out" value="Previous" id="zo" data-code="-1">Out</button>
-        <button class="btn-lg  input-block-level zoom" name="In" value="Next" id="zi" data-code="1">In</button>
+        <a  class="btn-lg button  input-block-level zoom" name="Out" value="Previous" id="zo" data-code="-1">
+			<img src="zoomout.png" class="button"/>
+			<img src="zoomout.png" class="button" style="display: none;"/>
+		</a>
+        <a class="btn-lg button input-block-level zoom" name="In" value="Next" id="zi" data-code="1">
+			<img src="zoomin.png" class="button"/>
+			<img src="zoomin.png" class="button" style="display: none;"/>
+		</a>
     </div>
     <!--<div id="actual_joystick">
         </div>

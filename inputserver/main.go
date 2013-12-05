@@ -75,6 +75,15 @@ func main() {
 	serveStatic("js/bootstrap.min.js")
 	serveStatic("Touchscreen-Joystick/TouchControl.js")
 	serveStatic("js/bootstrap-slider.js")
+	serveStatic("bleft.png")
+	serveStatic("bleftpressed.png")
+	serveStatic("bright.png")
+	serveStatic("brightpressed.png")
+	serveStatic("zoomin.png")
+	serveStatic("zoomout.png")
+	//serveStatic("background.png")
+
+
 	
 	http.Handle("/ws", websocket.Handler(wsHandler))
 	//http.Handle("/monitor_ws", websocket.Handler(monitorHandler))

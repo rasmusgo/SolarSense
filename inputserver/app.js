@@ -65,7 +65,7 @@ $(document).ready(function(){
 	
 	var zoom = "0";
 
-	$("a.btn").click(function(){
+	$(".cmdbtn").click(function(){
 		//alert($(this).id);
     	var q = String($(this).data('code'));
     	//alert(q);
@@ -74,6 +74,13 @@ $(document).ready(function(){
   		conn.send(JSON.stringify(request));  // log("Sending " + JSON.stringify(request));
  	});
 
+	var togglePic = function(e){
+		$(e).children("img.button").each(function(i){
+			$(i).toggle();
+		});
+	};
+	$("a.button").click(togglePic);
+	$("a.button").mouseup(togglePic);
 
  	$(".zoom#zi").bind( "touchstart",function(){
 		zoom = "4";
