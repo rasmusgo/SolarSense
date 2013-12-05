@@ -38,7 +38,7 @@ void main(void)
     
     vec3 orange         = 0.25*vec3( 0.8, 0.65, 0.3 );
     vec3 orangeRed      = vec3( 0.8, 0.35, 0.1 );
-    float time      = globaltime*0.025;
+    float time      = globaltime*0.0225;
     float aspect    = 1.0;
     vec2 uv         = vTexCoord.xy;
     vec2 p          = uv;
@@ -66,17 +66,21 @@ void main(void)
     vec3 starSphere     = vec3( 0.0 );
 
     corona          *= pow( dist * invRadius, 24.0 );
+    
+    uv *= ( 2.0 - brightness );
+    uv = -0.5 +  uv;
+    // float r = dot(uv,uv);
+    // float f = (1.0-sqrt(abs(1.0-r)))/(r) + brightness * 0.5;
 
     vec2 newUv;
     newUv.x = uv.x;
     newUv.y = uv.y;
-    newUv += vec2( time, time );
+    newUv += vec2( time, 0 );
     
     vec3 texSample  = texture2D( sampler, newUv ).rgb;
-    float uOff      = ( texSample.r * 2.0*time );
-    float vOff      = ( texSample.g * 2.0*time );
-    float zOff      = ( texSample.b * 2.0*time );
-    vec2 starUV     = newUv + vec2( uOff+vOff, 0.0 );
+    float uOff      = ( texSample.r * 4.0*time );
+    float vOff      = ( texSample.g * 4.0*time );
+    vec2 starUV     = newUv + vec2( uOff, vOff );
     starSphere      = texture2D( sampler, starUV ).rgb;
 
 
