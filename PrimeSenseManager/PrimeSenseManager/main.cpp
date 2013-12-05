@@ -14,13 +14,14 @@ int main(int argc, char** argv)
 	while (true) {
 		// Update PrimeSense
 		primeSense.update();
+		PrimeSense::Gesture gesture = primeSense.getGesture();
 
 		opCode = 0;
 		float handX = 0, handY = 0, handZ = 0;
-		// Check if a new hand was found
+		// Check we stopped tracking the user
 		if (primeSense.startedTracking()) {
 			opCode = 1;
-		// Check if the hand was lost
+		// Check if we stopped tracking the user
 		} else if (primeSense.stoppedTracking()) {
 			opCode = 2;
 		// Only update position when grabbing
@@ -28,6 +29,15 @@ int main(int argc, char** argv)
 			opCode = 3;
 			// Get hand position
 			primeSense.getHandPosition(&handX, &handY, &handZ);
+		} else {
+			switch (primeSense.getGesture()) {
+			case PrimeSense::SWIPE_RIGHT:
+				opCode = 4;
+				break;
+			case PrimeSense::SWIPE_LEFT:
+				opCode = 5;
+				break;
+			}
 		}
 
 		// Fill packet with the information
