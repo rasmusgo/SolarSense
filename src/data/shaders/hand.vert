@@ -16,7 +16,9 @@ void main () {
 
     coord /= scale;
     coord += 1.0/scale/2.0;// * 9.0;
+    coord += 8.0/scale/2.0;
     coord.x += sin(time*12.0)*1.5/scale/ratio;
+
     gl_Position = vec4(vec3(coord,0.0),1.0);
     vTexCoord = a_texCoord;
 }
