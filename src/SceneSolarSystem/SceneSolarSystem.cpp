@@ -60,19 +60,20 @@ SceneSolarSystem::SceneSolarSystem() :
     objectsOrder.push_back("sun");
 
     float fa = 80.0f;
-    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f ,"planetShaderBump", "mercury", "mercuryNormal");
+    float distanceF = 3.0f;
+    StandardPlanet* mercury = new StandardPlanet("mercury", 0.5f, 15.0f*distanceF,"planetShaderBump", "mercury", "mercuryNormal");
     mercury->orbSpeed = 6.0f/fa;
     mercury->rotSpeed = 6.0f;
     mercury->addTo(sun);
     objectsOrder.push_back("mercury");
 
-    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f,"planetShaderBump","venus", "venusNormal");
+    StandardPlanet* venus = new StandardPlanet("venus", 0.4f, 20.0f*distanceF,"planetShaderBump","venus", "venusNormal");
     venus->orbSpeed = 4.0f/fa;
     venus->rotSpeed = 4.0f;
     venus->addTo(sun);
     objectsOrder.push_back("venus");
 
-    Earth* earth = new Earth("earth", 1.0f, 1000.0f);
+    Earth* earth = new Earth("earth", 1.0f, 30.0f*distanceF);
     earth->orbSpeed = 3.0f/fa;
     earth->rotSpeed = 3.0f;
     earth->addTo(sun);
@@ -88,7 +89,7 @@ SceneSolarSystem::SceneSolarSystem() :
     Atmosphere* atmo = new Atmosphere("atmo", 1.0f, 0);
     atmo->addTo(earth);
     atmo->rotSpeed = 3.0f;
-    objectsOrder.push_back("atmo");
+    //objectsOrder.push_back("atmo");
    
     // StandardPlanet* clouds = new StandardPlanet("clouds", 1.001f, 0, "planetShader", "earthClouds");
     // clouds->addTo(earth);
@@ -98,39 +99,39 @@ SceneSolarSystem::SceneSolarSystem() :
     // objectsOrder.push_back("clouds");
 
 
-    StandardPlanet* moon = new StandardPlanet("moon", 0.27f, 62.0f, "planetShaderBump", "moon", "moonbump");
+    StandardPlanet* moon = new StandardPlanet("moon", 0.27f, 10.0f, "planetShaderBump", "moon", "moonbump");
     moon->orbSpeed = 10.0f/fa;
     moon->rotSpeed = -2.0*earth->rotSpeed;
     moon->addTo(earth);
     objectsOrder.push_back("moon");
 
-    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f, "planetShaderBump", "mars", "marsNormal");
+    StandardPlanet* mars = new StandardPlanet("mars", 0.8f, 50.0f*distanceF, "planetShaderBump", "mars", "marsNormal");
     mars->orbSpeed = 2.0f/fa;
     mars->rotSpeed = 2.0f;
     mars->addTo(sun);
     objectsOrder.push_back("mars");
 
     //StandardPlanet* jupiter = new RingPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter", "rock", "jupiterringalpha", 2.f, 5.f);
-    StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 80.0f, "planetShader", "jupiter");
+    StandardPlanet* jupiter = new StandardPlanet("jupiter", 4.0f, 80.0f*distanceF, "planetShader", "jupiter");
     jupiter->orbSpeed = 1.5f/fa;
     jupiter->rotSpeed = 1.5f;
     jupiter->addTo(sun);
     objectsOrder.push_back("jupiter");
 
-    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 5.f, glm::rotate(quat(), 27.f, vec3f(0,0,1)));
+    RingPlanet* saturn = new RingPlanet("saturn", 3.5f, 120.f*distanceF, "planetShader", "saturn", "saturnring", "saturnringalpha", 2.f, 5.f, glm::rotate(quat(), 27.f, vec3f(0,0,1)));
     saturn->orbSpeed = 0.5f/fa;
     saturn->rotSpeed = 1.5f;
     saturn->addTo(sun);
     objectsOrder.push_back("saturn");
 
-    RingPlanet* uranus = new RingPlanet("uranus", 2.1f, 150.f, "planetShader", "uranus", "uranusring", "uranusringalpha", 2.f, 3.f, glm::rotate(quat(), 87.0f, vec3f(0,0,1)));
+    RingPlanet* uranus = new RingPlanet("uranus", 2.1f, 150.f*distanceF, "planetShader", "uranus", "uranusring", "uranusringalpha", 2.f, 3.f, glm::rotate(quat(), 87.0f, vec3f(0,0,1)));
     uranus->orbSpeed = 1.3f/fa;
     uranus->rotSpeed = 1.f;
     uranus->addTo(sun);
     objectsOrder.push_back("uranus");
 
     //RingPlanet* neptune = new RingPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune", "rock", "neptuneringalpha", 2.f, 4.f,  glm::rotate(quat(), -55.0f, vec3f(0,0,1)));
-    StandardPlanet* neptune = new StandardPlanet("neptune", 2.f, 200.1f, "planetShader", "neptune");
+    StandardPlanet* neptune = new StandardPlanet("neptune", 2.f, 200.1f*distanceF, "planetShader", "neptune");
     neptune->orbSpeed = 1.6f/fa;
     neptune->rotSpeed = 0.5f;
     neptune->addTo(sun);
@@ -145,8 +146,10 @@ SceneSolarSystem::SceneSolarSystem() :
     SunHalo* sunhalo = new SunHalo("sunHalo", 9.0f);
     sunhalo->addTo(sun);
 
+    std::cout << "Hey" << std::flush;
     currentObject = objectsOrder.begin();
     cam->setArround((*currentObject));
+    std::cout << "da" << std::endl << std::flush;
 
 //glEnable(GL_BLEND);
 //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);

@@ -2,7 +2,7 @@
 #include "../input/NetworkManager.hpp"
 
 Camera::Camera(const vec3f& pos, const mat4f& projection) :
-    projection(projection), stereoscopic3D(false) {
+    projection(projection), stereoscopic3D(false), interpolationTime(0.0f) {
 
     this->setName("cam");
     this->setUpdatePriority(2);
@@ -101,15 +101,15 @@ void Camera::update(float deltaTime) {
 
         vec3f wantedPos = arrObject->getPosition() + vec3f(0,0, arrObject->getScale().x*3.0f) * rotation;
 
-        if (interpolatingTimer < INTERPOLATION_TIME) {
-            position = Utils::lerp(fromPos, wantedPos, interpolatingTimer/INTERPOLATION_TIME);
+        if (interpolatingTimer < interpolationTime) {
+            position = Utils::lerp(fromPos, wantedPos, interpolatingTimer/interpolationTime);
        
             vec3f target = arrObject->getPosition();
             mat4f rot = glm::lookAt(getPosition(),
                         target,
                         vec3f(0, 1, 0)
                         );
-            rotation = glm::slerp(initialRotationInterpolationQuat,glm::quat(rot),  interpolatingTimer/INTERPOLATION_TIME);
+            rotation = glm::slerp(initialRotationInterpolationQuat,glm::quat(rot),  std::min(1.0f, interpolatingTimer/2.0f));
         }
         else {
             interpolating = false;
@@ -235,6 +235,9 @@ void Camera::setArround(const std::string& objectName) {
 
 void Camera::setArround(WorldObject* obj) {
     if (obj == arrObject) return;
+
+    float distance = (getPosition() - obj->getPosition()).length();
+    interpolationTime = distance/INTERPOLATION_SPEED;
 
     arrObject = obj;
     mode = Arround;
