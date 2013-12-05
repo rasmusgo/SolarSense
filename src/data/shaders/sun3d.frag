@@ -1,4 +1,5 @@
 uniform sampler2D sampler;
+uniform sampler2D samplertex;
 uniform float globaltime;
 
 varying vec2 vTexCoord;
@@ -82,7 +83,7 @@ void main(void)
 
     //float starGlow  = min( max( 1.0 - dist * ( 1.0 - brightness ), 0.0 ), 0.0 );
     // //gl_FragColor.rgb  = vec3( r );
-   gl_FragColor = vec4(texture2D(sampler,vTexCoord).xyz + vec3( ( 0.25 + brightness * 0.1 ) * orange ) + starSphere*1.0 + orange + corona*orangeRed, 1.0f);
+   gl_FragColor = vec4(texture2D(samplertex,vTexCoord).xyz + vec3( ( 0.25 + brightness * 0.1 ) * orange ) + starSphere*1.0 + orange + corona*orangeRed, 1.0f);
 
 //    gl_FragColor.rgb    = vec3( f * ( 0.75 + brightness * 0.3 ) * orange ) + starSphere + orange + starGlow * orangeRed;
    // gl_FragColor.a      = 1.0;

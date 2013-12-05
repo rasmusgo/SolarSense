@@ -27,9 +27,12 @@ void Sun::draw() const {
     mat4f viewProjection = cam->projection*cam->view;
     mat4f t = viewProjection*glm::scale(fullTransform, getScale());
 
-    Texture* tex = Textures.get("sun");
+    Texture* tex = Textures.get("sunnoise");
     tex->bind();
     sphere.program->uniform("sampler")->set((int)tex->getSlot());
+    tex = Textures.get("sun");
+    tex->bind();
+    sphere.program->uniform("samplertex")->set((int)tex->getSlot());
     sphere.program->uniform("modelViewProjectionMatrix")->set(t);
     sphere.program->uniform("globaltime")->set(time);
     sphere.draw();
