@@ -15,6 +15,7 @@ public:
 
     enum Status {
         Working,
+        WaitingForConnection,
         Done,
         Error
     };
@@ -30,6 +31,9 @@ public:
 
     // Receive new data from the PrimeSenseManager
     static Status update();
+
+    // Checks if there is a client connected to this manager
+    static bool isConnected() { return !waitingForConnection; }
 
     // Method for checking if a new hand was detected
     static bool isTracking() { return tracking; }
@@ -57,9 +61,10 @@ private:
 
     // PrimeSense data
     static vec3f handPos, handMovement;
-    static bool tracking, grabbing;
+    static bool waitingForConnection, tracking, grabbing;
     static Gesture gesture;
 
+    static void processPacket(sf::Packet packet);
     static void updateData(int opCode, vec3f newHandPos);
 };
 
