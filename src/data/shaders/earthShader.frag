@@ -107,10 +107,10 @@ void main() {
     }
     specularC *= texColor;
 
-    float time      = globaltime*0.001;
+    float time      = globaltime*0.0000000000001;
     vec2 uv         = vTexCoord.xy;
 
-    uv += vec2( 0, 0 );
+    uv += vec2( 0, time );
     
     // vec3 texSample  = texture2D( samplerCloud, newUv ).rgb;
     // // float uOff      = ( texSample.r *  time );
