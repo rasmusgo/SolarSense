@@ -76,12 +76,17 @@ body {
     margin-bottom: 0.3em;
 }
 
-
-.buttonset a.btn {
-    width: 96.2%;
+.buttonset#first {
+position: relative;
+left: 32px;
+margin: auto;
 }
-.buttonset.two a.btn {
-    width: 48%;
+
+.buttonset a.button {
+    width: 100%;
+}
+.buttonset.two a.button {
+    width: 50%;
 }
 
 .slider {
@@ -171,8 +176,8 @@ background-size: 100% 100%;
 
 }*/
 img.button {
-  height: 64px;
-  width: 64px;
+  height: 128px;
+  width: 128px;
   }
 </style>
 </head>
@@ -182,7 +187,7 @@ img.button {
     <script src="js/bootstrap.min.js"></script>
 
     <div id="content">
-    <div class="btn-group buttonset .btn-group-lg two" >
+    <div class="btn-group buttonset .btn-group-lg two" id="first" >
         <a  class="cmdbtn button" name="Previous" value="Previous" id="b1" data-code="1">
 			<img src="bleft.png" class="button"/>
 			<img src="bleftpressed.png" class="button" style="display: none;"/>
