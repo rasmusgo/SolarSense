@@ -225,8 +225,11 @@ bool SceneSolarSystem::loadResources() {
     tex = new Texture(1);
     if(!tex->loadFromFile("data/10x10tex.png",true)) return false;
     Textures.add("cubetex", tex);
-    tex = new Texture(1);
+    tex = new Texture(2);
     if(!tex->loadFromFile("data/SunTexture_2048.png",true)) return false;
+    Textures.add("sunnoise", tex);
+    tex = new Texture(1);
+    if(!tex->loadFromFile("data/suntexture.png",true)) return false;
     Textures.add("sun", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/hand_white.png",true)) return false;

@@ -4,7 +4,7 @@ function log(msg){
 function append_result(str){
 	$("#result").append(str);
 }
-
+var jscmd = "";
 $(document).ready(function(){
 	if (window["WebSocket"]) {
       conn = new WebSocket("ws://{{$}}/ws");
@@ -62,6 +62,8 @@ $(document).ready(function(){
   var request = {"Opcode": 3, "Query": "köttbullar"};
   conn.send(JSON.stringify(request));  // log("Sending " + JSON.stringify(request));
  });*/
+	
+	var zoom = "0";
 
 	$("a.btn").click(function(){
 		//alert($(this).id);
@@ -71,6 +73,25 @@ $(document).ready(function(){
   		var request = {"Opcode": 1, "Query": q};
   		conn.send(JSON.stringify(request));  // log("Sending " + JSON.stringify(request));
  	});
+
+
+ 	$(".zoom#zi").bind( "touchstart",function(){
+		zoom = "4";
+ 	});
+ 	 $(".zoom").bind( "touchend",function(){
+		zoom = "0";
+ 	});
+ 	 $(".zoom#zo").bind( "touchstart",function(){
+		zoom = "-4";
+ 	});
+ 	 
+
+ 	 window.setInterval(function(){
+ 	 	var request = {"Opcode": 3, "Query": zoom};
+ 	 	conn.send(JSON.stringify(request));  // log("Sending " + JSON.stringify(request));
+ 	 	//request = {"Opcode": 2, "Query": jscmd};
+  		//conn.send(JSON.stringify(request));
+ 	 }, 20);
 
 	buildJoystick();
 	//$('#foo').slider().on('slide', function(ev){
@@ -82,6 +103,27 @@ $(document).ready(function(){
 
 
 });	
+
+
+function sendJoystick(event) {
+	 		var q = "";
+	 		var d = Math.min(event.distance, 80);
+	 		var ang = (event.angle*2*3.141592365)/360;
+	 		var x = Math.cos(ang) * d;
+	 		var y = Math.sin(ang) * d;
+	 		q += x/80;
+	 		q += " ";
+	 		q += y/80;
+	 		jscmd = q;
+	 		//log(x);
+	 		//q+= String(JSON.stringify(event));
+	 		//q += event.deltaX;
+	 		//q += " ";
+	 		//q += event.deltaY;
+	 		var request = {"Opcode": 2, "Query": q};
+  			conn.send(JSON.stringify(request));
+
+	 	}
 
 function buildJoystick() {
 		var joystick = document.createElement("joystick"), joystickbackground = document.createElement("joystickbackground"), joystickhitzone = document.createElement("joystickhitzone");
@@ -113,24 +155,10 @@ function buildJoystick() {
   			conn.send(JSON.stringify(request));
 
 	 	});*/
-		a_joystick.on("joystickMove", function (event) {
-	 		var q = "";
-	 		var d = Math.min(event.distance, 80);
-	 		var ang = (event.angle*2*3.141592365)/360;
-	 		var x = Math.cos(ang) * d;
-	 		var y = Math.sin(ang) * d;
-	 		q += x/80;
-	 		q += " ";
-	 		q += y/80;
-	 		//log(x);
-	 		//q+= String(JSON.stringify(event));
-	 		//q += event.deltaX;
-	 		//q += " ";
-	 		//q += event.deltaY;
-	 		var request = {"Opcode": 2, "Query": q};
-  			conn.send(JSON.stringify(request));
-
-	 	});
+		a_joystick.on("joystickMove", sendJoystick);
+		a_joystick.on("pretendKeyup", function(){
+			jscmd = "0";
+		});
 
 	 	
 }

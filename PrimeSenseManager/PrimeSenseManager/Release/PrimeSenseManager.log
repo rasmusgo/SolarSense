@@ -1,4 +1,8 @@
 ﻿  PrimeSense.cpp
+  main.cpp
+main.cpp(12): warning C4101: 'handZ': Unreferenzierte lokale Variable
+main.cpp(12): warning C4101: 'handY': Unreferenzierte lokale Variable
+main.cpp(12): warning C4101: 'handX': Unreferenzierte lokale Variable
   Code wird generiert.
   Codegenerierung ist abgeschlossen.
   PrimeSenseManager.vcxproj -> C:\Users\Leo\Documents\GitHub\SolarSense\PrimeSenseManager\Release\PrimeSenseManager.exe
