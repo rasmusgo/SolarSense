@@ -31,7 +31,7 @@ void SunHalo::draw() const {
     mat4f modelM = cam->billboard(vec3f(0.0f)) * fullTransform;
     mat4f t = projection*view*modelM;
 
-    Texture* tex = Textures.get("sun");
+    Texture* tex = Textures.get("sunnoise");
     tex->bind();
     model.program->uniform("sampler")->set((int)tex->getSlot());
     model.program->uniform("modelViewProjectionMatrix")->set(t);
