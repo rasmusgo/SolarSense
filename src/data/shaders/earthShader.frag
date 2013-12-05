@@ -110,7 +110,7 @@ void main() {
     float time      = globaltime*0.001;
     vec2 uv         = vTexCoord.xy;
 
-    uv += vec2( time, time );
+    uv += vec2( 0, 0 );
     
     // vec3 texSample  = texture2D( samplerCloud, newUv ).rgb;
     // // float uOff      = ( texSample.r *  time );

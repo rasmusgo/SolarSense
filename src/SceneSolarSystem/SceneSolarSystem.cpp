@@ -142,7 +142,7 @@ SceneSolarSystem::SceneSolarSystem() :
 //    rock->rotSpeed = 7.0f;
 //    rock->addTo(sun);
 
-    SunHalo* sunhalo = new SunHalo("sunHalo", 10.0f);
+    SunHalo* sunhalo = new SunHalo("sunHalo", 9.0f);
     sunhalo->addTo(sun);
 
     currentObject = objectsOrder.begin();
@@ -229,7 +229,7 @@ bool SceneSolarSystem::loadResources() {
     if(!tex->loadFromFile("data/SunTexture_2048.png",true)) return false;
     Textures.add("sunnoise", tex);
     tex = new Texture(1);
-    if(!tex->loadFromFile("data/suntexture.png",true)) return false;
+    if(!tex->loadFromFile("data/SunTexture_2048.png",true)) return false;
     Textures.add("sun", tex);
     tex = new Texture(1);
     if(!tex->loadFromFile("data/hand_white.png",true)) return false;
