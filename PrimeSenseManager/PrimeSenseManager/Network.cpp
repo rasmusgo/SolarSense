@@ -16,7 +16,7 @@ void Network::send(sf::Packet& packet) {
 	// TCP socket:
 	sf::Socket::Status status = socket.send(packet);
 	if (status != sf::Socket::Done) {
-		printf("Error while sending package.\n");
+		//printf("Error while sending package.\n");
 	}
 }
 
