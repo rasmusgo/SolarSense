@@ -21,22 +21,10 @@ void NetworkManager::connect() {
 
     // Bind the listener to a port
     status = listener.listen(PORT);
-    if (status == sf::Socket::Done) {
+    if (status == sf::Socket::Error) {
         std::cout << "Network | Error while binding." <<std::endl;
         return;
     }
-
-    /*// Accept incoming connection
-    status = listener.accept(client);
-
-    if (status == sf::Socket::NotReady) {
-        waitingForConnection = true;
-        std::cout << "Network | Waiting for incoming connection attempts..." << std::endl;
-        return;
-    } else if (status == sf::Socket::Error) {
-        std::cout << "Network | Error while accepting connection." << std::endl;
-        return;
-    }*/
 
     std::cout << "Network | Initialisation complete." << std::endl;
 }
@@ -46,7 +34,7 @@ NetworkManager::Status NetworkManager::update() {
     if (waitingForConnection) {
         status = listener.accept(client);
         if (status == sf::Socket::NotReady) {
-            std::cout << "Network | Waiting for incoming connection attempts..." << std::endl;
+            //std::cout << "Network | Waiting for incoming connection attempts..." << std::endl;
         } else if (status == sf::Socket::Done) {
             waitingForConnection = false;
             std::cout << "Network | Connection established." << std::endl;
@@ -71,15 +59,6 @@ NetworkManager::Status NetworkManager::update() {
         } else if (status == sf::Socket::Error) {
             return NetworkManager::Error;
         }
-
-        /*// Unpacking received packet
-        sf::Uint16 opCode;
-        float velX, velY, velZ;
-        if (packet >> opCode >> velX >> velY >> velZ) {
-            updateData(opCode, vec3f(velX, velY, velZ));
-        } else {
-            return NetworkManager::Error;
-        }*/
 
         return NetworkManager::Done;
     }

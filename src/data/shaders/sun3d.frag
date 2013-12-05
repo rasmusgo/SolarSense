@@ -1,4 +1,5 @@
 uniform sampler2D sampler;
+uniform sampler2D samplertex;
 uniform float globaltime;
 
 varying vec2 vTexCoord;
@@ -33,12 +34,12 @@ void main(void)
 
 
     float brightness    = 1.0;
-    float radius        = 0.24 + brightness * 0.2;
+    float radius        = 0.14 + brightness * 0.5;
     float invRadius     = 1.0/radius;
     
-    vec3 orange         = 0.25*vec3( 0.8, 0.65, 0.3 );
-    vec3 orangeRed      = vec3( 0.8, 0.35, 0.1 );
-    float time      = globaltime*0.025;
+    vec3 orange         = 2.5*vec3( 0.8, 0.65, 0.3 );
+    vec3 orangeRed      = 0.5*vec3( 0.8, 0.35, 0.1 );
+    float time      = globaltime*0.0225;
     float aspect    = 1.0;
     vec2 uv         = vTexCoord.xy;
     vec2 p          = uv;
@@ -66,6 +67,10 @@ void main(void)
     vec3 starSphere     = vec3( 0.0 );
 
     corona          *= pow( dist * invRadius, 24.0 );
+    
+    uv = -0.5 +  uv;
+    float r = dot(uv,uv);
+    float f = (1.0-sqrt(abs(1.0-r)))/(r);
 
     vec2 newUv;
     newUv.x = uv.x;
@@ -73,16 +78,14 @@ void main(void)
     newUv += vec2( time, time );
     
     vec3 texSample  = texture2D( sampler, newUv ).rgb;
-    float uOff      = ( texSample.r * 2.0*time );
-    float vOff      = ( texSample.g * 2.0*time );
-    float zOff      = ( texSample.b * 2.0*time );
-    vec2 starUV     = newUv + vec2( uOff+vOff, 0.0 );
+    float uOff      = ( texSample.r * 1.0*time );
+    vec2 starUV     = newUv + vec2( uOff, 0 );
     starSphere      = texture2D( sampler, starUV ).rgb;
 
 
     //float starGlow  = min( max( 1.0 - dist * ( 1.0 - brightness ), 0.0 ), 0.0 );
     // //gl_FragColor.rgb  = vec3( r );
-   gl_FragColor = vec4(texture2D(sampler,vTexCoord).xyz + vec3( ( 0.25 + brightness * 0.1 ) * orange ) + starSphere*1.0 + orange + corona*orangeRed, 1.0f);
+   gl_FragColor = vec4(texture2D(samplertex,vTexCoord).xyz * 0.001 + vec3(f * ( 0.25 + brightness * 0.1 ) * orange ) + starSphere*1.0 + corona*orange + corona*orangeRed, 1.0f);
 
 //    gl_FragColor.rgb    = vec3( f * ( 0.75 + brightness * 0.3 ) * orange ) + starSphere + orange + starGlow * orangeRed;
    // gl_FragColor.a      = 1.0;

@@ -12,8 +12,8 @@ int main(int argc, char* argv[]) {
     FOV = 60.0f; //degrees
     ZNEAR = 0.01f;
     ZFAR = 2000.0f;
-    SCRWIDTH = sf::VideoMode::getDesktopMode().width/2;
-    SCRHEIGHT = sf::VideoMode::getDesktopMode().height/2;
+    SCRWIDTH = sf::VideoMode::getDesktopMode().width;
+    SCRHEIGHT = sf::VideoMode::getDesktopMode().height;
 
     bool slaveMode = false;
 

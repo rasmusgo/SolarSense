@@ -45,12 +45,13 @@ class Camera : public WorldObject {
         int currEye;
 
     private:        
-        const float INTERPOLATION_TIME = 3.0f;
+        const float INTERPOLATION_SPEED = 0.5f;
 
         void updateAcceleration(float deltaTime);
 
         vec3f fromPos;
         float interpolatingTimer;
+        float interpolationTime;
         quat initialRotationInterpolationQuat;
         WorldObject* arrObject;
         float lastArrDist;
